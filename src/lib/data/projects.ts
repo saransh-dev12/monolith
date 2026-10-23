@@ -230,6 +230,11 @@ export async function getBoardData(): Promise<BoardData> {
   };
 }
 
+export type DashboardTask = Pick<
+  Task,
+  "id" | "project_id" | "title" | "status" | "priority" | "due_date"
+> & { projectName: string };
+
 export type DashboardData = {
   metrics: {
     activeProjects: number;
@@ -238,6 +243,7 @@ export type DashboardData = {
     overdueTasks: number;
   };
   projects: ProjectSummary[];
+  nextTasks: DashboardTask[];
 };
 
 export async function getDashboardData(): Promise<DashboardData> {
@@ -262,6 +268,7 @@ export async function getDashboardData(): Promise<DashboardData> {
         overdueTasks: 0,
       },
       projects: [],
+      nextTasks: [],
     };
   }
 
@@ -271,7 +278,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   const [tasksResult, milestonesResult] = await Promise.all([
     supabase
       .from("tasks")
-      .select("project_id,status,due_date")
+      .select("id,project_id,title,status,priority,due_date")
       .in("project_id", projectIds),
     supabase
       .from("milestones")
@@ -331,6 +338,26 @@ export async function getDashboardData(): Promise<DashboardData> {
     }
   }
 
+  const projectNames = new Map(
+    projects.map((project) => [project.id, project.name]),
+  );
+
+  const nextTasks = tasksResult.data
+    .filter((task) => task.status !== "done")
+    .sort((left, right) => {
+      if (left.due_date && right.due_date) {
+        return left.due_date.localeCompare(right.due_date);
+      }
+      if (left.due_date) return -1;
+      if (right.due_date) return 1;
+      return left.title.localeCompare(right.title);
+    })
+    .slice(0, 5)
+    .map((task) => ({
+      ...task,
+      projectName: projectNames.get(task.project_id) ?? "Project",
+    }));
+
   return {
     metrics: {
       activeProjects: projects.filter((project) => project.status === "active")
@@ -346,6 +373,7 @@ export async function getDashboardData(): Promise<DashboardData> {
         progress: { ...progress, percent: computePercent(progress) },
       };
     }),
+    nextTasks,
   };
 }
 

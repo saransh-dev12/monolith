@@ -1,8 +1,8 @@
 # Monolith implementation plan
 
-**Status:** in progress. The Day 1 foundation is implemented and verified locally; Day 2 and Day 3 work is outstanding. This schedule remains a target rather than a guarantee and assumes one focused developer with Supabase, OpenAI, and Vercel access configured when needed.
+**Status:** v1 core implemented and verified locally. Production deployment and live AI-provider verification remain outstanding. This plan remains a target rather than a guarantee and assumes one focused developer with Supabase, OpenAI, and Vercel access configured when needed.
 
-**Verified so far (2026-10-24):** public repository at `https://github.com/saransh-dev12/monolith`, `MVP v1.0` milestone, issues #1–#10, clean migration reset and seed, 21 passing pgTAP RLS/constraint tests, lint, typecheck, production build, and local browser checks for auth, CRUD, board persistence, cross-user denial, CSRF origin rejection, and mobile layouts. Milestone editing, AI planning, CI, and deployment are not implemented.
+**Verified (2026-10-24):** public repository at `https://github.com/saransh-dev12/monolith`, `MVP v1.0` milestone, issues #1–#10, clean migration reset and seed, **36 passing pgTAP tests**, **20 passing Vitest tests**, **7 passing Playwright flows**, lint, typecheck, production build, and local visual review at desktop and mobile widths. AI planning is implemented but live provider output is unverified because the local OpenAI key is a placeholder. Deployment is not configured.
 
 ## Three-day delivery sequence
 
@@ -104,16 +104,16 @@ The public repository is `https://github.com/saransh-dev12/monolith`, with `orig
 
 Current issue status:
 
-- **#1 Project foundation and tooling:** implemented. Next.js App Router, TypeScript, Tailwind, shadcn/ui, Lucide, environment handling, lint/typecheck scripts, and the committed lockfile are in place. CI is still part of #9.
-- **#2 Database schema, migrations, and authorization policies:** implemented. Migrations, grants, RLS, triggers, indexes, local seed, and pgTAP tests are in place.
+- **#1 Project foundation and tooling:** implemented. Next.js App Router, TypeScript, Tailwind, shadcn/ui, Lucide, OpenAI SDK, dnd-kit, pinned dependencies, lint/typecheck/test scripts, and committed lockfile.
+- **#2 Database schema, migrations, and authorization policies:** implemented. Core schema plus planner usage, quota, and atomic plan functions; grants, RLS, triggers, indexes, local seed, and pgTAP coverage.
 - **#3 Authentication and protected routes:** implemented for email/password, including callback handling and server-side identity checks.
-- **#4 Application shell and design system:** implemented, including responsive navigation, dialogs, empty/loading/error states, focus styles, and reduced motion.
+- **#4 Application shell and design system:** implemented with an editorial type system, responsive navigation, dialogs, planner and milestone surfaces, empty/loading/error states, focus styles, and reduced motion.
 - **#5 Projects and task CRUD:** implemented with server validation, archive/restore, cascade delete, and owner scoping.
-- **#6 Kanban board and milestone tracking:** partially implemented. Persistent accessible status movement and project progress exist; milestone create/edit/complete is still pending.
-- **#7 Command Center dashboard:** core metrics implemented. Additional summaries and refinements remain.
-- **#8 AI planner and safe persistence:** not started.
-- **#9 Automated tests, security checks, and accessibility:** database tests and local browser verification exist; committed CI and automated end-to-end suites are pending.
-- **#10 Deployment, documentation, and release readiness:** local setup documentation is current; production deployment and release verification are pending.
+- **#6 Kanban board and milestone tracking:** implemented. Drag-and-drop status movement with an accessible select fallback, persistent ordering, milestone CRUD/completion, and derived progress.
+- **#7 Command Center dashboard:** implemented with real metrics, project progress, and a due-ordered next-up list.
+- **#8 AI planner and safe persistence:** implemented. Server-only structured generation, per-user quota, editable preview, explicit confirmation, and atomic persistence. Live provider output is unverified without a real key; unit tests cover parsing and failure paths.
+- **#9 Automated tests, security checks, and accessibility:** implemented locally. Vitest, pgTAP, Playwright, and a GitHub Actions workflow cover checks, RLS, planner safety, and browser flows. The workflow has not yet been observed running on GitHub.
+- **#10 Deployment, documentation, and release readiness:** documentation, environment template, CI, and reproducible local setup are in place. Production Supabase/Vercel deployment and smoke tests remain blocked on credentials.
 
 ### Proposed issue 1 — Project foundation and tooling
 

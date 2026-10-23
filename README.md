@@ -1,38 +1,45 @@
 # Monolith
 
-Monolith is an AI-assisted project execution workspace for students, individual developers, indie hackers, and small teams. It turns a project idea into milestones and tasks, keeps the work visible, and shows progress derived from real records.
+Monolith is a project-execution workspace for students, solo developers, indie hackers, and small teams. It turns an idea into milestones and tasks, keeps the work visible on a board, and shows progress derived from stored records. AI can draft a plan, but nothing is saved until the user reviews and confirms it.
 
-**Current status: MVP v1.0 in progress.** The Day 1 foundation is implemented and verified locally: application scaffold, database schema with row level security, email/password authentication, protected routes, project and task CRUD, an accessible Kanban board, and basic Command Center metrics. The AI planner, milestone editing, CI, and production deployment are not shipped yet.
+**Current status:** v1 core is implemented and verified locally. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, and the reviewed AI-planning workflow are in place. Production deployment is not configured; the OpenAI key in this environment is a placeholder, so live model output has not been verified here.
 
-The public repository is [github.com/saransh-dev12/monolith](https://github.com/saransh-dev12/monolith). Work is tracked in the **MVP v1.0** milestone (issues #1–#10).
+The public repository is [github.com/saransh-dev12/monolith](https://github.com/saransh-dev12/monolith). Work is tracked in the **MVP v1.0** milestone.
 
-## What works now
+## Product scope
 
-- Email/password sign up, sign in, sign out, email callback handling, and cookie-backed Supabase sessions.
-- Protected `/app` routes plus identity checks repeated in every API handler and data module.
+### Implemented
+
+- Email/password sign-up, sign-in, sign-out, callback exchange, cookie-backed sessions, and protected `/app` routes.
 - Profiles, projects, tasks, and milestones with constraints, indexes, `updated_at` triggers, explicit grants, and owner-scoped RLS.
-- Project create, edit, archive, restore, and permanent delete (cascade to tasks and milestones).
-- Task create, edit, delete, and status changes. Board and task-list status moves persist after reload and work with a keyboard.
-- Command Center metrics for active projects, open tasks, completed tasks, and overdue tasks, all derived from the signed-in user's rows.
-- Responsive dark shell with desktop/mobile navigation, empty/loading/error states, visible focus, and reduced-motion handling.
-- Runtime validation with Zod, same-origin checks on mutation handlers, and safe error responses that do not leak database details.
-- pgTAP database tests for ownership, RLS denial, grants, constraints, archival, and cascade behavior.
+- Project create, edit, archive, restore, and permanent delete (cascades to tasks and milestones).
+- Task create, edit, delete, priority, due date, and status changes.
+- Milestones with create, edit, complete/reopen, target dates, and delete. Project progress combines completed tasks and milestones.
+- Kanban board with drag-and-drop between columns, a status-select fallback for keyboard users, optimistic movement, and persistence after reload.
+- Command Center with real active/open/completed/overdue metrics, project progress, and a due-ordered “Next up” list.
+- AI planner: server-only generation, per-user daily quota, editable preview, explicit confirmation, and atomic persistence in one Postgres transaction.
+- Responsive dark interface, visible focus, reduced-motion support, skip links, empty/loading/error states, and confirmation dialogs.
+- Runtime Zod validation, same-origin checks on mutations, safe error mapping, and no secret exposure to the browser.
+- 20 Vitest unit tests, 36 pgTAP database tests, and 7 Playwright browser flows. A GitHub Actions workflow runs lint, typecheck, unit tests, build, database tests, and browser tests.
 
-## Not shipped yet
+### Not included in v1
 
-- AI plan generation and confirmed persistence (issue #8, Day 2).
-- Milestone create/edit/complete flows. Milestones are currently displayed read-only on the project page (issue #6).
-- CI pipeline, production Supabase/Vercel setup, screenshots, and release notes (issues #9–#10, Day 3).
-- Pointer drag-and-drop, social sign-in, planner history, and richer dashboard charts.
+- Teams, collaboration, permissions, notifications, billing, recurring tasks, calendars, mobile apps, or advanced analytics.
+- Drag-to-reorder inside a column. Dragging changes status; the select control remains the accessible fallback.
+- Streaming AI responses, planner history, social login, or a command palette.
+- A production deployment. Vercel/Supabase production credentials are not available in this environment.
 
 ## Stack
 
 | Layer | Choice |
 | --- | --- |
 | Framework | Next.js 16.4.3 (App Router, Turbopack), React 19.3.0, TypeScript 5.9.3 |
-| Styling | Tailwind CSS 4.3.3, shadcn/ui primitives, Lucide icons |
+| Styling | Tailwind CSS 4.3.3, shadcn/ui primitives, Lucide icons, Instrument Serif + Geist |
 | Data and auth | Supabase Postgres, Supabase Auth, `@supabase/ssr` 0.12.7 |
 | Validation | Zod 4.6.7 |
+| DnD | `@dnd-kit/core` 6.3.1 |
+| AI | OpenAI SDK 7.43.0, Responses API with structured output |
+| Tests | Vitest 5.0.5, pgTAP via Supabase CLI, Playwright 1.64.1 |
 | Runtime | Node.js 22+ (verified on Node 26.5.0), npm 11 |
 
 Direct dependency versions are pinned in `package.json`; `package-lock.json` is committed.
@@ -54,9 +61,10 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<local publishable key>
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 OPENAI_API_KEY=placeholder
 OPENAI_MODEL=placeholder
+PLANNER_DAILY_LIMIT=5
 ```
 
-Then reset the database (applies migrations and the local seed) and start the app:
+Apply migrations and seed data, then start the app:
 
 ```bash
 supabase db reset
@@ -70,7 +78,17 @@ Open <http://localhost:3000>. The local seed creates two fictional accounts:
 | `demo@monolith.local` | `monolith-demo` | Two projects with tasks and milestones |
 | `second@monolith.local` | `monolith-demo` | One private project |
 
-`supabase/seed.sql` runs only on local reset. Never apply it to a production project.
+`supabase/seed.sql` runs only on local reset. Never apply it to production.
+
+### AI planning configuration
+
+AI planning is optional. To enable generation, set these **server-side** variables:
+
+- `OPENAI_API_KEY`: an API key with access to the chosen model.
+- `OPENAI_MODEL`: the exact model id enabled for that key.
+- `PLANNER_DAILY_LIMIT`: optional integer from 1 to 50; defaults to 5.
+
+Never prefix the OpenAI key with `NEXT_PUBLIC_`. With a missing key or the `placeholder` value, `/app/planner` clearly reports that AI is unconfigured and the rest of the product continues to work.
 
 ### Environment variables
 
@@ -79,22 +97,29 @@ Open <http://localhost:3000>. The local seed creates two fictional accounts:
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable/anon key; RLS still enforces access |
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin used for auth redirects and metadata |
-| `OPENAI_API_KEY` | Server-only key for the planned planner; unused today |
-| `OPENAI_MODEL` | Server-only model identifier; unused today |
+| `OPENAI_API_KEY` | Server-only key for plan generation |
+| `OPENAI_MODEL` | Server-only model identifier |
+| `PLANNER_DAILY_LIMIT` | Per-user daily generation limit enforced in Postgres |
 
-Never prefix the OpenAI key with `NEXT_PUBLIC_`.
+## Security and data model
 
-## Database and security model
-
-- Migrations: `supabase/migrations/20261024000000_initial_schema.sql`
+- Migrations: `supabase/migrations/`
 - Local seed: `supabase/seed.sql` (fictional data only)
-- RLS tests: `supabase/tests/rls.test.sql`
+- Database tests: `supabase/tests/rls.test.sql`, `supabase/tests/planner.test.sql`
 
-Every exposed table has RLS enabled and explicit grants. `anon` has no application table access. `authenticated` gets only the operations it needs. Project ownership is enforced directly; task and milestone policies use an `EXISTS` check against the owning project. Updates check both the existing row and the resulting row, so ownership cannot be transferred.
+Every exposed table has RLS enabled and explicit grants. `anon` has no application table access. Project ownership is enforced directly; task and milestone policies use an `EXISTS` check against the owning project. Updates check both the existing row and the resulting row, so ownership cannot be transferred.
 
-A trigger on `auth.users` creates the matching `profiles` row using a `SECURITY DEFINER` function with an empty search path. Server handlers derive the user from verified Supabase claims and never trust a client-supplied owner ID. Database constraints reject blank names, invalid status/priority values, negative positions, and target dates before start dates.
+A trigger on `auth.users` creates the matching `profiles` row through a `SECURITY DEFINER` function with an empty search path. Server handlers derive the user from verified Supabase claims and never trust a client-supplied owner ID.
 
-Known limitation: overdue calculations compare date-only values against the current UTC date. Timezone-aware overdue rules are a Day 2 refinement.
+Planner security:
+
+- Quota is reserved atomically in Postgres per user and UTC day.
+- Generation routes validate input, enforce the quota, and never write project data.
+- A failed provider call releases the reservation.
+- Model output is parsed against an explicit Zod schema; malformed output returns a safe error.
+- Confirmation revalidates the edited preview and calls `create_project_plan`, which takes ownership from `auth.uid()` and writes the project, milestones, and tasks in one transaction.
+
+Known limitation: overdue calculations compare date-only values against the current UTC date. Timezone-aware due-date rules are not part of v1.
 
 ## Routes
 
@@ -105,9 +130,14 @@ Known limitation: overdue calculations compare date-only values against the curr
 | `/auth/callback` | Public | Supabase code/token exchange |
 | `/app` | Authenticated | Command Center |
 | `/app/projects` | Authenticated | Active/archived project list |
-| `/app/projects/[projectId]` | Authenticated, owner only | Tasks, milestones, project controls |
-| `/app/board` | Authenticated | Kanban board with persistent status moves |
-| `/api/projects/*`, `/api/tasks/*` | Authenticated | Validated JSON mutations |
+| `/app/projects/[projectId]` | Authenticated, owner only | Tasks, milestones, progress, project controls |
+| `/app/board` | Authenticated | Kanban board with drag-and-drop and status controls |
+| `/app/planner` | Authenticated | AI draft, edit, and confirmation flow |
+| `/api/projects/*` | Authenticated | Validated project mutations |
+| `/api/tasks/*` | Authenticated | Validated task mutations and status moves |
+| `/api/milestones/*` | Authenticated | Validated milestone mutations |
+| `/api/planner/generate` | Authenticated | Quota-limited plan generation; never writes |
+| `/api/planner/confirm` | Authenticated | Validated atomic plan persistence |
 
 `src/proxy.ts` refreshes sessions and performs an optimistic redirect for `/app` and auth pages. Layout guards are navigation behavior only; handlers and RLS remain the security boundary.
 
@@ -116,40 +146,54 @@ Known limitation: overdue calculations compare date-only values against the curr
 ```bash
 npm run lint
 npm run typecheck
+npm test
 npm run build
 supabase db reset
-supabase test db
+npm run test:db
+npm run test:e2e
 ```
 
-The database tests assume a freshly reset local database. They cover:
+- `npm test` runs Vitest unit tests for schemas, planner transforms, date helpers, and provider parsing.
+- `npm run test:db` runs pgTAP against a freshly reset local database. It covers owner-scoped reads, cross-user denial, grants, constraints, archival, cascade behavior, planner quota, atomic plan persistence, and rollback.
+- `npm run test:e2e` runs Playwright against the local app and requires the Supabase stack plus seeded users. It covers auth, project/task/milestone flows, board persistence, archive/restore/delete, cross-user denial, CSRF rejection, planner confirmation, sign-out, and mobile overflow.
 
-- Owner-scoped reads for projects, tasks, milestones, and profiles.
-- Cross-user update/delete attempts affecting zero rows.
-- Cross-user inserts rejected by RLS.
-- Direct profile inserts denied; own profile updates allowed.
-- Date constraint enforcement, archive retention, cascade delete, and grant matrix.
+The AI preview, edit, and confirm flow was also exercised locally against a mock OpenAI-compatible Responses endpoint. That mock is not committed, and live provider output remains unverified without a real key.
 
-End-to-end browser checks were run against the local stack for login, signup, project/task creation, status persistence, archive/restore, cross-user denial, CSRF origin rejection, sign-out, and mobile layouts. Those checks are not yet committed as a CI suite; that is issue #9.
+The CI workflow in `.github/workflows/ci.yml` runs lint, typecheck, unit tests, build, pgTAP, and Playwright on GitHub-hosted runners. It has been written but not yet observed running on GitHub.
+
+## Deployment
+
+Production deployment is pending credentials. The intended path:
+
+1. Create a Supabase project, link it with `supabase link`, and push migrations with `supabase db push`. Do not run the seed.
+2. Configure the production Site URL and redirect allowlist in Supabase Auth.
+3. Set the environment variables above in Vercel. Keep the OpenAI key server-side and set a provider usage limit.
+4. Deploy the Next.js app to Vercel and run the smoke flow: sign up, create a project, add a task, move it, add a milestone, open the planner, and confirm a fixture plan.
+
+No production URL is claimed because no deployment has been verified.
 
 ## Project structure
 
 ```text
 src/
   app/
-    (public)/            # login, signup, shared auth layout
-    (workspace)/app/     # protected shell, dashboard, projects, board
-    api/                 # validated route handlers
-    auth/callback/       # Supabase session exchange
+    (public)/              # login, signup, shared auth layout
+    (workspace)/app/       # protected shell, dashboard, projects, board, planner
+    api/                   # validated route handlers
+    auth/callback/         # Supabase session exchange
   components/
-    auth/ board/ dashboard/ projects/ shared/ shell/ tasks/ ui/
+    auth/ board/ brand/ dashboard/ milestones/ planner/ projects/
+    shared/ shell/ tasks/ ui/
   lib/
-    api/ auth/ client/ data/ supabase/ validation/
-  proxy.ts               # session refresh and optimistic route protection
+    ai/ api/ auth/ client/ data/ planner/ supabase/ validation/
+  proxy.ts                 # session refresh and optimistic route protection
 supabase/
   config.toml
   migrations/
   seed.sql
   tests/
+tests/
+  e2e/                     # Playwright flows
 ```
 
 ## Official references
@@ -162,4 +206,5 @@ supabase/
 - [Supabase Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 - [Supabase testing with pgTAP](https://supabase.com/docs/guides/database/testing)
 - [OpenAI text generation and Responses API](https://developers.openai.com/api/docs/guides/text)
+- [OpenAI structured outputs](https://platform.openai.com/docs/guides/structured-outputs)
 - [Vercel environments](https://vercel.com/docs/deployments/environments)

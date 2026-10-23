@@ -14,22 +14,24 @@ export function MetricCard({
   tone?: "default" | "warning";
 }) {
   return (
-    <div className="rounded-lg border border-border/60 bg-card/40 p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{label}</p>
+    <div className="bg-background p-5">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          {label}
+        </p>
         <Icon
           className={
             tone === "warning"
-              ? "size-4 text-amber-400"
-              : "size-4 text-primary"
+              ? "size-3.5 text-amber-400"
+              : "size-3.5 text-primary"
           }
           aria-hidden="true"
         />
       </div>
-      <p className="mt-3 text-3xl font-semibold tabular-nums tracking-tight">
+      <p className="mt-4 font-heading text-4xl leading-none tabular-nums tracking-[-0.01em]">
         {value}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+      <p className="mt-2 text-xs text-muted-foreground">{hint}</p>
     </div>
   );
 }

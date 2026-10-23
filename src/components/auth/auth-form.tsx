@@ -11,7 +11,6 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,9 +44,9 @@ export function AuthForm({
   return (
     <Card className="w-full max-w-md border-border/70 bg-card/70 shadow-2xl shadow-black/20 backdrop-blur">
       <CardHeader>
-        <CardTitle className="text-2xl">
+        <h1 className="font-heading text-3xl leading-tight tracking-[-0.01em]">
           {isSignup ? "Create your workspace" : "Welcome back"}
-        </CardTitle>
+        </h1>
         <CardDescription>
           {isSignup
             ? "Start turning loose ideas into milestones and tasks."

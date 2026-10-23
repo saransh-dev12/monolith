@@ -1,21 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  CalendarDays,
-  CheckCircle2,
-  Circle,
-  Pencil,
-  Plus,
-} from "lucide-react";
+import { ArrowLeft, Pencil, Plus } from "lucide-react";
 
+import { MilestoneDialog } from "@/components/milestones/milestone-dialog";
+import { MilestoneItem } from "@/components/milestones/milestone-item";
 import { ProjectDangerActions } from "@/components/projects/project-danger-actions";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { PageHeader } from "@/components/shell/page-header";
-import {
-  ProjectStatusBadge,
-  TaskStatusBadge,
-} from "@/components/tasks/task-badges";
+import { ProjectStatusBadge } from "@/components/tasks/task-badges";
 import { TaskDialog } from "@/components/tasks/task-dialog";
 import { TaskItem } from "@/components/tasks/task-item";
 import { Button } from "@/components/ui/button";
@@ -145,7 +137,6 @@ export default async function ProjectDetailPage(
                   <h2 id={`task-group-${status}`} className="text-sm font-medium">
                     {TASK_STATUS_LABELS[status]}
                   </h2>
-                  <TaskStatusBadge status={status} />
                   <span className="text-xs tabular-nums text-muted-foreground">
                     {columnTasks.length}
                   </span>
@@ -181,62 +172,46 @@ export default async function ProjectDetailPage(
       </div>
 
       <section className="mt-10" aria-labelledby="milestones-heading">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 id="milestones-heading" className="text-sm font-medium">
-            Milestones
-          </h2>
-          <span className="text-xs text-muted-foreground">
-            {milestones.length === 0
-              ? "None yet"
-              : `${completedMilestones} of ${milestones.length} complete`}
-          </span>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <h2 id="milestones-heading" className="text-sm font-medium">
+              Milestones
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {milestones.length === 0
+                ? "No checkpoints yet"
+                : `${completedMilestones} of ${milestones.length} complete`}
+            </p>
+          </div>
+          {!project.archived_at ? (
+            <MilestoneDialog
+              projectId={project.id}
+              trigger={
+                <Button variant="outline" size="sm">
+                  <Plus className="size-4" aria-hidden="true" />
+                  Add milestone
+                </Button>
+              }
+            />
+          ) : null}
         </div>
 
         {milestones.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-border/60 px-4 py-6 text-center text-sm text-muted-foreground">
-            No milestones on this project.
-          </p>
+          <div className="rounded-lg border border-dashed border-border/60 px-4 py-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              No milestones on this project. Add a checkpoint to make progress
+              easier to read.
+            </p>
+          </div>
         ) : (
           <ul className="divide-y divide-border/60 rounded-lg border border-border/60 bg-card/20">
-            {milestones.map((milestone) => {
-              const completed = Boolean(milestone.completed_at);
-              const targetDate = formatDate(milestone.target_date);
-
-              return (
-                <li
-                  key={milestone.id}
-                  className="flex items-start gap-3 px-4 py-3"
-                >
-                  {completed ? (
-                    <CheckCircle2
-                      className="mt-0.5 size-4 shrink-0 text-emerald-400"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <Circle
-                      className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <p className={completed ? "text-sm text-muted-foreground" : "text-sm"}>
-                      {milestone.title}
-                    </p>
-                    {milestone.description ? (
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {milestone.description}
-                      </p>
-                    ) : null}
-                  </div>
-                  {targetDate ? (
-                    <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
-                      <CalendarDays className="size-3.5" aria-hidden="true" />
-                      {targetDate}
-                    </span>
-                  ) : null}
-                </li>
-              );
-            })}
+            {milestones.map((milestone) => (
+              <MilestoneItem
+                key={milestone.id}
+                milestone={milestone}
+                projectId={project.id}
+              />
+            ))}
           </ul>
         )}
       </section>

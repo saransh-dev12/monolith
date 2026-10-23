@@ -104,6 +104,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      planner_usage: {
+        Row: {
+          user_id: string;
+          period_start: string;
+          generations: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          period_start: string;
+          generations?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          generations?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       milestones: {
         Row: {
           id: string;
@@ -136,7 +157,30 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      consume_planner_generation: {
+        Args: { p_limit?: number };
+        Returns: {
+          allowed: boolean;
+          used: number;
+          quota: number;
+          remaining: number;
+        }[];
+      };
+      release_planner_generation: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+      create_project_plan: {
+        Args: {
+          p_name: string;
+          p_description: string | null;
+          p_milestones?: unknown;
+          p_tasks?: unknown;
+        };
+        Returns: string;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

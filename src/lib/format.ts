@@ -37,10 +37,20 @@ export function formatShortDate(value: string | null | undefined): string | null
   return shortDateFormatter.format(date);
 }
 
-export function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10);
+export function todayIsoDate(date: Date = new Date()): string {
+  return date.toISOString().slice(0, 10);
 }
 
-export function isOverdue(dueDate: string | null, status: string): boolean {
-  return Boolean(dueDate) && status !== "done" && dueDate! < todayIsoDate();
+export function addDaysIso(date: string, days: number): string {
+  const value = new Date(`${date}T00:00:00Z`);
+  value.setUTCDate(value.getUTCDate() + days);
+  return value.toISOString().slice(0, 10);
+}
+
+export function isOverdue(
+  dueDate: string | null,
+  status: string,
+  today: string = todayIsoDate(),
+): boolean {
+  return Boolean(dueDate) && status !== "done" && dueDate! < today;
 }

@@ -1,6 +1,6 @@
 # Monolith architecture proposal
 
-**Status:** partially implemented. The Day 1 foundation (scaffold, auth, schema/RLS, project/task CRUD, shell, board) is in place; milestones, AI planner, CI, and deployment remain. Reviewed against current official documentation on 2026-10-24.
+**Status:** implemented for the v1 scope, verified locally. Scaffold, auth, schema/RLS, project/task/milestone CRUD, shell, board, dashboard, and the reviewed AI planner are in place. Production deployment and live AI-provider verification remain outstanding. Reviewed against current official documentation on 2026-10-24.
 
 ## Architecture decision
 

@@ -107,3 +107,44 @@ export type TaskUpdateInput = z.infer<typeof taskUpdateSchema>;
 export type TaskStatusUpdateInput = z.infer<typeof taskStatusUpdateSchema>;
 export type MilestoneCreateInput = z.infer<typeof milestoneCreateSchema>;
 export type MilestoneUpdateInput = z.infer<typeof milestoneUpdateSchema>;
+
+export const plannerInputSchema = z.object({
+  idea: z
+    .string()
+    .trim()
+    .min(20, "Describe the idea in at least 20 characters.")
+    .max(1200, "Keep the idea under 1,200 characters."),
+  audience: nullableText(200).optional(),
+  durationWeeks: z.number().int().min(1).max(12).default(4),
+  constraints: nullableText(500).optional(),
+});
+
+export const plannerMilestoneSchema = z.object({
+  title: z.string().trim().min(1, "Enter a milestone title.").max(160),
+  description: nullableText(400),
+  targetDate: nullableDate,
+});
+
+export const plannerTaskSchema = z.object({
+  title: z.string().trim().min(1, "Enter a task title.").max(200),
+  description: nullableText(400),
+  priority: taskPrioritySchema,
+  dueDate: nullableDate,
+});
+
+export const plannerPreviewSchema = z.object({
+  project: z.object({
+    name: z.string().trim().min(1, "Enter a project name.").max(120),
+    description: nullableText(2000),
+  }),
+  milestones: z.array(plannerMilestoneSchema).max(12),
+  tasks: z
+    .array(plannerTaskSchema)
+    .min(1, "Add at least one task before saving.")
+    .max(40),
+});
+
+export type PlannerInput = z.infer<typeof plannerInputSchema>;
+export type PlannerPreview = z.infer<typeof plannerPreviewSchema>;
+export type PlannerMilestone = z.infer<typeof plannerMilestoneSchema>;
+export type PlannerTask = z.infer<typeof plannerTaskSchema>;

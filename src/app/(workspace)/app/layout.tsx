@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Blocks } from "lucide-react";
+
+import { Wordmark } from "@/components/brand/monolith-mark";
 
 import { AccountMenu } from "@/components/shell/account-menu";
 import { WorkspaceNav } from "@/components/shell/workspace-nav";
@@ -20,14 +21,8 @@ export default async function WorkspaceLayout({
         Skip to content
       </a>
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-border/60 bg-card/20 p-4 lg:flex">
-        <Link
-          href="/app"
-          className="mb-6 inline-flex items-center gap-2 px-2 pt-1 text-sm font-semibold tracking-tight"
-        >
-          <span className="grid size-8 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Blocks className="size-4" aria-hidden="true" />
-          </span>
-          Monolith
+        <Link href="/app" className="mb-8 px-1 pt-1" aria-label="Monolith workspace">
+          <Wordmark />
         </Link>
         <WorkspaceNav />
         <div className="mt-auto space-y-3">
@@ -41,14 +36,8 @@ export default async function WorkspaceLayout({
       <div className="flex min-w-0 flex-col">
         <header className="sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur lg:hidden">
           <div className="flex items-center justify-between px-4 py-3">
-            <Link
-              href="/app"
-              className="inline-flex items-center gap-2 text-sm font-semibold"
-            >
-              <span className="grid size-7 place-items-center rounded-md bg-primary text-primary-foreground">
-                <Blocks className="size-4" aria-hidden="true" />
-              </span>
-              Monolith
+            <Link href="/app" aria-label="Monolith workspace">
+              <Wordmark />
             </Link>
             <div className="w-44">
               <AccountMenu displayName={user.displayName} email={user.email} />
