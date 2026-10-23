@@ -1,6 +1,8 @@
 # Monolith implementation plan
 
-**Status:** proposed sequence. No product features are implemented, and this schedule is a target rather than a guarantee. It assumes one focused developer and that GitHub, Supabase, OpenAI, and Vercel access can be configured promptly.
+**Status:** in progress. The Day 1 foundation is implemented and verified locally; Day 2 and Day 3 work is outstanding. This schedule remains a target rather than a guarantee and assumes one focused developer with Supabase, OpenAI, and Vercel access configured when needed.
+
+**Verified so far (2026-10-24):** public repository at `https://github.com/saransh-dev12/monolith`, `MVP v1.0` milestone, issues #1–#10, clean migration reset and seed, 21 passing pgTAP RLS/constraint tests, lint, typecheck, production build, and local browser checks for auth, CRUD, board persistence, cross-user denial, CSRF origin rejection, and mobile layouts. Milestone editing, AI planning, CI, and deployment are not implemented.
 
 ## Three-day delivery sequence
 
@@ -98,11 +100,20 @@ Optional work after that release includes social sign-in, project templates, pla
 
 ## GitHub repository and issue tracking status
 
-The local repository is initialized on `main`, but the configured GitHub CLI account (`saransh-dev12`) has an invalid token. `gh api user` could not reach GitHub, so account permissions and the availability of `monolith` could not be checked. No repository, labels, milestone, issues, remote, or push have been created or verified. After reauthentication, check `monolith` under the authenticated personal account; create it private with description **“AI-assisted project planning and execution for individuals and small teams.”** Use `monolith-app`, `monolith-projects`, or `build-monolith` only if the exact name is unavailable, and record why.
+The public repository is `https://github.com/saransh-dev12/monolith`, with `origin` configured over HTTPS on `main`. The `MVP v1.0` milestone contains ten open issues. Labels `setup`, `feature`, `backend`, `frontend`, `security`, `testing`, `documentation`, `P0`, and `P1` are in place.
 
-To unblock remote setup, run `gh auth login -h github.com` in a terminal and complete GitHub's authentication flow. Then verify the account with `gh auth status`, check repository-name availability, create the private repo, configure `origin`, and create the backlog below. Do not use a guessed repository URL. The Vercel CLI is present at 65.2.0, but `vercel whoami` failed with a network fetch error; verify Vercel access once connectivity is available.
+Current issue status:
 
-Create/reuse labels `setup`, `feature`, `backend`, `frontend`, `security`, `testing`, `documentation`, `P0`, and `P1`; create milestone `MVP v1.0`. Suggested issues are below. The descriptions and acceptance criteria are ready for manual creation if the CLI remains unavailable.
+- **#1 Project foundation and tooling:** implemented. Next.js App Router, TypeScript, Tailwind, shadcn/ui, Lucide, environment handling, lint/typecheck scripts, and the committed lockfile are in place. CI is still part of #9.
+- **#2 Database schema, migrations, and authorization policies:** implemented. Migrations, grants, RLS, triggers, indexes, local seed, and pgTAP tests are in place.
+- **#3 Authentication and protected routes:** implemented for email/password, including callback handling and server-side identity checks.
+- **#4 Application shell and design system:** implemented, including responsive navigation, dialogs, empty/loading/error states, focus styles, and reduced motion.
+- **#5 Projects and task CRUD:** implemented with server validation, archive/restore, cascade delete, and owner scoping.
+- **#6 Kanban board and milestone tracking:** partially implemented. Persistent accessible status movement and project progress exist; milestone create/edit/complete is still pending.
+- **#7 Command Center dashboard:** core metrics implemented. Additional summaries and refinements remain.
+- **#8 AI planner and safe persistence:** not started.
+- **#9 Automated tests, security checks, and accessibility:** database tests and local browser verification exist; committed CI and automated end-to-end suites are pending.
+- **#10 Deployment, documentation, and release readiness:** local setup documentation is current; production deployment and release verification are pending.
 
 ### Proposed issue 1 — Project foundation and tooling
 

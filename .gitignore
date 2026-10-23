@@ -13,6 +13,11 @@ coverage/
 .vercel/
 .supabase/
 
+# Local Supabase CLI state
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
 # Logs and temporary files
 npm-debug.log*
 yarn-debug.log*
@@ -20,3 +25,4 @@ pnpm-debug.log*
 *.log
 .DS_Store
 *.tsbuildinfo
+next-env.d.ts
