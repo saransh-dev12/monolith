@@ -218,3 +218,17 @@
 @utility max-w-container {
   max-width: 80rem;
 }
+
+@utility glass-card {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-card) 88%, white 4%),
+    color-mix(in oklab, var(--color-card) 94%, transparent)
+  );
+  border: 1px solid color-mix(in oklab, var(--color-border) 70%, white 8%);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 6%),
+    0 1px 0 0 rgb(0 0 0 / 30%),
+    0 20px 44px -28px rgb(0 0 0 / 55%);
+  backdrop-filter: blur(10px);
+}

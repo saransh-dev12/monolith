@@ -1,6 +1,6 @@
 # Monolith design direction
 
-**Status:** revision 3, dark motion-led rebuild. The revision 2 paper-and-cobalt direction was rejected. The shipped direction is a sophisticated dark interface with new editorial typography and a shared Motion for React interaction system, built on the reused shadcn/ui shell and adapted Launch UI marketing structure. See `docs/design-sources.md` for licenses and exact reuse.
+**Status:** revision 4, reference-dashboard fidelity pass. Revision 3's dark editorial system ("signal in the dark": Fraunces + Plus Jakarta Sans + JetBrains Mono, deep charcoal + electric cobalt) is retained as the identity foundation; revision 4 evolves the dashboard composition and card physics toward the supplied StatsCard benchmark instead of replacing the palette or type system wholesale. See `docs/design-sources.md` for licenses and exact reuse.
 
 ## 1. Repository audit summary
 

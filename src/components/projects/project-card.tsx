@@ -12,7 +12,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
   return (
     <Link
       href={`/app/projects/${project.id}`}
-      className="group flex flex-col rounded-lg border border-border/60 bg-card/40 p-5 transition-colors hover:border-border hover:bg-card/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group glass-card flex flex-col rounded-2xl p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_24px_48px_-28px_rgba(0,0,0,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="flex items-start justify-between gap-3">
         <h2 className="text-sm font-medium leading-5 group-hover:underline group-hover:underline-offset-4">

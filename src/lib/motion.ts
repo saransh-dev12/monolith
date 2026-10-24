@@ -17,6 +17,29 @@ export const springLift = {
   mass: 0.7,
 } satisfies Transition;
 
+export const pressFeedback = {
+  whileTap: { scale: 0.98 },
+} as const;
+
+export const cardEntrance: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: motionDurations.base, ease: EASE_OUT },
+  },
+};
+
+export const overlayPop: Variants = {
+  hidden: { opacity: 0, scale: 0.98, y: 6 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: motionDurations.fast, ease: EASE_OUT },
+  },
+};
+
 export const staggerContainer: Variants = {
   hidden: {},
   show: {

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 import {
   Archive,
   Columns3,
@@ -83,15 +84,24 @@ export function AppSidebar({
                     : pathname.startsWith(item.href);
 
                   return (
-                    <SidebarMenuItem key={item.href}>
+                    <SidebarMenuItem key={item.href} className="relative">
                       <SidebarMenuButton
                         asChild
                         isActive={active}
                         tooltip={item.label}
+                        className="relative"
                       >
                         <Link href={item.href} aria-current={active ? "page" : undefined}>
-                          <item.icon aria-hidden="true" />
-                          <span className="group-data-[collapsible=icon]:hidden">
+                          {active ? (
+                            <motion.span
+                              layoutId="workspace-nav-active"
+                              transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                              className="absolute inset-0 rounded-md bg-primary/12 ring-1 ring-primary/25"
+                              aria-hidden="true"
+                            />
+                          ) : null}
+                          <item.icon aria-hidden="true" className="relative" />
+                          <span className="relative group-data-[collapsible=icon]:hidden">
                             {item.label}
                           </span>
                         </Link>

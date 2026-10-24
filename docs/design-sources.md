@@ -120,6 +120,16 @@ SOFTWARE.
 
 The user-provided animated-card example (React + Framer Motion, `whileHover={{ y: -5 }}`) was used as the quality benchmark for Monolith's hover lift and spring behavior. No code or assets from that example were copied into the repository; Monolith implements its own shared variants in `src/lib/motion.ts` using Motion for React.
 
+### Supplied StatsCard code still (Image 1, inspected 2026-10-24)
+
+- **Observed:** `StatsCard = ({ title, value, change, icon: Icon, gradient })` rendering `motion.div whileHover={{ y: -5 }}` with `className="glass-card p-6 rounded-2xl"`, title `text-sm text-white/60`, value `text-2xl font-bold text-white`, change row `flex items-center gap-1 text-sm text-emerald-400` with `ArrowUpRight size={16}` and `{change}%`.
+- **Reused pattern (independent implementation, no copied code):** Monolith's `src/components/dashboard/metric-card.tsx` now follows the same composition — motion lift `y: -5` on hover with the shared `springLift`, `glass-card rounded-2xl p-6` surface, muted title, large tabular value, icon tile, and tone-aware meta row. The `gradient` prop and fabricated `% change` were deliberately not reproduced: Monolith has no historical analytics source, so the meta row shows only trustworthy derived state ("Not archived", "Todo and in progress", "Needs attention today" / "Nothing past due").
+- **Utility:** `glass-card` added in `src/app/globals.css` as an original restrained implementation (layered card gradient, hairline highlight, deep soft shadow, 10px blur). Applied only to stats, project cards, board drop-targets, and dashboard panels — not as a page-wide glassmorphism treatment.
+
+### Supplied motion videos (Images 2–3, MP4 placeholders)
+
+- **Limitation:** the two additional supplied references arrived as MP4 file placeholders with no playable video content accessible in this environment. No specific layout, timing, easing, or interaction from those videos is claimed as observed. Motion decisions for this iteration remain grounded in Image 1, the previously studied Design Spells / Skiper / Componentry principles, and direct browser verification.
+
 ## 5. References studied without code reuse
 
 ### details.so

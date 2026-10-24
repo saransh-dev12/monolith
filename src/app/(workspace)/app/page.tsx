@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ProjectStatusBadge } from "@/components/tasks/task-badges";
 import { PageHeader } from "@/components/shell/page-header";
@@ -33,36 +34,49 @@ export default async function DashboardPage() {
     <>
       <PageHeader
         title="Command Center"
+        eyebrow="Workspace overview"
         description={`${user.displayName}, here is the current state of your work. Every number comes from your own rows.`}
       />
 
-      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 xl:grid-cols-4">
-        <MetricCard
-          label="Active projects"
-          value={metrics.activeProjects}
-          hint="Not archived, still active"
-          icon={FolderKanban}
-        />
-        <MetricCard
-          label="Open tasks"
-          value={metrics.openTasks}
-          hint="Todo and in progress"
-          icon={ListChecks}
-        />
-        <MetricCard
-          label="Completed tasks"
-          value={metrics.completedTasks}
-          hint="Across visible projects"
-          icon={CircleCheck}
-        />
-        <MetricCard
-          label="Overdue tasks"
-          value={metrics.overdueTasks}
-          hint="Past due and still open"
-          icon={Clock}
-          tone={metrics.overdueTasks > 0 ? "warning" : "default"}
-        />
-      </div>
+      <RevealGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <RevealItem>
+          <MetricCard
+            label="Active projects"
+            value={metrics.activeProjects}
+            hint="Not archived, still active"
+            icon={FolderKanban}
+          />
+        </RevealItem>
+        <RevealItem>
+          <MetricCard
+            label="Open tasks"
+            value={metrics.openTasks}
+            hint="Todo and in progress"
+            icon={ListChecks}
+          />
+        </RevealItem>
+        <RevealItem>
+          <MetricCard
+            label="Completed tasks"
+            value={metrics.completedTasks}
+            hint="Across visible projects"
+            icon={CircleCheck}
+          />
+        </RevealItem>
+        <RevealItem>
+          <MetricCard
+            label="Overdue tasks"
+            value={metrics.overdueTasks}
+            hint={
+              metrics.overdueTasks > 0
+                ? "Needs attention today"
+                : "Nothing past due"
+            }
+            icon={Clock}
+            tone={metrics.overdueTasks > 0 ? "warning" : "default"}
+          />
+        </RevealItem>
+      </RevealGroup>
 
       <div className="mt-10 grid gap-8 xl:grid-cols-[1.45fr_0.9fr]">
         <section className="space-y-4">
@@ -99,12 +113,12 @@ export default async function DashboardPage() {
               }
             />
           ) : (
-            <div className="divide-y divide-border/60 rounded-lg border border-border/60 bg-card/20">
+            <div className="glass-card divide-y divide-border/60 rounded-2xl">
               {projects.slice(0, 5).map((project) => (
                 <Link
                   key={project.id}
                   href={`/app/projects/${project.id}`}
-                  className="flex flex-col gap-3 p-4 transition-colors hover:bg-muted/20 sm:flex-row sm:items-center sm:justify-between"
+                  className="group flex flex-col gap-3 p-5 transition-all duration-150 hover:-translate-y-px hover:bg-white/[2%] sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-2">
@@ -121,7 +135,7 @@ export default async function DashboardPage() {
                         : ""}
                     </p>
                   </div>
-                  <div className="flex w-full items-center gap-3 sm:w-48">
+                  <div className="flex w-full items-center gap-3 sm:w-52">
                     <Progress
                       value={project.progress.percent}
                       aria-label={`${project.name} progress`}
@@ -139,7 +153,7 @@ export default async function DashboardPage() {
         <div className="space-y-6">
           <section
             aria-labelledby="next-up-heading"
-            className="rounded-lg border border-border/60 bg-card/20"
+            className="glass-card rounded-2xl"
           >
             <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
               <div>
@@ -199,7 +213,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="rounded-lg border border-border/60 bg-card/20 p-5">
+          <section className="glass-card rounded-2xl p-6">
             <Sparkles className="size-4 text-primary" aria-hidden="true" />
             <h2 className="mt-3 text-sm font-medium">Start from an idea</h2>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">

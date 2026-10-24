@@ -60,10 +60,10 @@ function BoardCard({
   return (
     <motion.article
       data-motion-lift
-      whileHover={overlay || dragging ? undefined : { y: -2 }}
+      whileHover={overlay || dragging ? undefined : { y: -5 }}
       transition={springLift}
       className={cn(
-        "space-y-3 rounded-md border border-border/60 bg-card p-3 transition-[box-shadow,border-color,opacity] duration-150",
+        "space-y-3 rounded-xl border border-border/60 bg-card p-4 transition-[box-shadow,border-color,opacity,translate] duration-150 hover:border-border hover:shadow-[0_16px_36px_-24px_rgba(0,0,0,0.7)]",
         dragging && "opacity-40",
         overlay &&
           "rotate-[0.5deg] border-primary/40 shadow-xl shadow-black/30",
@@ -171,10 +171,10 @@ function BoardColumn({
       ref={setNodeRef}
       aria-labelledby={`column-${status}`}
       className={cn(
-        "flex min-h-40 flex-col rounded-lg border bg-card/20 transition-colors duration-150",
+        "flex min-h-40 flex-col rounded-2xl border transition-all duration-200",
         isOver
-          ? "border-primary/50 bg-primary/5"
-          : "border-border/60",
+          ? "glass-card scale-[1.01] border-primary/50"
+          : "border-border/60 bg-card/20",
       )}
     >
       <header className="flex items-center justify-between border-b border-border/60 px-4 py-3">
