@@ -34,7 +34,7 @@ export default async function WorkspaceLayout({
         </a>
         <AppSidebar displayName={user.displayName} email={user.email} />
         <SidebarInset id="main" className="min-w-0 bg-background">
-          <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b border-border/70 bg-background/85 px-3 backdrop-blur sm:px-4">
+          <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/75 px-3 backdrop-blur-xl sm:px-5">
             <SidebarTrigger className="-ml-1" />
             <Link href="/app" className="md:hidden" aria-label="Monolith workspace">
               <Wordmark />
@@ -56,8 +56,14 @@ export default async function WorkspaceLayout({
               />
             </div>
           </header>
-          <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-10">
-            <RouteTransition>{children}</RouteTransition>
+          <div className="relative flex-1">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(48rem_18rem_at_18%_-20%,var(--atelier-glow),transparent_70%)]"
+            />
+            <div className="relative mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+              <RouteTransition>{children}</RouteTransition>
+            </div>
           </div>
         </SidebarInset>
         <Toaster theme="system" position="top-right" />

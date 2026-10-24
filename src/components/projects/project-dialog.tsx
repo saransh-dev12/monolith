@@ -69,7 +69,7 @@ export function ProjectDialog({ project, trigger }: ProjectDialogProps) {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit project" : "New project"}</DialogTitle>
+          <DialogTitle className="font-display text-3xl">{isEdit ? "Edit project" : "New project"}</DialogTitle>
           <DialogDescription>
             {isEdit
               ? "Update the project details. Dates and status stay scoped to your account."

@@ -65,7 +65,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
           >
             Execution · last {range} days
           </h2>
-          <p className="mt-2 font-heading text-4xl leading-none tabular-nums">
+          <p className="mt-2 font-display text-5xl leading-none tabular-nums">
             {completedTotal}
             <span className="ml-2 align-middle font-sans text-xs font-normal text-muted-foreground">
               tasks done · {createdTotal} created
@@ -91,7 +91,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
                 className={cn(
                   "relative rounded-full px-3 py-1 font-mono text-[11px] transition-colors",
                   selected
-                    ? "text-foreground"
+                    ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -103,7 +103,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
                       stiffness: 500,
                       damping: 36,
                     }}
-                    className="absolute inset-0 rounded-full bg-card shadow-sm ring-1 ring-border/60"
+                    className="absolute inset-0 rounded-full bg-primary shadow-sm"
                     aria-hidden="true"
                   />
                 ) : null}
@@ -235,7 +235,7 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
         <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           Focus this week
         </h2>
-        <p className="font-heading text-2xl leading-none tabular-nums">
+        <p className="font-display text-3xl leading-none tabular-nums">
           {total}
           <span className="ml-1 font-sans text-[11px] font-normal text-muted-foreground">
             done
@@ -261,7 +261,9 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
                 title={`${day.date}: ${day.completed} done`}
                 className={cn(
                   "block w-full rounded-full",
-                  isToday ? "bg-[var(--chart-1)]" : "bg-[var(--chart-1)]/35",
+                  isToday
+                    ? "bg-gradient-to-t from-[var(--chart-1)] to-[var(--chart-2)]"
+                    : "bg-[var(--chart-2)]/30",
                 )}
               />
               <span className="font-mono text-[9px] text-muted-foreground">

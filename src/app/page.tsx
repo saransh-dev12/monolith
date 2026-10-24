@@ -1,61 +1,24 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  ArrowUpRight,
   Check,
   GitBranch,
-  LayoutDashboard,
+  GripVertical,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
 
-import {
-  Footer,
-  FooterBottom,
-  FooterColumn,
-  FooterContent,
-  LayoutLines,
-  Navbar,
-  NavbarLeft,
-  NavbarRight,
-  Section,
-} from "@/components/marketing/foundation";
 import { Wordmark } from "@/components/brand/monolith-mark";
-import { MarketingExecutionDemo } from "@/components/marketing/execution-demo";
-import { ProjectStatusBadge, TaskStatusBadge } from "@/components/tasks/task-badges";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { getSessionUser } from "@/lib/auth/session";
-import { HoverLift } from "@/components/motion/hover-lift";
+import { BoardDemo } from "@/components/marketing/board-demo";
+import { CommandDemo } from "@/components/marketing/command-demo";
+import { SiteHeader } from "@/components/marketing/site-header";
+import { StudioHero } from "@/components/marketing/studio-hero";
+import { WorkflowStory } from "@/components/marketing/workflow-story";
+import { Reveal } from "@/components/motion/reveal";
 import { ThemeSwitcher } from "@/components/shell/theme-switcher";
-import {
-  Reveal,
-  RevealGroup,
-  RevealItem,
-} from "@/components/motion/reveal";
-
-const workflow = [
-  {
-    number: "01",
-    title: "Describe",
-    body: "Write the idea in plain language. Add a horizon and constraints if they matter.",
-  },
-  {
-    number: "02",
-    title: "Review",
-    body: "The planner proposes milestones and tasks. Edit titles, dates, and priorities before saving.",
-  },
-  {
-    number: "03",
-    title: "Confirm",
-    body: "One explicit action writes the project, milestones, and tasks in a single transaction.",
-  },
-  {
-    number: "04",
-    title: "Execute",
-    body: "Move work across the board, complete milestones, and read progress from stored records.",
-  },
-];
+import { Button } from "@/components/ui/button";
+import { getSessionUser } from "@/lib/auth/session";
 
 const guarantees = [
   ["Isolation", "Row level security on every owner-scoped table"],
@@ -66,418 +29,240 @@ const guarantees = [
   ["AI writes", "Generation never persists; confirmation does"],
 ];
 
+const workflow = [
+  ["01", "Describe", "A sentence and a horizon. No wizard."],
+  ["02", "Review", "Editable milestones and tasks, drafted by AI."],
+  ["03", "Confirm", "One explicit action writes the plan atomically."],
+  ["04", "Execute", "The board persists status; progress follows records."],
+];
+
 export default async function HomePage() {
   const user = await getSessionUser();
   const primaryHref = user ? "/app" : "/signup";
   const primaryLabel = user ? "Open workspace" : "Start a project";
   const secondaryHref = user ? "/app/planner" : "/login";
+  const secondaryLabel = user ? "Open the planner" : "Sign in to explore";
 
   return (
-    <div className="relative min-h-dvh">
-      <LayoutLines />
-
-      <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
-        <div className="mx-auto w-full max-w-container px-4 sm:px-6">
-          <Navbar>
-            <NavbarLeft>
-              <Link href="/" aria-label="Monolith home">
-                <Wordmark />
-              </Link>
-              <nav
-                className="hidden items-center gap-6 text-sm text-muted-foreground md:flex"
-                aria-label="Product sections"
-              >
-                <a href="#workflow" className="transition-colors hover:text-foreground">
-                  Workflow
-                </a>
-                <a href="#planner" className="transition-colors hover:text-foreground">
-                  AI planner
-                </a>
-                <a href="#security" className="transition-colors hover:text-foreground">
-                  Security
-                </a>
-              </nav>
-            </NavbarLeft>
-            <NavbarRight>
-              <span className="hidden sm:inline-flex">
-                <ThemeSwitcher compact />
-              </span>
-              {user ? (
-                <Button asChild size="sm">
-                  <Link href="/app">Open workspace</Link>
-                </Button>
-              ) : (
-                <>
-                  <Button asChild variant="ghost" size="sm">
-                    <Link href="/login">Sign in</Link>
-                  </Button>
-                  <Button asChild size="sm">
-                    <Link href="/signup">Create account</Link>
-                  </Button>
-                </>
-              )}
-            </NavbarRight>
-          </Navbar>
-        </div>
-      </header>
+    <div className="atelier-aurora min-h-dvh overflow-x-clip">
+      <SiteHeader signedIn={Boolean(user)} />
 
       <main>
-        <section className="border-b border-border/70">
-          <div className="mx-auto grid w-full max-w-container gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:py-24">
+        {/* HERO */}
+        <section className="relative mx-auto w-full max-w-[1240px] px-4 pb-14 pt-10 sm:px-6 lg:pb-24 lg:pt-16">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -left-40 top-10 -z-10 size-[30rem] rounded-full bg-chart-1/15 blur-[130px]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-32 top-52 -z-10 size-[26rem] rounded-full bg-chart-2/15 blur-[120px]"
+          />
+
+          <div className="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-14">
+            <div>
+              <Reveal>
+                <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/50 px-3 py-1.5 backdrop-blur">
+                  <Sparkles className="size-3.5 text-chart-2" aria-hidden="true" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Project execution, end to end
+                  </span>
+                </div>
+
+                <h1 className="mt-6 font-display text-[17vw] leading-[0.82] tracking-[-0.035em] text-balance sm:text-[12vw] lg:text-[6.6rem]">
+                  Ideas,
+                  <br />
+                  <span className="italic text-chart-2">given form.</span>
+                </h1>
+
+                <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
+                  Monolith turns a rough idea into a project you can actually
+                  run. Describe it, review the plan it drafts, confirm the save,
+                  then move work on a board that reports progress from your own
+                  records.
+                </p>
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button asChild className="h-11 rounded-full px-5 text-sm">
+                    <Link href={primaryHref}>
+                      {primaryLabel}
+                      <ArrowRight className="size-4" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-11 rounded-full border-border/80 px-5 text-sm"
+                  >
+                    <Link href={secondaryHref}>{secondaryLabel}</Link>
+                  </Button>
+                </div>
+
+                <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+                  {[
+                    "Private by default",
+                    "RLS on every row",
+                    "No fabricated analytics",
+                  ].map((item) => (
+                    <li key={item} className="inline-flex items-center gap-1.5">
+                      <Check className="size-3.5 text-chart-3" aria-hidden="true" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.1}>
+              <StudioHero />
+            </Reveal>
+          </div>
+
+          <div className="mt-12 flex items-center gap-4 border-t border-border/50 pt-5 lg:mt-16">
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">
+              Scroll
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-r from-border via-border/50 to-transparent" />
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">
+              Follow one idea through the product
+            </span>
+          </div>
+        </section>
+
+        {/* WORKFLOW BAND */}
+        <div className="border-y border-border/60 bg-card/25">
+          <div className="mx-auto grid w-full max-w-[1240px] grid-cols-2 gap-px px-4 sm:px-6 lg:grid-cols-4">
+            {workflow.map(([number, title, body]) => (
+              <div
+                key={number}
+                className="flex items-start gap-3 border-b border-border/40 py-5 lg:border-b-0 lg:border-r lg:pr-6 lg:last:border-r-0"
+              >
+                <span className="font-mono text-[10px] text-primary">{number}</span>
+                <div>
+                  <p className="text-sm font-medium">{title}</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">{body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <WorkflowStory />
+
+        {/* COMMAND CENTER */}
+        <section id="command" className="mx-auto w-full max-w-[1240px] px-4 py-16 sm:px-6 lg:py-24">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <Reveal>
-              <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                <span className="size-1.5 rounded-full bg-primary" />
-                Project execution, end to end
-              </div>
-
-              <h1 className="mt-6 max-w-2xl text-balance font-heading text-5xl leading-[0.96] tracking-[-0.03em] sm:text-6xl xl:text-[4.75rem]">
-                From a sentence to{" "}
-                <span className="italic text-primary">shipped work.</span>
-              </h1>
-
-              <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
-                Monolith turns a rough idea into an executable project.
-                Describe it, let the planner draft milestones and tasks, review
-                and confirm the plan, execute on a reliable board, and read
-                progress derived from your real rows. The planner drafts; you
-                keep the judgment.
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+                Command Center
               </p>
-
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Button asChild size="lg">
-                  <Link href={primaryHref}>
-                    {primaryLabel}
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg">
-                  <Link href={secondaryHref}>
-                    {user ? "Open the planner" : "Sign in to explore"}
-                  </Link>
-                </Button>
-              </div>
-
-              <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
-                <li className="inline-flex items-center gap-1.5">
-                  <Check className="size-3.5 text-primary" aria-hidden="true" />
-                  Private by default
-                </li>
-                <li className="inline-flex items-center gap-1.5">
-                  <Check className="size-3.5 text-primary" aria-hidden="true" />
-                  Useful without AI
-                </li>
-                <li className="inline-flex items-center gap-1.5">
-                  <Check className="size-3.5 text-primary" aria-hidden="true" />
-                  No fabricated analytics
-                </li>
-              </ul>
-
-              <div className="mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-border/80 pt-5">
+              <h2 className="mt-3 font-display text-5xl leading-[0.9] tracking-[-0.02em] sm:text-6xl">
+                Read the room,{" "}
+                <span className="italic">not a mood board.</span>
+              </h2>
+              <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
+                Active projects, open and overdue work, upcoming milestones, and
+                a completion trend built from your task rows. The range control
+                changes the window; it never invents data.
+              </p>
+              <ul className="mt-6 space-y-3 text-sm">
                 {[
-                  ["Plan", "Milestones & tasks"],
-                  ["Execute", "Board & status"],
-                  ["Review", "Derived progress"],
-                ].map(([label, value]) => (
-                  <div key={label}>
-                    <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                      {label}
-                    </p>
-                    <p className="mt-1 text-xs">{value}</p>
-                  </div>
+                  "7 / 14 / 30-day ranges with animated redraw",
+                  "Daily totals available as text, not only pixels",
+                  "Completions dated honestly by last update",
+                  "Focus week and overdue work surfaced first",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-chart-2" />
+                    {item}
+                  </li>
                 ))}
+              </ul>
+              <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/50 px-3 py-1.5 font-mono text-[10px] text-muted-foreground">
+                <span className="size-1.5 rounded-full bg-chart-3" />
+                Derived from stored records
               </div>
             </Reveal>
+            <Reveal delay={0.08}>
+              <CommandDemo />
+            </Reveal>
+          </div>
+        </section>
 
-            <Reveal className="relative" delay={0.12}>
-              <div
-                className="absolute -right-3 -top-3 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground lg:-right-6"
-                aria-hidden="true"
-              >
-                01 / Workspace
-              </div>
-
-              <HoverLift className="rounded-md border border-border/80 bg-card p-2 shadow-[0_1px_0_0_rgba(21,25,26,0.04),0_20px_50px_-30px_rgba(21,25,26,0.25)]">
-                <div className="rounded-sm border border-border/70">
-                  <div className="flex items-center justify-between border-b border-border/70 px-4 py-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="grid size-6 place-items-center rounded-sm bg-foreground text-background">
-                        <LayoutDashboard className="size-3" aria-hidden="true" />
-                      </span>
-                      <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                        Project dossier
-                      </span>
-                    </div>
-                    <ProjectStatusBadge status="active" />
-                  </div>
-
-                  <div className="px-4 pb-4 pt-5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                      MNL / 001
-                    </p>
-                    <div className="mt-2 flex items-end justify-between gap-4">
-                      <h2 className="font-heading text-3xl leading-none tracking-[-0.01em]">
-                        Portfolio relaunch
-                      </h2>
-                      <span className="pb-1 font-mono text-xs tabular-nums text-muted-foreground">
-                        43%
-                      </span>
-                    </div>
-                    <Progress
-                      value={43}
-                      aria-label="Project progress"
-                      className="mt-4"
-                    />
-
-                    <div className="mt-4 grid grid-cols-3 gap-3 border-y border-border/70 py-3">
-                      {[
-                        ["Target", "Nov 14"],
-                        ["Open", "4 tasks"],
-                        ["Milestones", "1 / 3"],
-                      ].map(([label, value]) => (
-                        <div key={label}>
-                          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-                            {label}
-                          </p>
-                          <p className="mt-1 text-xs">{value}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <ul className="mt-3 divide-y divide-border/70">
-                      {[
-                        {
-                          title: "Write the about page",
-                          status: "in_progress" as const,
-                          meta: "Medium · Due Oct 27",
-                        },
-                        {
-                          title: "Export project screenshots",
-                          status: "todo" as const,
-                          meta: "Low · Due Nov 1",
-                        },
-                        {
-                          title: "Draft case study outline",
-                          status: "done" as const,
-                          meta: "High · Completed",
-                        },
-                      ].map((task) => (
-                        <li
-                          key={task.title}
-                          className="flex items-center justify-between gap-3 py-2.5"
-                        >
-                          <span
-                            className={
-                              task.status === "done"
-                                ? "truncate text-xs text-muted-foreground line-through"
-                                : "truncate text-xs"
-                            }
-                          >
-                            {task.title}
-                          </span>
-                          <span className="flex shrink-0 items-center gap-2">
-                            <span className="hidden font-mono text-[9px] text-muted-foreground sm:inline">
-                              {task.meta}
-                            </span>
-                            <TaskStatusBadge status={task.status} />
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </HoverLift>
-
-              <div className="mt-3 flex items-center justify-between px-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                <span>Illustrative workspace · shared product components</span>
-                <span>Monolith v1</span>
+        {/* BOARD */}
+        <section
+          id="board"
+          className="border-y border-border/60 bg-card/20 py-16 lg:py-24"
+        >
+          <div className="mx-auto grid w-full max-w-[1240px] gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <Reveal className="order-2 lg:order-1">
+              <BoardDemo />
+            </Reveal>
+            <Reveal className="order-1 lg:order-2" delay={0.08}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+                Board
+              </p>
+              <h2 className="mt-3 font-display text-5xl leading-[0.9] tracking-[-0.02em] sm:text-6xl">
+                Move work,{" "}
+                <span className="italic text-chart-2">not pixels.</span>
+              </h2>
+              <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
+                Three columns, real status changes. Drag a card by its grip or
+                use the status menu, which is fully keyboard-operable. A failed
+                update rolls the card back and tells you why.
+              </p>
+              <ul className="mt-6 space-y-3 text-sm">
+                {[
+                  "Drag overlay and clear drop targets",
+                  "Status menu fallback for keyboard and touch",
+                  "Optimistic movement with rollback on failure",
+                  "Progress updates after the write succeeds",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-chart-1" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                <GripVertical className="size-3.5" aria-hidden="true" />
+                Pointer and keyboard
               </div>
             </Reveal>
           </div>
         </section>
 
-        <Section id="proof" className="border-b border-border/70">
-          <Reveal className="mx-auto grid max-w-container items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
-                Trustworthy progress
-              </p>
-              <h2 className="mt-3 max-w-md text-balance font-heading text-4xl leading-[0.98] tracking-[-0.02em] sm:text-5xl">
-                Every chart reads your rows.
-              </h2>
-              <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
-                The Command Center charts tasks you actually completed, with
-                range controls that redraw the line and tooltips that name the
-                day. No sample data, no vanity metrics — switch ranges above
-                and the totals follow the same rows.
-              </p>
-              <ul className="mt-6 space-y-2.5 text-sm">
-                {[
-                  "7 / 14 / 30-day ranges with animated redraw",
-                  "Daily numbers available as text, not just pixels",
-                  "Completions dated honestly by last update",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <MarketingExecutionDemo />
-          </Reveal>
-        </Section>
-
-        <Section id="workflow" className="border-b border-border/70">
-          <Reveal className="mx-auto max-w-container">
-            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-              <div className="lg:sticky lg:top-24">
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
-                  The workflow
-                </p>
-                <h2 className="mt-3 max-w-md text-balance font-heading text-4xl leading-[0.98] tracking-[-0.02em] sm:text-5xl">
-                  Structure that survives contact with the week.
-                </h2>
-                <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
-                  The product is built around the work that actually ships, not
-                  a dashboard that looks busy. AI is a drafting aid, not a
-                  dependency.
-                </p>
-              </div>
-
-              <ol className="grid gap-x-8 gap-y-0 border-t border-border/80 sm:grid-cols-2">
-                {workflow.map((step) => (
-                  <li
-                    key={step.number}
-                    className="border-b border-border/80 py-6 sm:py-8"
-                  >
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-xs text-primary">
-                        {step.number}
-                      </span>
-                      <h3 className="font-heading text-2xl tracking-[-0.01em]">
-                        {step.title}
-                      </h3>
-                    </div>
-                    <p className="mt-2 max-w-xs text-sm leading-6 text-muted-foreground">
-                      {step.body}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <RevealGroup className="mt-12 grid gap-4 sm:grid-cols-3">
-              <RevealItem className="rounded-md border border-border/80 bg-card/60 p-4">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Board state
-                </p>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {[
-                    ["Todo", "3"],
-                    ["Doing", "1"],
-                    ["Done", "1"],
-                  ].map(([label, count]) => (
-                    <div
-                      key={label}
-                      className="rounded-sm border border-border/70 bg-background px-2 py-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px]">{label}</span>
-                        <span className="font-mono text-[9px] text-muted-foreground">
-                          {count}
-                        </span>
-                      </div>
-                      <div className="mt-2 h-1 rounded-full bg-muted">
-                        <div
-                          className="h-1 rounded-full bg-primary"
-                          style={{ width: label === "Todo" ? "70%" : label === "Doing" ? "35%" : "20%" }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </RevealItem>
-
-              <RevealItem className="rounded-md border border-border/80 bg-card/60 p-4">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Milestone
-                </p>
-                <div className="mt-3 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-medium">Content complete</p>
-                    <p className="mt-1 font-mono text-[9px] text-muted-foreground">
-                      Due Nov 2
-                    </p>
-                  </div>
-                  <span className="size-2 rounded-full bg-emerald-600" />
-                </div>
-                <div className="mt-4 h-px bg-border" />
-                <p className="mt-3 font-mono text-[9px] text-muted-foreground">
-                  Progress derives from completed records
-                </p>
-              </RevealItem>
-
-              <RevealItem className="rounded-md border border-border/80 bg-card/60 p-4">
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Today
-                </p>
-                <p className="mt-3 font-heading text-3xl leading-none">4 open</p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  One overdue · one due this week
-                </p>
-                <div className="mt-4 flex gap-1">
-                  {[1, 1, 0, 1, 1, 0, 0].map((filled, index) => (
-                    <span
-                      key={index}
-                      className={
-                        filled
-                          ? "h-1.5 flex-1 rounded-full bg-primary"
-                          : "h-1.5 flex-1 rounded-full bg-muted"
-                      }
-                    />
-                  ))}
-                </div>
-              </RevealItem>
-            </RevealGroup>
-          </Reveal>
-        </Section>
-
-        <section
-          id="planner"
-          className="border-b border-border/70 bg-[var(--accent-panel)] text-foreground"
-        >
-          <div className="mx-auto grid w-full max-w-container gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1fr] lg:items-center lg:py-24">
+        {/* PLANNER */}
+        <section id="planner" className="mx-auto w-full max-w-[1240px] px-4 py-16 sm:px-6 lg:py-24">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
             <Reveal>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
                 AI planner
               </p>
-              <h2 className="mt-3 max-w-md text-balance font-heading text-4xl leading-[0.98] tracking-[-0.02em] sm:text-5xl">
-                A draft plan, not an{" "}
-                <span className="italic">autopilot.</span>
+              <h2 className="mt-3 font-display text-5xl leading-[0.9] tracking-[-0.02em] sm:text-6xl">
+                A draft plan,{" "}
+                <span className="italic">not an autopilot.</span>
               </h2>
-              <p className="mt-4 max-w-md text-sm leading-6 text-foreground/70">
+              <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
                 Give the planner an idea and a horizon. It proposes milestones
                 and tasks. Every field is editable, generation never writes, and
                 saving requires one explicit confirmation.
               </p>
-              <ul className="mt-7 space-y-3 text-sm text-foreground/85">
+              <ul className="mt-7 space-y-3 text-sm">
                 {[
                   "Structured output validated at runtime",
                   "Per-user daily generation quota",
                   "Atomic save; a failed insert saves nothing",
+                  "Missing configuration and errors are reported honestly",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5">
-                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-chart-3" />
                     {item}
                   </li>
                 ))}
               </ul>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
+                <Button asChild className="h-11 rounded-full px-5 text-sm">
                   <Link href={user ? "/app/planner" : "/login"}>
                     {user ? "Open planner" : "Sign in to try it"}
                     <Sparkles className="size-4" aria-hidden="true" />
@@ -486,8 +271,7 @@ export default async function HomePage() {
                 <Button
                   asChild
                   variant="outline"
-                  size="lg"
-                  className="border-foreground/20 bg-transparent text-foreground hover:bg-foreground/5 hover:text-foreground"
+                  className="h-11 rounded-full border-border/80 px-5 text-sm"
                 >
                   <Link href={user ? "/app/projects" : "/signup"}>
                     {user ? "Browse projects" : "Create an account"}
@@ -496,53 +280,49 @@ export default async function HomePage() {
               </div>
             </Reveal>
 
-            <HoverLift className="rounded-lg bg-card p-2 text-foreground shadow-2xl shadow-black/20 ring-1 ring-border dark:shadow-black/40">
-              <div className="rounded-sm border border-border/70">
-                <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
-                    <p className="text-xs font-medium">Draft · Community run club</p>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className="rounded-full border-amber-600/30 bg-amber-500/10 font-normal text-amber-700 dark:text-amber-300"
-                  >
-                    Not saved
-                  </Badge>
-                </div>
-                <div className="space-y-4 p-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-                        Project
-                      </p>
-                      <p className="mt-1 text-sm">Community run club</p>
+            <Reveal delay={0.08}>
+              <div className="relative">
+                <div
+                  aria-hidden="true"
+                  className="absolute -inset-6 -z-10 rounded-[3rem] bg-gradient-to-br from-chart-1/12 via-transparent to-chart-2/15 blur-2xl"
+                />
+                <div className="rounded-[1.75rem] border border-border/70 bg-card/70 p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="size-3.5 text-chart-2" aria-hidden="true" />
+                      <p className="text-xs font-medium">Draft · Community run club</p>
                     </div>
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-                        Horizon
-                      </p>
-                      <p className="mt-1 text-sm">4 weeks</p>
-                    </div>
+                    <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
+                      Not saved
+                    </span>
                   </div>
 
-                  <div>
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    {[
+                      ["Project", "Community run club"],
+                      ["Horizon", "4 weeks"],
+                    ].map(([label, value]) => (
+                      <div key={label}>
+                        <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                          {label}
+                        </p>
+                        <p className="mt-1 text-sm">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4">
                     <div className="flex items-center justify-between">
-                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
                         Milestones
                       </p>
-                      <span className="font-mono text-[9px] text-muted-foreground">
-                        2
-                      </span>
+                      <span className="font-mono text-[9px] text-muted-foreground">2</span>
                     </div>
                     <ul className="mt-2 space-y-2">
-                      {[
-                        "Route library live",
-                        "Weekly schedule live",
-                      ].map((title, index) => (
+                      {["Route library live", "Weekly schedule live"].map((title, index) => (
                         <li
                           key={title}
-                          className="flex items-center justify-between gap-3 rounded-sm border border-border/70 px-3 py-2"
+                          className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/40 px-3 py-2"
                         >
                           <span className="text-xs">{title}</span>
                           <span className="font-mono text-[9px] text-muted-foreground">
@@ -553,16 +333,14 @@ export default async function HomePage() {
                     </ul>
                   </div>
 
-                  <div>
+                  <div className="mt-4">
                     <div className="flex items-center justify-between">
-                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
                         Tasks
                       </p>
-                      <span className="font-mono text-[9px] text-muted-foreground">
-                        3
-                      </span>
+                      <span className="font-mono text-[9px] text-muted-foreground">3</span>
                     </div>
-                    <ul className="mt-2 divide-y divide-border/70 rounded-sm border border-border/70">
+                    <ul className="mt-2 divide-y divide-border/50 rounded-xl border border-border/60 bg-background/40">
                       {[
                         ["Draft three route pages", "High"],
                         ["Build the weekly schedule", "Medium"],
@@ -581,148 +359,173 @@ export default async function HomePage() {
                     </ul>
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-border/70 pt-3">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
+                    <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground">
                       Generation never writes
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
                       Confirm and save
                       <ArrowRight className="size-3" aria-hidden="true" />
                     </span>
                   </div>
                 </div>
+                <p className="mt-3 px-1 font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground/60">
+                  Illustrative review surface · no database writes
+                </p>
               </div>
-            </HoverLift>
+            </Reveal>
           </div>
         </section>
 
-        <Section id="security" className="border-b border-border/70">
-          <Reveal className="mx-auto grid max-w-container gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
-                Security & data
+        {/* SECURITY */}
+        <section id="security" className="border-y border-border/60 bg-card/20">
+          <div className="mx-auto grid w-full max-w-[1240px] gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:py-24">
+            <Reveal>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+                Security &amp; data
               </p>
-              <h2 className="mt-3 max-w-md text-balance font-heading text-4xl leading-[0.98] tracking-[-0.02em] sm:text-5xl">
-                Serious where it counts.
+              <h2 className="mt-3 font-display text-5xl leading-[0.9] tracking-[-0.02em] sm:text-6xl">
+                Serious where{" "}
+                <span className="italic">it counts.</span>
               </h2>
               <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
                 A project tool stores sensitive plans. Monolith enforces
                 ownership at the database boundary and keeps provider secrets on
                 the server, not in the presentation layer.
               </p>
-              <div className="mt-8 inline-flex items-center gap-2 rounded-md border border-border/80 bg-card/60 px-3 py-2 font-mono text-[10px] text-muted-foreground">
-                <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
+              <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/50 px-3 py-2 font-mono text-[10px] text-muted-foreground">
+                <ShieldCheck className="size-3.5 text-chart-3" aria-hidden="true" />
                 auth.uid() → RLS → owner-scoped rows
               </div>
-            </div>
+            </Reveal>
 
-            <dl className="divide-y divide-border/80 border-y border-border/80">
-              {guarantees.map(([term, description]) => (
-                <div
-                  key={term}
-                  className="grid gap-1 py-4 sm:grid-cols-[10rem_1fr] sm:gap-4"
-                >
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                    {term}
-                  </dt>
-                  <dd className="text-sm leading-6">{description}</dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-        </Section>
+            <Reveal delay={0.08}>
+              <dl className="divide-y divide-border/60 border-y border-border/60">
+                {guarantees.map(([term, description]) => (
+                  <div
+                    key={term}
+                    className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-4"
+                  >
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      {term}
+                    </dt>
+                    <dd className="text-sm leading-6">{description}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
+        </section>
 
-        <Section className="pb-24">
-          <Reveal className="mx-auto grid max-w-container gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
-                Start now
-              </p>
-              <h2 className="mt-3 max-w-2xl text-balance font-heading text-5xl leading-[0.95] tracking-[-0.02em] sm:text-6xl">
-                Start with the work you actually have.
-              </h2>
-              <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground">
-                One project is enough to test the fit. Add a real milestone,
-                move one task, and read the progress from stored records.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href={primaryHref}>
-                  {primaryLabel}
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              </Button>
-              {!user ? (
-                <Button asChild variant="outline" size="lg">
-                  <Link href="/login">Sign in</Link>
+        {/* CTA */}
+        <section className="mx-auto w-full max-w-[1240px] px-4 py-20 sm:px-6 lg:py-28">
+          <Reveal className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-gradient-to-br from-card via-card to-accent/40 p-8 sm:p-12 lg:p-16">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-20 -top-24 size-80 rounded-full bg-chart-1/20 blur-3xl"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-24 -left-16 size-80 rounded-full bg-chart-2/20 blur-3xl"
+            />
+            <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+                  Start now
+                </p>
+                <h2 className="mt-3 max-w-2xl font-display text-5xl leading-[0.88] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
+                  Start with the work you{" "}
+                  <span className="italic text-chart-2">actually have.</span>
+                </h2>
+                <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground">
+                  One project is enough to test the fit. Add a real milestone,
+                  move one task, and read progress from stored records.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button asChild className="h-11 rounded-full px-5 text-sm">
+                  <Link href={primaryHref}>
+                    {primaryLabel}
+                    <ArrowUpRight className="size-4" aria-hidden="true" />
+                  </Link>
                 </Button>
-              ) : null}
+                {!user ? (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-11 rounded-full border-border/80 px-5 text-sm"
+                  >
+                    <Link href="/login">Sign in</Link>
+                  </Button>
+                ) : null}
+              </div>
             </div>
           </Reveal>
-        </Section>
+        </section>
       </main>
 
-      <Footer className="border-t border-border/70">
-        <div className="mx-auto max-w-container">
-          <FooterContent>
-            <FooterColumn className="col-span-2 sm:col-span-1">
+      <footer className="border-t border-border/60 px-4 pb-8 pt-12 sm:px-6">
+        <div className="mx-auto w-full max-w-[1240px]">
+          <div className="grid gap-8 sm:grid-cols-3">
+            <div className="sm:col-span-1">
               <Wordmark />
-              <p className="max-w-xs text-xs leading-5 text-muted-foreground">
+              <p className="mt-4 max-w-xs text-xs leading-5 text-muted-foreground">
                 A project execution workspace for focused builders. Plans,
                 boards, and progress without invented metrics.
               </p>
               <div className="mt-4">
-                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
                   Appearance
                 </p>
                 <ThemeSwitcher />
               </div>
-            </FooterColumn>
-            <FooterColumn>
-              <h3 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <h3 className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
                 Product
               </h3>
-              <Link href={user ? "/app" : "/login"} className="text-sm hover:text-primary">
-                Command Center
-              </Link>
-              <Link href={user ? "/app/projects" : "/login"} className="text-sm hover:text-primary">
-                Projects
-              </Link>
-              <Link href={user ? "/app/board" : "/login"} className="text-sm hover:text-primary">
-                Board
-              </Link>
-              <Link href={user ? "/app/planner" : "/login"} className="text-sm hover:text-primary">
-                Planner
-              </Link>
-            </FooterColumn>
-            <FooterColumn>
-              <h3 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              {[
+                ["Command Center", user ? "/app" : "/login"],
+                ["Projects", user ? "/app/projects" : "/login"],
+                ["Board", user ? "/app/board" : "/login"],
+                ["Planner", user ? "/app/planner" : "/login"],
+              ].map(([label, href]) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="text-sm text-foreground/80 transition-colors hover:text-primary"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <h3 className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
                 Account
               </h3>
-              <Link href="/signup" className="text-sm hover:text-primary">
+              <Link href="/signup" className="text-sm text-foreground/80 hover:text-primary">
                 Create account
               </Link>
-              <Link href="/login" className="text-sm hover:text-primary">
+              <Link href="/login" className="text-sm text-foreground/80 hover:text-primary">
                 Sign in
               </Link>
               <a
                 href="https://github.com/saransh-dev12/monolith"
-                className="inline-flex items-center gap-1.5 text-sm hover:text-primary"
+                className="inline-flex items-center gap-1.5 text-sm text-foreground/80 hover:text-primary"
               >
                 <GitBranch className="size-3.5" aria-hidden="true" />
                 Source
               </a>
-            </FooterColumn>
-          </FooterContent>
-          <FooterBottom>
+            </div>
+          </div>
+          <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border/60 pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center">
             <p>© 2026 Monolith. Built with Next.js, Supabase, and OpenAI.</p>
             <p className="font-mono text-[9px] uppercase tracking-[0.16em]">
-              v1 · local verification complete
+              Idea → plan → board → progress
             </p>
-          </FooterBottom>
+          </div>
         </div>
-      </Footer>
+      </footer>
     </div>
   );
 }

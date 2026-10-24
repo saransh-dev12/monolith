@@ -77,7 +77,7 @@ export function TaskDialog({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit task" : "New task"}</DialogTitle>
+          <DialogTitle className="font-display text-3xl">{isEdit ? "Edit task" : "New task"}</DialogTitle>
           <DialogDescription>
             {isEdit
               ? "Change the task without losing its position in the project."

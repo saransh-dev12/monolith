@@ -55,15 +55,15 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg" tooltip="Monolith">
               <Link href="/app">
-                <span className="grid size-8 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
+                <span className="grid size-8 shrink-0 place-items-center rounded-[0.7rem] bg-gradient-to-br from-chart-1 to-chart-2 text-[#160c1c] shadow-[0_8px_24px_-12px_var(--color-primary)]">
                   <MonolithMark />
                 </span>
                 <span className="grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+                  <span className="font-display text-lg tracking-[-0.02em]">
                     Monolith
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
-                    Project workspace
+                  <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Studio workspace
                   </span>
                 </span>
               </Link>
@@ -75,7 +75,9 @@ export function AppSidebar({
       <SidebarContent>
         <nav aria-label="Workspace">
           <SidebarGroup>
-            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+            <SidebarGroupLabel className="font-mono text-[9px] uppercase tracking-[0.18em]">
+              Workspace
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navigation.map((item) => {
@@ -96,7 +98,7 @@ export function AppSidebar({
                             <motion.span
                               layoutId="workspace-nav-active"
                               transition={{ type: "spring", stiffness: 500, damping: 36 }}
-                              className="absolute inset-0 rounded-md bg-primary/12 ring-1 ring-primary/25"
+                              className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/20 to-chart-2/10 ring-1 ring-primary/30"
                               aria-hidden="true"
                             />
                           ) : null}
@@ -114,7 +116,9 @@ export function AppSidebar({
           </SidebarGroup>
 
           <SidebarGroup>
-            <SidebarGroupLabel>Library</SidebarGroupLabel>
+            <SidebarGroupLabel className="font-mono text-[9px] uppercase tracking-[0.18em]">
+              Library
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>

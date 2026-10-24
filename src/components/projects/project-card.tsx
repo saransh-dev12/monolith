@@ -12,10 +12,10 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
   return (
     <Link
       href={`/app/projects/${project.id}`}
-      className="group glass-card flex flex-col rounded-2xl p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_24px_48px_-28px_rgba(0,0,0,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group glass-card relative flex flex-col overflow-hidden rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 hover:border-chart-2/30 hover:shadow-[0_28px_56px_-32px_rgba(0,0,0,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="flex items-start justify-between gap-3">
-        <h2 className="text-sm font-medium leading-5 group-hover:underline group-hover:underline-offset-4">
+        <h2 className="font-display text-2xl leading-tight tracking-[-0.01em] transition-colors group-hover:text-primary">
           {project.name}
         </h2>
         <ProjectStatusBadge status={project.status} />
@@ -33,6 +33,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
         <Progress
           value={project.progress.percent}
           aria-label={`${project.name} progress`}
+          className="[&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-chart-2 [&>[data-slot=progress-indicator]]:to-chart-3"
         />
       </div>
 

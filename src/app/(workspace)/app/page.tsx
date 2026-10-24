@@ -45,7 +45,7 @@ export default async function DashboardPage() {
         description={`${user.displayName}, here is the current state of your work. Every number comes from your own rows.`}
       />
 
-      <RevealGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <RevealGroup className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         <RevealItem>
           <MetricCard
             label="Active projects"
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
         </RevealItem>
       </RevealGroup>
 
-      <div className="mt-6 grid gap-4 xl:grid-cols-[1.6fr_0.9fr]">
+      <div className="mt-4 grid gap-4 xl:grid-cols-[1.65fr_0.85fr]">
         <ExecutionChart series={series} />
         <WeekStrip series={series} />
       </div>
@@ -94,8 +94,11 @@ export default async function DashboardPage() {
         <section className="space-y-4">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-base font-medium">Projects</h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                Active work
+              </p>
+              <h2 className="mt-1 font-display text-3xl leading-none">Projects</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Progress combines completed tasks and milestones.
               </p>
             </div>
@@ -125,39 +128,51 @@ export default async function DashboardPage() {
               }
             />
           ) : (
-            <div className="glass-card divide-y divide-border/60 rounded-2xl">
-              {projects.slice(0, 5).map((project) => (
-                <Link
-                  key={project.id}
-                  href={`/app/projects/${project.id}`}
-                  className="group flex flex-col gap-3 p-5 transition-all duration-150 hover:-translate-y-px hover:bg-muted/30 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate text-sm font-medium">
-                        {project.name}
-                      </p>
+            <div className="glass-card overflow-hidden rounded-2xl">
+              <div className="hidden grid-cols-[1fr_10rem_4rem] gap-3 border-b border-border/50 px-5 py-2 font-mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground sm:grid">
+                <span>Project</span>
+                <span>Progress</span>
+                <span className="text-right">State</span>
+              </div>
+              <div className="divide-y divide-border/50">
+                {projects.slice(0, 5).map((project, index) => (
+                  <Link
+                    key={project.id}
+                    href={`/app/projects/${project.id}`}
+                    className="group grid gap-2 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[1fr_10rem_4rem] sm:items-center sm:gap-3"
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="font-mono text-[9px] tabular-nums text-muted-foreground/50">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium transition-colors group-hover:text-primary">
+                          {project.name}
+                        </p>
+                        <p className="mt-0.5 text-[11px] text-muted-foreground">
+                          {project.progress.openTasks} open ·{" "}
+                          {project.progress.doneTasks} done
+                          {project.target_date
+                            ? ` · target ${formatDate(project.target_date)}`
+                            : ""}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Progress
+                        value={project.progress.percent}
+                        aria-label={`${project.name} progress`}
+                      />
+                      <span className="w-9 shrink-0 text-right font-mono text-[10px] tabular-nums text-muted-foreground">
+                        {project.progress.percent}%
+                      </span>
+                    </div>
+                    <div className="hidden justify-end sm:flex">
                       <ProjectStatusBadge status={project.status} />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {project.progress.openTasks} open ·{" "}
-                      {project.progress.doneTasks} done
-                      {project.target_date
-                        ? ` · target ${formatDate(project.target_date)}`
-                        : ""}
-                    </p>
-                  </div>
-                  <div className="flex w-full items-center gap-3 sm:w-52">
-                    <Progress
-                      value={project.progress.percent}
-                      aria-label={`${project.name} progress`}
-                    />
-                    <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
-                      {project.progress.percent}%
-                    </span>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </section>
@@ -167,12 +182,15 @@ export default async function DashboardPage() {
             aria-labelledby="next-up-heading"
             className="glass-card rounded-2xl"
           >
-            <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
               <div>
-                <h2 id="next-up-heading" className="text-sm font-medium">
+                <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Attention
+                </p>
+                <h2 id="next-up-heading" className="mt-0.5 font-display text-2xl leading-none">
                   Next up
                 </h2>
-                <p className="text-xs text-muted-foreground">
+                <p className="mt-1 text-[11px] text-muted-foreground">
                   Open work ordered by due date
                 </p>
               </div>
@@ -206,7 +224,7 @@ export default async function DashboardPage() {
                           <span
                             className={
                               overdue
-                                ? "inline-flex shrink-0 items-center gap-1 text-rose-700 dark:text-rose-300"
+                                ? "inline-flex shrink-0 items-center gap-1 text-primary"
                                 : "inline-flex shrink-0 items-center gap-1"
                             }
                           >
@@ -225,14 +243,20 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="glass-card rounded-2xl p-6">
-            <Sparkles className="size-4 text-primary" aria-hidden="true" />
-            <h2 className="mt-3 text-sm font-medium">Start from an idea</h2>
-            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-card via-card to-chart-2/15 p-5">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-8 -top-10 size-32 rounded-full bg-chart-1/20 blur-2xl"
+            />
+            <Sparkles className="relative size-4 text-chart-2" aria-hidden="true" />
+            <h2 className="relative mt-3 font-display text-2xl leading-none">
+              Start from an idea
+            </h2>
+            <p className="relative mt-1.5 text-xs leading-5 text-muted-foreground">
               Generate a draft project with milestones and tasks, then review it
               before anything is saved.
             </p>
-            <Button asChild variant="outline" size="sm" className="mt-4">
+            <Button asChild size="sm" className="relative mt-4 rounded-full">
               <Link href="/app/planner">
                 Open planner
                 <ArrowRight className="size-3.5" aria-hidden="true" />

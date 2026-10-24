@@ -19,26 +19,28 @@ export function MetricCard({
   return (
     <MetricLift>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+          {label}
+        </p>
         <span
           className={cn(
             "grid size-9 place-items-center rounded-xl border",
             tone === "warning"
-              ? "border-amber-600/30 bg-amber-500/10 text-amber-600 dark:text-amber-300"
-              : "border-primary/30 bg-primary/10 text-primary",
+              ? "border-primary/40 bg-primary/12 text-primary"
+              : "border-chart-2/35 bg-chart-2/12 text-chart-2",
           )}
         >
           <Icon className="size-4" aria-hidden="true" />
         </span>
       </div>
-      <p className="mt-3 font-heading text-4xl leading-none font-semibold tracking-[-0.01em] text-foreground tabular-nums">
+      <p className="mt-3 font-display text-5xl leading-none tracking-[-0.02em] text-foreground tabular-nums">
         {value}
       </p>
       <p
         className={cn(
           "mt-2 flex items-center gap-1.5 text-sm",
           tone === "warning"
-            ? "text-amber-700 dark:text-amber-300"
+            ? "text-primary"
             : "text-muted-foreground",
         )}
       >

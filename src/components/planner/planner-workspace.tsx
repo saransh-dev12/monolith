@@ -169,12 +169,12 @@ export function PlannerWorkspace({
       {!configured ? (
         <div
           role="status"
-          className="flex gap-3 rounded-lg border border-amber-600/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-100"
+          className="flex gap-3 rounded-2xl border border-primary/30 bg-primary/8 p-4 text-sm"
         >
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <div className="space-y-1">
             <p className="font-medium">AI planning is not configured</p>
-            <p className="text-amber-800 dark:text-amber-300">
+            <p className="text-primary/80">
               Add <code className="font-mono text-xs">OPENAI_API_KEY</code> and{" "}
               <code className="font-mono text-xs">OPENAI_MODEL</code> on the
               server to enable generation. The rest of Monolith works without
@@ -184,7 +184,7 @@ export function PlannerWorkspace({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/60 bg-card/25 px-4 py-3 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card/40 px-4 py-3 text-sm">
         <p className="text-muted-foreground">
           {quota.remaining > 0 ? (
             <>
@@ -205,14 +205,14 @@ export function PlannerWorkspace({
       {!plan ? (
         <form
           onSubmit={handleGenerate}
-          className="space-y-6 rounded-lg border border-border/60 bg-card/25 p-5 sm:p-6"
+          className="space-y-6 rounded-2xl border border-border/60 bg-card/40 p-5 sm:p-6"
         >
           <div className="flex items-start gap-3">
-            <span className="grid size-9 shrink-0 place-items-center rounded-md bg-primary/15 text-primary">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-chart-1/25 to-chart-2/25 text-primary">
               <WandSparkles className="size-4" aria-hidden="true" />
             </span>
             <div>
-              <h2 className="text-base font-medium">Describe the idea</h2>
+              <h2 className="font-display text-2xl leading-none">Describe the idea</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 A little context produces a more useful draft. You will review
                 every item before it can become a project.
@@ -319,9 +319,9 @@ export function PlannerWorkspace({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-primary/25 bg-primary/5 px-4 py-3">
+          <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-primary/25 bg-primary/8 px-4 py-3">
             <div>
-              <p className="text-sm font-medium">Draft plan · not saved</p>
+              <p className="font-display text-2xl leading-none">Draft plan · not saved</p>
               <p className="mt-0.5 text-xs text-muted-foreground">
                 Edit anything below. Only the final confirmation writes to the
                 database.
@@ -341,10 +341,10 @@ export function PlannerWorkspace({
           </div>
 
           <section aria-labelledby="draft-project-heading" className="space-y-4">
-            <h2 id="draft-project-heading" className="text-sm font-medium">
+            <h2 id="draft-project-heading" className="font-display text-2xl leading-none">
               Project
             </h2>
-            <div className="grid gap-4 rounded-lg border border-border/60 bg-card/25 p-5 sm:grid-cols-2">
+            <div className="grid gap-4 rounded-2xl border border-border/60 bg-card/30 p-5 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="draft-name">Name</Label>
                 <Input
@@ -383,7 +383,7 @@ export function PlannerWorkspace({
           <section aria-labelledby="draft-milestones-heading" className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="draft-milestones-heading" className="text-sm font-medium">
+                <h2 id="draft-milestones-heading" className="font-display text-2xl leading-none">
                   Milestones
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -415,7 +415,7 @@ export function PlannerWorkspace({
                 {plan.milestones.map((milestone, index) => (
                   <li
                     key={index}
-                    className="rounded-lg border border-border/60 bg-card/25 p-4"
+                    className="rounded-xl border border-border/60 bg-card/30 p-4"
                   >
                     <div className="grid gap-3 sm:grid-cols-[1fr_10rem]">
                       <div className="space-y-2">
@@ -487,7 +487,7 @@ export function PlannerWorkspace({
           <section aria-labelledby="draft-tasks-heading" className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="draft-tasks-heading" className="text-sm font-medium">
+                <h2 id="draft-tasks-heading" className="font-display text-2xl leading-none">
                   Tasks
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -514,7 +514,7 @@ export function PlannerWorkspace({
               {plan.tasks.map((task, index) => (
                 <li
                   key={index}
-                  className="rounded-lg border border-border/60 bg-card/25 p-4"
+                  className="rounded-xl border border-border/60 bg-card/30 p-4"
                 >
                   <div className="grid gap-3 sm:grid-cols-[1fr_8rem_10rem]">
                     <div className="space-y-2">
@@ -614,9 +614,9 @@ export function PlannerWorkspace({
             </div>
           ) : null}
 
-          <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-card/25 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-2xl border border-chart-3/25 bg-gradient-to-r from-card to-chart-3/10 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-medium">Ready to save?</p>
+              <p className="font-display text-2xl leading-none">Ready to save?</p>
               <p className="text-xs text-muted-foreground">
                 {plan.milestones.length} milestones · {plan.tasks.length} tasks
                 · saved in one transaction
@@ -624,7 +624,7 @@ export function PlannerWorkspace({
             </div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button type="button" disabled={saving}>
+                <Button type="button" disabled={saving} className="rounded-full">
                   {saving ? (
                     <LoaderCircle
                       className="size-4 animate-spin"
@@ -638,7 +638,7 @@ export function PlannerWorkspace({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Create this project now?</AlertDialogTitle>
+                  <AlertDialogTitle className="font-display text-3xl">Create this project now?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This writes the project, {plan.milestones.length} milestones,
                     and {plan.tasks.length} tasks to your workspace. If any

@@ -50,9 +50,12 @@ export function AuthForm({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
     >
-    <Card className="w-full border-border/80 bg-card shadow-[0_24px_60px_-40px_rgba(0,0,0,0.8)]">
+    <Card className="w-full gap-5 rounded-2xl border-border/70 bg-card/90 shadow-[0_32px_80px_-48px_rgba(0,0,0,0.9)] backdrop-blur">
       <CardHeader>
-        <h1 className="font-heading text-3xl leading-tight tracking-[-0.01em]">
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+          {isSignup ? "New workspace" : "Workspace access"}
+        </p>
+        <h1 className="mt-2 font-display text-4xl leading-none tracking-[-0.01em]">
           {isSignup ? "Create your workspace" : "Welcome back"}
         </h1>
         <CardDescription>
@@ -137,7 +140,7 @@ export function AuthForm({
             </p>
           ) : null}
 
-          <Button type="submit" className="w-full" disabled={pending}>
+          <Button type="submit" className="w-full rounded-full" disabled={pending}>
             {pending ? (
               <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
             ) : null}

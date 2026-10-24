@@ -1,6 +1,20 @@
 # Monolith design direction
 
-**Status:** revision 5, "Ledger amber" — light/dark dual-theme operational system. Revisions 3–4's dark-only cobalt editorial system is replaced: Space Grotesk (display) + Inter (interface) + IBM Plex Mono (metadata) via `next/font/google` (all SIL OFL 1.1); warm-paper light theme (default via system) + warm-ink dark theme with a single amber signal drawn from the inventory chart and V18 orange accent. See `docs/design-sources.md` for licenses and exact reuse.
+**Status:** Phase 2, "Kinetic Digital Atelier" — the selected Concept B, now implemented across the marketing site and authenticated product. Instrument Serif (display) + Manrope (interface/headings) + JetBrains Mono (metadata) via `next/font/google` (all SIL OFL 1.1); dark-first "after-hours atelier" surfaces with a daylight atelier light theme; coral `--primary`/`--chart-1`, lilac `--chart-2`, mint `--chart-3`, sky `--chart-4`, amber `--chart-5`. Sections below describing revisions 3–5 are retained as the audit trail; where they conflict with this Phase 2 section, Phase 2 wins. See `docs/design-sources.md` for licenses and exact reuse.
+
+## Phase 2 implementation — Kinetic Digital Atelier
+
+- **Concept source:** Concept B at `/concepts/atelier`, selected after the Phase 1 comparison. Phase 1 artifacts remain at `/concepts` (noindex, unlinked, static demo data only).
+- **Typography:** Instrument Serif 400 + italic for display (hero, page titles, project names, metric totals); Manrope for interface, headings, and dense rows; JetBrains Mono for eyebrows, metadata, counts, and keyboard hints. `--font-heading` intentionally maps to Manrope so semibold component styles keep their weight.
+- **Theme:** dark is the default (`defaultTheme="dark"`), with a complete light "daylight atelier" token set. Theme switcher remains system-capable and persisted; hydration is gated on mount so the `title` attribute cannot diverge between server and client.
+- **Color:** coral is the single action/accent signal; lilac carries focus and secondary emphasis; mint marks completion; sky and amber are reserved for data series. Status and priority badges use these tokens rather than ad-hoc rose/emerald/amber utilities.
+- **Surfaces:** `glass-card` is a subtle layered gradient with a hairline and deep shadow, not a global glassmorphism effect. `atelier-aurora` provides restrained radial fields on the landing hero, auth panel, and workspace header. `atelier-rule` and `text-glow` are opt-in utilities.
+- **Geometry:** `--radius: 0.875rem`; 2xl panels for cards and sections; pills for badges, range controls, and primary CTAs. Workspace content caps at 1200 px with a 64 px blurred sticky header.
+- **Landing:** sticky site header with scroll state; auto-advancing Describe/Review/Execute hero demo (pauses on hover, reduced-motion safe); 340vh scroll-linked workflow stage on desktop with stacked mobile fallback; illustrative Command Center, Board, and Planner sections built from Monolith tokens; honest-data captions.
+- **Product:** Command Center metric strip, execution chart, focus-week bars, project index, next-up list, board columns/cards/drop states, project detail work table, planner review surface, auth split layout, and empty states all use the Atelier system.
+- **Motion:** shared `motion` variants plus scroll-linked storytelling; transforms and opacity only; `prefers-reduced-motion` forces reveals visible and removes lift/route transforms. No new animation dependency.
+- **Honesty constraints:** no invented metrics, charts, customers, or AI output. Illustrative sections are labelled "illustrative" or "demo state"; product numbers still come from `getExecutionSeries`, `getDashboardData`, and owner-scoped rows.
+- **Reuse:** none from third-party previews or the supplied recordings beyond observed patterns; all layouts, copy, and demo data are original.
 
 ## Reference-to-Monolith mapping (October MP4s + earlier set)
 

@@ -14,11 +14,11 @@ export function PageHeader({
       <div className="space-y-2">
         {eyebrow ? (
           <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+            <span className="size-1.5 rounded-full bg-primary shadow-[0_0_12px_var(--color-primary)]" aria-hidden="true" />
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="font-heading text-4xl leading-none tracking-[-0.01em] text-balance sm:text-[2.75rem]">
+        <h1 className="font-display text-5xl leading-[0.92] tracking-[-0.02em] text-balance sm:text-6xl">
           {title}
         </h1>
         {description ? (

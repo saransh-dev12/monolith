@@ -63,10 +63,10 @@ function BoardCard({
       whileHover={overlay || dragging ? undefined : { y: -5 }}
       transition={springLift}
       className={cn(
-        "space-y-3 rounded-xl border border-border/60 bg-card p-4 transition-[box-shadow,border-color,opacity,translate] duration-150 hover:border-border hover:shadow-[0_16px_36px_-24px_rgba(0,0,0,0.7)]",
+        "space-y-3 rounded-2xl border border-border/60 bg-card/90 p-4 backdrop-blur transition-[box-shadow,border-color,opacity,translate] duration-150 hover:border-chart-2/35 hover:shadow-[0_20px_44px_-28px_rgba(0,0,0,0.75)]",
         dragging && "opacity-40",
         overlay &&
-          "rotate-[0.5deg] border-primary/40 shadow-xl shadow-black/30",
+          "rotate-[1deg] border-primary/50 shadow-2xl shadow-black/40",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -95,7 +95,7 @@ function BoardCard({
           <span
             className={cn(
               "inline-flex items-center gap-1 text-xs",
-              overdue ? "text-rose-700 dark:text-rose-300" : "text-muted-foreground",
+              overdue ? "text-primary" : "text-muted-foreground",
             )}
           >
             <CalendarDays className="size-3.5" aria-hidden="true" />
@@ -173,16 +173,32 @@ function BoardColumn({
       className={cn(
         "flex min-h-40 flex-col rounded-2xl border transition-all duration-200",
         isOver
-          ? "glass-card scale-[1.01] border-primary/50"
+          ? "border-primary/60 bg-primary/[0.06] ring-2 ring-primary/25"
           : "border-border/60 bg-card/20",
       )}
     >
-      <header className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-        <h2 id={`column-${status}`} className="text-sm font-medium">
-          {TASK_STATUS_LABELS[status]}
-        </h2>
-        <span className="rounded-full border border-border px-2 py-0.5 text-xs tabular-nums text-muted-foreground">
-          {tasks.length}
+      <header className="flex items-center justify-between border-b border-border/50 px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "size-1.5 rounded-full",
+              status === "todo"
+                ? "bg-foreground/50"
+                : status === "in_progress"
+                  ? "bg-primary shadow-[0_0_10px_var(--color-primary)]"
+                  : "bg-chart-3",
+            )}
+            aria-hidden="true"
+          />
+          <h2
+            id={`column-${status}`}
+            className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            {TASK_STATUS_LABELS[status]}
+          </h2>
+        </div>
+        <span className="rounded-full border border-border/70 px-2 py-0.5 font-mono text-[10px] tabular-nums text-muted-foreground">
+          {String(tasks.length).padStart(2, "0")}
         </span>
       </header>
 
@@ -291,11 +307,11 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
       onDragCancel={() => setActiveId(null)}
       onDragEnd={handleDragEnd}
     >
-      <p className="mb-3 text-xs text-muted-foreground">
-        Drag the grip to change a task&apos;s column. The status menu is the
-        fully keyboard-accessible fallback.
+      <p className="mb-4 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="size-1.5 rounded-full bg-chart-2" aria-hidden="true" />
+        Drag the grip to move work · the status menu is the keyboard fallback
       </p>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid items-start gap-4 lg:grid-cols-3">
         {TASK_STATUS_ORDER.map((status) => (
           <BoardColumn
             key={status}
@@ -309,9 +325,9 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
         {activeTask ? (
           <motion.div
             data-motion-reveal
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.14, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.96, rotate: -1 }}
+            animate={{ opacity: 1, scale: 1, rotate: 1 }}
+            transition={{ duration: 0.16, ease: "easeOut" }}
           >
             <BoardCard task={activeTask} overlay />
           </motion.div>

@@ -23,7 +23,7 @@ export default async function BoardPage() {
     <>
       <PageHeader
         title="Board"
-        eyebrow="Execution"
+        eyebrow="Execution board"
         description="Move work between columns. Changes save immediately and stay keyboard accessible."
         actions={
           tasks.length > 0 ? (

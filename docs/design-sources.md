@@ -235,3 +235,31 @@ All concept typefaces are loaded through `next/font/google` inside `src/app/conc
 ### Removal before release
 
 The concept routes are internal comparison artifacts. If the chosen direction is implemented, `/concepts` should either be deleted or kept behind an authenticated, non-indexed review flag. It currently exposes only illustrative demo data and no user records.
+
+## 8. Phase 2 production delivery — Kinetic Digital Atelier
+
+Concept B was selected and implemented across production. The preview routes remain isolated and unlinked.
+
+### Fonts now used in production
+
+| Face | License | Role |
+| --- | --- | --- |
+| Instrument Serif | SIL OFL 1.1 | Display headlines, page titles, project names, metric totals |
+| Manrope | SIL OFL 1.1 | Interface, headings, body, dense rows |
+| JetBrains Mono | SIL OFL 1.1 | Eyebrows, metadata, counts, keyboard hints |
+
+All three load through `next/font/google` in `src/app/layout.tsx`. Concept-only faces (Archivo Black, Space Mono, Bodoni Moda, Inter Tight) load only in `src/app/concepts/layout.tsx`.
+
+### Phase 2 reuse
+
+- **None.** No third-party component source, illustration, screenshot, or asset was copied. The landing demos, workflow stage, board preview, planner preview, and all product surfaces are original implementations using Monolith's own tokens and data shapes.
+- The supplied October 19 and October 24 recordings informed range controls, area-chart redraw, focus-week bars, stat cards, table density, and theme selection only. No inventory, profile, or unrelated app features were imported.
+- Illustrative landing sections are explicitly labelled; product surfaces continue to read only owner-scoped Supabase rows. No fabricated analytics, customers, or AI output were added.
+
+### Phase 2 verification
+
+- Authenticated routes checked at 1440, 1024, 768, and 390 px: `/app`, `/app/projects`, `/app/projects/[projectId]`, `/app/board`, `/app/planner`; public `/` and `/login`.
+- Zero horizontal overflow and zero console/page errors in Chromium; no hydration warnings after the theme-switcher mount gate.
+- Light and dark themes checked; reduced-motion checked on the board and landing.
+- Lint, typecheck, Vitest 20/20, Playwright 10/10, and production build pass.
+- Playwright drag coverage now uses a real board card so the drag handle and target column are visible together; the moved card is returned to Todo after the assertion to keep the demo seed stable.

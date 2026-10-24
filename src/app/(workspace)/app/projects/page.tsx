@@ -21,6 +21,7 @@ export default async function ProjectsPage(props: PageProps<"/app/projects">) {
   return (
     <>
       <PageHeader
+        eyebrow="Portfolio"
         title={archived ? "Archived projects" : "Projects"}
         description={
           archived
@@ -29,6 +30,16 @@ export default async function ProjectsPage(props: PageProps<"/app/projects">) {
         }
         actions={
           <>
+            {!archived ? (
+              <ProjectDialog
+                trigger={
+                  <Button>
+                    <Plus className="size-4" aria-hidden="true" />
+                    Create project
+                  </Button>
+                }
+              />
+            ) : null}
             <Button asChild variant="outline">
               <Link href={archived ? "/app/projects" : "/app/projects?archived=1"}>
                 <Archive className="size-4" aria-hidden="true" />

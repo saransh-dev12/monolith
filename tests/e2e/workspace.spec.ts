@@ -257,30 +257,18 @@ test.describe("navigation shell", () => {
 
 test.describe("motion and drag", () => {
   test("moves a task by dragging and persists the status", async ({ page }) => {
-    const projectName = unique("Drag project");
-    const taskName = unique("Drag task");
-
     await signIn(page);
-
-    const projectResponse = await page.request.post("/api/projects", {
-      data: { name: projectName },
-      headers: { Origin: "http://localhost:3000" },
-    });
-    expect(projectResponse.status()).toBe(201);
-    const project = (await projectResponse.json()) as { project: { id: string } };
-
-    const taskResponse = await page.request.post("/api/tasks", {
-      data: { projectId: project.project.id, title: taskName },
-      headers: { Origin: "http://localhost:3000" },
-    });
-    expect(taskResponse.status()).toBe(201);
-
     await page.goto("/app/board");
     await expect(page.getByRole("heading", { name: "Board" })).toBeVisible();
 
-    const handle = page.getByRole("button", { name: `Drag ${taskName}` });
+    const todoColumn = page.getByRole("region", { name: "Todo" });
     const target = page.getByRole("region", { name: "In progress" });
+    const handle = todoColumn.getByRole("button", { name: /^Drag / }).first();
     await expect(handle).toBeVisible();
+
+    const label = await handle.getAttribute("aria-label");
+    const taskName = label?.replace(/^Drag /, "") ?? "";
+    expect(taskName).not.toBe("");
 
     await handle.scrollIntoViewIfNeeded();
     await target.scrollIntoViewIfNeeded();
@@ -315,11 +303,11 @@ test.describe("motion and drag", () => {
       page.getByRole("region", { name: "In progress" }).getByText(taskName),
     ).toBeVisible();
 
-    const cleanup = await page.request.delete(
-      `/api/projects/${project.project.id}`,
-      { headers: { Origin: "http://localhost:3000" } },
-    );
-    expect(cleanup.status()).toBe(200);
+    await page
+      .getByRole("region", { name: "In progress" })
+      .getByLabel(`Status for ${taskName}`)
+      .selectOption("todo");
+    await expect(page.getByText("Moved to Todo.")).toBeVisible();
   });
 
   test("removes hover lift under reduced motion and survives rapid toggles", async ({

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Instrument_Serif, JetBrains_Mono, Manrope } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 import { MotionProvider } from "@/components/motion/motion-provider";
@@ -8,19 +8,20 @@ import { getSiteUrl } from "@/lib/env";
 
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const instrument = Instrument_Serif({
+  variable: "--font-atelier-display",
+  weight: "400",
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
-const plex = IBM_Plex_Mono({
-  variable: "--font-plex",
-  weight: ["400", "500", "600"],
+const manrope = Manrope({
+  variable: "--font-atelier-sans",
   subsets: ["latin"],
 });
 
-const grotesk = Space_Grotesk({
-  variable: "--font-grotesk",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-atelier-mono",
   subsets: ["latin"],
 });
 
@@ -31,15 +32,15 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "Monolith turns project ideas into milestones and tasks, then keeps the work visible.",
+    "Monolith turns a project idea into a reviewed plan, then into milestones, tasks, and a board that reports progress from real records.",
   applicationName: "Monolith",
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light dark",
+  colorScheme: "dark light",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f2e9" },
-    { media: "(prefers-color-scheme: dark)", color: "#171310" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f1fa" },
+    { media: "(prefers-color-scheme: dark)", color: "#08060f" },
   ],
 };
 
@@ -47,13 +48,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${plex.variable} ${grotesk.variable} h-full antialiased`}
+      className={`${instrument.variable} ${manrope.variable} ${jetbrains.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full bg-background text-foreground">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

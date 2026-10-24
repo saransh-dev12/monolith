@@ -70,7 +70,7 @@ export function MilestoneDialog({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="font-display text-3xl">
             {isEdit ? "Edit milestone" : "New milestone"}
           </DialogTitle>
           <DialogDescription>

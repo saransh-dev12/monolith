@@ -83,7 +83,7 @@ export function WorkTable({
             <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
               {label}
             </p>
-            <p className="mt-1 font-heading text-2xl leading-none tabular-nums">
+            <p className="mt-1 font-display text-3xl leading-none tabular-nums">
               {value}
             </p>
           </div>
@@ -92,7 +92,7 @@ export function WorkTable({
 
       <div className="glass-card overflow-hidden rounded-2xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
-          <h2 id="work-table-heading" className="text-sm font-medium">
+          <h2 id="work-table-heading" className="font-display text-2xl leading-none">
             Work items
             <span className="ml-2 font-mono text-[10px] text-muted-foreground">
               {visible.length} of {tasks.length}
@@ -114,7 +114,7 @@ export function WorkTable({
                   className={cn(
                     "relative rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors",
                     selected
-                      ? "text-foreground"
+                      ? "text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
@@ -126,7 +126,7 @@ export function WorkTable({
                         stiffness: 500,
                         damping: 36,
                       }}
-                      className="absolute inset-0 rounded-full bg-card shadow-sm ring-1 ring-border/60"
+                      className="absolute inset-0 rounded-full bg-primary shadow-sm"
                       aria-hidden="true"
                     />
                   ) : null}
@@ -215,8 +215,8 @@ export function WorkTable({
                         className={cn(
                           "block h-full rounded-full",
                           overdue
-                            ? "bg-rose-400"
-                            : "bg-[var(--chart-1)]",
+                            ? "bg-gradient-to-r from-primary to-chart-1"
+                            : "bg-gradient-to-r from-chart-2 to-chart-3",
                         )}
                       />
                     </span>

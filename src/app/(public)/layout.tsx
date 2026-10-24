@@ -11,38 +11,39 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
       >
         Skip to content
       </a>
-      <div className="relative hidden flex-col justify-between border-r border-border/70 bg-[var(--accent-panel)] p-12 text-foreground lg:flex">
+      <div className="atelier-aurora relative hidden flex-col justify-between overflow-hidden border-r border-border/60 bg-[var(--accent-panel)] p-12 text-foreground lg:flex">
         <Link href="/" aria-label="Monolith home">
           <Wordmark />
         </Link>
         <div className="max-w-md">
-          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-primary">
+          <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.22em] text-primary">
+            <span className="size-1.5 rounded-full bg-primary shadow-[0_0_12px_var(--color-primary)]" aria-hidden="true" />
             <span>Workspace access</span>
-            <span className="h-px w-10 bg-border" aria-hidden="true" />
           </div>
-          <h2 className="mt-6 text-balance font-heading text-5xl leading-[0.98] tracking-[-0.02em]">
-            The work stays yours.
+          <h2 className="mt-6 text-balance font-display text-6xl leading-[0.95] tracking-[-0.02em]">
+            The work stays{" "}
+            <span className="italic text-primary">yours.</span>
           </h2>
-          <p className="mt-5 text-sm leading-6 text-foreground/70">
+          <p className="mt-5 max-w-sm text-sm leading-6 text-foreground/70">
             Projects, tasks, and milestones are scoped to the signed-in account
             in the database, not just in the interface.
           </p>
-          <ul className="mt-8 divide-y divide-border/80 border-y border-border/80 text-sm">
+          <ul className="mt-8 divide-y divide-border/70 border-y border-border/70 text-sm">
             <li className="flex items-center justify-between py-3">
-              <span className="text-foreground/60">Isolation</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-foreground/50">Isolation</span>
               <span>Owner-scoped RLS</span>
             </li>
             <li className="flex items-center justify-between py-3">
-              <span className="text-foreground/60">Board movement</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-foreground/50">Board movement</span>
               <span>Pointer and keyboard</span>
             </li>
             <li className="flex items-center justify-between py-3">
-              <span className="text-foreground/60">Progress</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-foreground/50">Progress</span>
               <span>Derived from records</span>
             </li>
           </ul>
         </div>
-        <p className="text-[11px] uppercase tracking-[0.18em] text-foreground/50">
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-foreground/40">
           {process.env.NODE_ENV === "production"
             ? "Project execution for focused builders"
             : "Local seed · demo@monolith.local"}
