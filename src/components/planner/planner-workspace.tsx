@@ -169,12 +169,12 @@ export function PlannerWorkspace({
       {!configured ? (
         <div
           role="status"
-          className="flex gap-3 rounded-lg border border-amber-600/30 bg-amber-500/5 p-4 text-sm text-amber-100"
+          className="flex gap-3 rounded-lg border border-amber-600/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-100"
         >
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <div className="space-y-1">
             <p className="font-medium">AI planning is not configured</p>
-            <p className="text-amber-300">
+            <p className="text-amber-800 dark:text-amber-300">
               Add <code className="font-mono text-xs">OPENAI_API_KEY</code> and{" "}
               <code className="font-mono text-xs">OPENAI_MODEL</code> on the
               server to enable generation. The rest of Monolith works without

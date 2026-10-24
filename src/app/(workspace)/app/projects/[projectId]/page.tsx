@@ -6,14 +6,13 @@ import { MilestoneDialog } from "@/components/milestones/milestone-dialog";
 import { MilestoneItem } from "@/components/milestones/milestone-item";
 import { ProjectDangerActions } from "@/components/projects/project-danger-actions";
 import { ProjectDialog } from "@/components/projects/project-dialog";
+import { WorkTable } from "@/components/projects/work-table";
 import { PageHeader } from "@/components/shell/page-header";
 import { ProjectStatusBadge } from "@/components/tasks/task-badges";
 import { TaskDialog } from "@/components/tasks/task-dialog";
-import { TaskItem } from "@/components/tasks/task-item";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getProjectDetail } from "@/lib/data/projects";
-import { TASK_STATUS_LABELS, TASK_STATUS_ORDER } from "@/lib/constants";
 import { formatDate } from "@/lib/format";
 
 export const metadata = {
@@ -82,7 +81,7 @@ export default async function ProjectDetailPage(
       />
 
       {project.archived_at ? (
-        <p className="mb-6 rounded-md border border-amber-600/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-300">
+        <p className="mb-6 rounded-md border border-amber-600/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-800 dark:text-amber-300">
           This project is archived. Restore it to add or move work.
         </p>
       ) : null}
@@ -126,50 +125,11 @@ export default async function ProjectDetailPage(
         <Progress value={percent} aria-label={`${project.name} progress`} />
       </section>
 
-      <div className="space-y-6">
-        {TASK_STATUS_ORDER.map((status) => {
-          const columnTasks = tasks.filter((task) => task.status === status);
-
-          return (
-            <section key={status} aria-labelledby={`task-group-${status}`}>
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <h2 id={`task-group-${status}`} className="text-sm font-medium">
-                    {TASK_STATUS_LABELS[status]}
-                  </h2>
-                  <span className="text-xs tabular-nums text-muted-foreground">
-                    {columnTasks.length}
-                  </span>
-                </div>
-                {!project.archived_at ? (
-                  <TaskDialog
-                    projectId={project.id}
-                    defaultStatus={status}
-                    trigger={
-                      <Button variant="ghost" size="sm">
-                        <Plus className="size-4" aria-hidden="true" />
-                        Add
-                      </Button>
-                    }
-                  />
-                ) : null}
-              </div>
-
-              {columnTasks.length === 0 ? (
-                <p className="rounded-lg border border-dashed border-border/60 px-4 py-6 text-center text-sm text-muted-foreground">
-                  No tasks in this column.
-                </p>
-              ) : (
-                <ul className="space-y-2">
-                  {columnTasks.map((task) => (
-                    <TaskItem key={task.id} task={task} projectId={project.id} />
-                  ))}
-                </ul>
-              )}
-            </section>
-          );
-        })}
-      </div>
+      <WorkTable
+        tasks={tasks}
+        projectId={project.id}
+        archived={Boolean(project.archived_at)}
+      />
 
       <section className="mt-10" aria-labelledby="milestones-heading">
         <div className="mb-3 flex items-center justify-between gap-3">

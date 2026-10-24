@@ -2,23 +2,28 @@ import Link from "next/link";
 import { ArrowRight, Plus } from "lucide-react";
 
 import { Board } from "@/components/board/board";
+import { WeekStrip } from "@/components/dashboard/execution-chart";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shell/page-header";
 import { Button } from "@/components/ui/button";
-import { getBoardData } from "@/lib/data/projects";
+import { getBoardData, getExecutionSeries } from "@/lib/data/projects";
 
 export const metadata = {
   title: "Board · Monolith",
 };
 
 export default async function BoardPage() {
-  const { projects, tasks } = await getBoardData();
+  const [{ projects, tasks }, series] = await Promise.all([
+    getBoardData(),
+    getExecutionSeries(30),
+  ]);
 
   return (
     <>
       <PageHeader
         title="Board"
+        eyebrow="Execution"
         description="Move work between columns. Changes save immediately and stay keyboard accessible."
         actions={
           tasks.length > 0 ? (
@@ -55,7 +60,12 @@ export default async function BoardPage() {
           actionLabel="Open projects"
         />
       ) : (
-        <Board tasks={tasks} />
+        <>
+          <div className="mb-6 max-w-sm">
+            <WeekStrip series={series} />
+          </div>
+          <Board tasks={tasks} />
+        </>
       )}
     </>
   );

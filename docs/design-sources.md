@@ -130,6 +130,27 @@ The user-provided animated-card example (React + Framer Motion, `whileHover={{ y
 
 - **Limitation:** the two additional supplied references arrived as MP4 file placeholders with no playable video content accessible in this environment. No specific layout, timing, easing, or interaction from those videos is claimed as observed. Motion decisions for this iteration remain grounded in Image 1, the previously studied Design Spells / Skiper / Componentry principles, and direct browser verification.
 
+## 4.2 October reference videos (directly inspected via local files)
+
+Both videos were accessed at `~/Downloads` and inspected through `ffmpeg`-extracted frames (3 frames each); no code, assets, or footage were copied.
+
+### Reference 1 — Inventory Management Dashboard (`ScreenRecording_10-19-2026`, 36s, `_code_and_chill_`)
+
+- **Observed frames:** (1) revenue area chart `$292,520 +29.7% vs the 90 days before` with 7/30/90-day toggle, tooltip `$3.5k Mon, Sep 21`, caption "Three ranges, one line that re-draws"; (2) Wharf stock table — sidebar taxonomy, header blocks (Products 14, Below par 3, Out of stock 1, Stock value $38,391), filters All/Running low/Out of stock/All categories, rows with SKU/category/level-against-par bars/status pills/Receive actions; (3) appearance picker with Light/System/Dark segmented control and yellow/mint/pink/blue accent swatches.
+- **Adapted (independent implementation):** `ExecutionChart` range-toggle/redraw/tooltip composition and honest captioning; `WorkTable` header blocks, filter tabs, proximity bars, status pills; `ThemeSwitcher` Light/System/Dark segmented control. Accent swatches, inventory domain, SKU/stock values, and revenue figures were not reproduced — Monolith shows only its own project-execution rows.
+- **Reuse:** none; patterns only.
+
+### Reference 2 — code.xr Dashboard V18 (`ScreenRecording_10-24-2026`, 9s)
+
+- **Observed frames:** "Dashboard V18 — Modern & Minimal UI" title; the StatsCard `whileHover={{ y: -5 }}` glass-card code (same as Image 1); light profile dashboard (Hannah Brooks, Available badge, Projects-shipped / 107 / 2,027 / 315 metric cards, About, Focus-this-week Mon–Sun bars 30.7h, Recent activity, dark icon rail); alternate team layout (lavender banner, members, 3.2h, May 2023 calendar, statistics, notifications).
+- **Adapted (independent implementation):** `MetricCard` hover-lift/icon-tile composition; `WeekStrip` Mon–Sun completion bars; lavender banners, profile identity, avatars, calendar, and team modules were not reproduced — Monolith is a project-execution workspace, not a profile app.
+- **Reuse:** none; patterns only.
+
+## 4.3 Revision 5 type and theme provenance
+
+- **Space Grotesk, Inter, IBM Plex Mono** — all SIL Open Font License 1.1, loaded through `next/font/google`; no font files committed. Chosen from the reference set's operational grotesk/tabletnumeric voice (inventory table density, V18 geometric sans) to replace Fraunces/Plus Jakarta Sans/JetBrains Mono meaningfully.
+- **Theme engine** — `next-themes` 0.4.6 (MIT), already a dependency; now wired through `ThemeProvider` with `attribute="class"`, system default, and a segmented Light/System/Dark switcher adapted from the inventory appearance frame. Single amber signal replaces cobalt; no multi-accent theming (unsupported by the product).
+
 ## 5. References studied without code reuse
 
 ### details.so

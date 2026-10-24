@@ -6,6 +6,7 @@ import { Wordmark } from "@/components/brand/monolith-mark";
 import { RouteTransition } from "@/components/motion/route-transition";
 import { AppSidebar } from "@/components/shell/app-sidebar";
 import { CommandPalette } from "@/components/shell/command-palette";
+import { ThemeSwitcher } from "@/components/shell/theme-switcher";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +45,7 @@ export default async function WorkspaceLayout({
             />
             <CommandPalette />
             <div className="ml-auto flex items-center gap-2">
+              <ThemeSwitcher compact />
               <ProjectDialog
                 trigger={
                   <Button size="sm" aria-label="New project">
@@ -58,7 +60,7 @@ export default async function WorkspaceLayout({
             <RouteTransition>{children}</RouteTransition>
           </div>
         </SidebarInset>
-        <Toaster theme="dark" position="top-right" />
+        <Toaster theme="system" position="top-right" />
       </SidebarProvider>
     </TooltipProvider>
   );

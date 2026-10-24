@@ -20,12 +20,14 @@ import {
   Section,
 } from "@/components/marketing/foundation";
 import { Wordmark } from "@/components/brand/monolith-mark";
+import { MarketingExecutionDemo } from "@/components/marketing/execution-demo";
 import { ProjectStatusBadge, TaskStatusBadge } from "@/components/tasks/task-badges";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getSessionUser } from "@/lib/auth/session";
 import { HoverLift } from "@/components/motion/hover-lift";
+import { ThemeSwitcher } from "@/components/shell/theme-switcher";
 import {
   Reveal,
   RevealGroup,
@@ -97,6 +99,9 @@ export default async function HomePage() {
               </nav>
             </NavbarLeft>
             <NavbarRight>
+              <span className="hidden sm:inline-flex">
+                <ThemeSwitcher compact />
+              </span>
               {user ? (
                 <Button asChild size="sm">
                   <Link href="/app">Open workspace</Link>
@@ -131,9 +136,11 @@ export default async function HomePage() {
               </h1>
 
               <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
-                Monolith turns a rough idea into an executable project:
-                milestones, tasks, a reliable board, and progress you can trust.
-                The planner drafts; you keep the judgment.
+                Monolith turns a rough idea into an executable project.
+                Describe it, let the planner draft milestones and tasks, review
+                and confirm the plan, execute on a reliable board, and read
+                progress derived from your real rows. The planner drafts; you
+                keep the judgment.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -287,6 +294,38 @@ export default async function HomePage() {
             </Reveal>
           </div>
         </section>
+
+        <Section id="proof" className="border-b border-border/70">
+          <Reveal className="mx-auto grid max-w-container items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
+                Trustworthy progress
+              </p>
+              <h2 className="mt-3 max-w-md text-balance font-heading text-4xl leading-[0.98] tracking-[-0.02em] sm:text-5xl">
+                Every chart reads your rows.
+              </h2>
+              <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
+                The Command Center charts tasks you actually completed, with
+                range controls that redraw the line and tooltips that name the
+                day. No sample data, no vanity metrics — switch ranges above
+                and the totals follow the same rows.
+              </p>
+              <ul className="mt-6 space-y-2.5 text-sm">
+                {[
+                  "7 / 14 / 30-day ranges with animated redraw",
+                  "Daily numbers available as text, not just pixels",
+                  "Completions dated honestly by last update",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <MarketingExecutionDemo />
+          </Reveal>
+        </Section>
 
         <Section id="workflow" className="border-b border-border/70">
           <Reveal className="mx-auto max-w-container">
@@ -457,7 +496,7 @@ export default async function HomePage() {
               </div>
             </Reveal>
 
-            <HoverLift className="rounded-lg bg-card p-2 text-foreground shadow-2xl shadow-black/40 ring-1 ring-white/10">
+            <HoverLift className="rounded-lg bg-card p-2 text-foreground shadow-2xl shadow-black/20 ring-1 ring-border dark:shadow-black/40">
               <div className="rounded-sm border border-border/70">
                 <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -466,7 +505,7 @@ export default async function HomePage() {
                   </div>
                   <Badge
                     variant="outline"
-                    className="rounded-full border-amber-600/30 bg-amber-500/10 font-normal text-amber-300"
+                    className="rounded-full border-amber-600/30 bg-amber-500/10 font-normal text-amber-700 dark:text-amber-300"
                   >
                     Not saved
                   </Badge>
@@ -633,6 +672,12 @@ export default async function HomePage() {
                 A project execution workspace for focused builders. Plans,
                 boards, and progress without invented metrics.
               </p>
+              <div className="mt-4">
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Appearance
+                </p>
+                <ThemeSwitcher />
+              </div>
             </FooterColumn>
             <FooterColumn>
               <h3 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">

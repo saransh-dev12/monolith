@@ -40,7 +40,9 @@ export function TaskItem({ task, projectId }: { task: Task; projectId: string })
             <span
               className={cn(
                 "inline-flex items-center gap-1 text-xs",
-                overdue ? "text-rose-300" : "text-muted-foreground",
+                overdue
+                  ? "text-rose-700 dark:text-rose-300"
+                  : "text-muted-foreground",
               )}
             >
               <CalendarDays className="size-3.5" aria-hidden="true" />

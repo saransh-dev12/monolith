@@ -1,6 +1,17 @@
 # Monolith design direction
 
-**Status:** revision 4, reference-dashboard fidelity pass. Revision 3's dark editorial system ("signal in the dark": Fraunces + Plus Jakarta Sans + JetBrains Mono, deep charcoal + electric cobalt) is retained as the identity foundation; revision 4 evolves the dashboard composition and card physics toward the supplied StatsCard benchmark instead of replacing the palette or type system wholesale. See `docs/design-sources.md` for licenses and exact reuse.
+**Status:** revision 5, "Ledger amber" — light/dark dual-theme operational system. Revisions 3–4's dark-only cobalt editorial system is replaced: Space Grotesk (display) + Inter (interface) + IBM Plex Mono (metadata) via `next/font/google` (all SIL OFL 1.1); warm-paper light theme (default via system) + warm-ink dark theme with a single amber signal drawn from the inventory chart and V18 orange accent. See `docs/design-sources.md` for licenses and exact reuse.
+
+## Reference-to-Monolith mapping (October MP4s + earlier set)
+
+| Reference pattern | Monolith target | Adaptation | Interaction / animation |
+| --- | --- | --- | --- |
+| Inventory revenue chart: 7/30/90-day toggle, line redraw, tooltip, big tabular total | Command Center `ExecutionChart` (`src/components/dashboard/execution-chart.tsx`) | Honest completions series from own task rows (`getExecutionSeries`); 7/14/30-day toggle; done dated by `updated_at` with explicit caption; `<details>` daily numbers | Range pill `layoutId` spring; SVG path `pathLength` redraw + area fade; hover tooltip; reduced-motion static |
+| Inventory stock table: header stat blocks, All/Running-low/Out-of-stock filters, level bars, status pills | Project detail `WorkTable` (`src/components/projects/work-table.tsx`) | Total/Open/Overdue/Done blocks; All/Open/Overdue/High filters; due-proximity bars; priority/status pills; same status-select/edit/delete controls | Filter pill `layoutId` spring; bars animate on scroll into view; no layout shift |
+| Inventory appearance: Light/System/Dark segmented control (+ accent swatches, not reproduced) | `ThemeSwitcher` in workspace header + marketing navbar; `next-themes` system default | Single amber signal kept; no multi-accent picker (would imply unsupported theming) | Pill `layoutId` spring; `disableTransitionOnChange`; persisted |
+| V18 StatsCard: `whileHover y:-5`, glass-card, icon tile, change row | `MetricCard` (retained composition, amber signal, theme-aware text) | No fabricated `%` change; hint shows derived state only | Shared `springLift`, stagger entrance |
+| V18 Focus-this-week Mon–Sun bars + metric row + icon rail | `WeekStrip` on Command Center + Board; existing collapsible icon sidebar | Bars show real completions, today highlighted; no profile/lavender banner (decorative for Monolith) | Staggered `scaleY` entrance; `whileInView` once |
+| Details.so editorial pacing; Design Spells origin-aware motion; Skiper restraint; Componentry motion-as-property; Spline product-as-hero; Manus prompt-first planner; shadcn/Radix primitives; Launch UI structure | Retained from revisions 3–4: marketing rhythm, dialog/menu transitions, restrained hover/press, prompt-first planner, shadcn shell | Unchanged foundations; marketing adds honest execution-proof section | Route fade/slide, reveal stagger, hover lift, drag overlay (existing) |
 
 ## 1. Repository audit summary
 

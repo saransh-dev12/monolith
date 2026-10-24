@@ -377,6 +377,112 @@ export async function getDashboardData(): Promise<DashboardData> {
   };
 }
 
+export type ExecutionDay = {
+  date: string;
+  label: string;
+  created: number;
+  completed: number;
+};
+
+function toDayKey(value: string): string {
+  return value.slice(0, 10);
+}
+
+function dayLabel(date: Date): string {
+  return date.toLocaleDateString("en-US", { weekday: "short" });
+}
+
+/**
+ * Daily task activity for the trailing `days` window, derived entirely from
+ * the user's own task rows. Completions are dated by `updated_at` (tasks
+ * carry no separate completed-at column) and the caption must say so.
+ */
+export async function getExecutionSeries(days = 30): Promise<ExecutionDay[]> {
+  const windowDays = [7, 14, 30].includes(days) ? days : 30;
+  const supabase = await createClient();
+
+  const { data: projects, error } = await supabase
+    .from("projects")
+    .select("id")
+    .is("archived_at", null);
+
+  if (error) {
+    throw new Error(`Could not load execution data: ${error.message}`);
+  }
+
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  const series: ExecutionDay[] = Array.from(
+    { length: windowDays },
+    (_, index) => {
+      const date = new Date(today);
+      date.setUTCDate(today.getUTCDate() - (windowDays - 1 - index));
+      const iso = date.toISOString().slice(0, 10);
+      return { date: iso, label: dayLabel(date), created: 0, completed: 0 };
+    },
+  );
+  const byDay = new Map(series.map((day) => [day.date, day]));
+
+  if (projects.length === 0) {
+    return series;
+  }
+
+  const since = series[0].date;
+
+  const { data: tasks, error: tasksError } = await supabase
+    .from("tasks")
+    .select("status,created_at,updated_at")
+    .in(
+      "project_id",
+      projects.map((project) => project.id),
+    )
+    .gte("created_at", `${since}T00:00:00Z`);
+
+  if (tasksError) {
+    throw new Error(`Could not load execution data: ${tasksError.message}`);
+  }
+
+  for (const task of tasks) {
+    const created = byDay.get(toDayKey(task.created_at));
+    if (created) {
+      created.created += 1;
+    }
+    if (task.status === "done") {
+      const completed = byDay.get(toDayKey(task.updated_at));
+      if (completed) {
+        completed.completed += 1;
+      }
+    }
+  }
+
+  // Done tasks whose last update predates the window's created-at filter are
+  // still real completions; count them through a second bounded query.
+  const { data: doneTasks, error: doneError } = await supabase
+    .from("tasks")
+    .select("updated_at")
+    .in(
+      "project_id",
+      projects.map((project) => project.id),
+    )
+    .eq("status", "done")
+    .gte("updated_at", `${since}T00:00:00Z`)
+    .lt("created_at", `${since}T00:00:00Z`);
+
+  if (doneError) {
+    throw new Error(`Could not load execution data: ${doneError.message}`);
+  }
+
+  for (const task of doneTasks ?? []) {
+    const completed = byDay.get(toDayKey(task.updated_at));
+    if (completed) {
+      completed.completed += 1;
+    }
+  }
+
+  return series;
+}
+
 export async function createProject(
   ownerId: string,
   input: ProjectCreateInput,

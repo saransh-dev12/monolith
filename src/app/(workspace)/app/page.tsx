@@ -11,6 +11,10 @@ import {
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
+import {
+  ExecutionChart,
+  WeekStrip,
+} from "@/components/dashboard/execution-chart";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ProjectStatusBadge } from "@/components/tasks/task-badges";
@@ -19,7 +23,7 @@ import { ProjectDialog } from "@/components/projects/project-dialog";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { requireUser } from "@/lib/auth/session";
-import { getDashboardData } from "@/lib/data/projects";
+import { getDashboardData, getExecutionSeries } from "@/lib/data/projects";
 import { formatDate, isOverdue } from "@/lib/format";
 
 export const metadata = {
@@ -28,7 +32,10 @@ export const metadata = {
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  const { metrics, projects, nextTasks } = await getDashboardData();
+  const [{ metrics, projects, nextTasks }, series] = await Promise.all([
+    getDashboardData(),
+    getExecutionSeries(30),
+  ]);
 
   return (
     <>
@@ -78,6 +85,11 @@ export default async function DashboardPage() {
         </RevealItem>
       </RevealGroup>
 
+      <div className="mt-6 grid gap-4 xl:grid-cols-[1.6fr_0.9fr]">
+        <ExecutionChart series={series} />
+        <WeekStrip series={series} />
+      </div>
+
       <div className="mt-10 grid gap-8 xl:grid-cols-[1.45fr_0.9fr]">
         <section className="space-y-4">
           <div className="flex items-end justify-between gap-4">
@@ -118,7 +130,7 @@ export default async function DashboardPage() {
                 <Link
                   key={project.id}
                   href={`/app/projects/${project.id}`}
-                  className="group flex flex-col gap-3 p-5 transition-all duration-150 hover:-translate-y-px hover:bg-white/[2%] sm:flex-row sm:items-center sm:justify-between"
+                  className="group flex flex-col gap-3 p-5 transition-all duration-150 hover:-translate-y-px hover:bg-muted/30 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-2">
@@ -194,7 +206,7 @@ export default async function DashboardPage() {
                           <span
                             className={
                               overdue
-                                ? "inline-flex shrink-0 items-center gap-1 text-rose-300"
+                                ? "inline-flex shrink-0 items-center gap-1 text-rose-700 dark:text-rose-300"
                                 : "inline-flex shrink-0 items-center gap-1"
                             }
                           >

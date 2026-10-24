@@ -72,9 +72,10 @@ test.describe("core workspace flow", () => {
     await page.getByLabel(`Status for ${taskName}`).selectOption("in_progress");
     await expect(page.getByText("Moved to In progress.")).toBeVisible();
     await page.reload();
-    await expect(
-      page.getByRole("region", { name: "In progress" }).getByText(taskName),
-    ).toBeVisible();
+    await expect(page.getByText(taskName).first()).toBeVisible();
+    await expect(page.getByLabel(`Status for ${taskName}`)).toHaveValue(
+      "in_progress",
+    );
 
     await page.getByRole("button", { name: "Add milestone" }).click();
     const milestoneDialog = page.getByRole("dialog");
@@ -280,6 +281,9 @@ test.describe("motion and drag", () => {
     const handle = page.getByRole("button", { name: `Drag ${taskName}` });
     const target = page.getByRole("region", { name: "In progress" });
     await expect(handle).toBeVisible();
+
+    await handle.scrollIntoViewIfNeeded();
+    await target.scrollIntoViewIfNeeded();
 
     const handleBox = await handle.boundingBox();
     const targetBox = await target.boundingBox();
