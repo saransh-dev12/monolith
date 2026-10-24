@@ -9,14 +9,17 @@ import {
   DragOverlay,
   KeyboardSensor,
   PointerSensor,
+  pointerWithin,
   useDraggable,
   useDroppable,
   useSensor,
   useSensors,
+  type CollisionDetection,
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { motion } from "motion/react";
 import { CalendarDays, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 
@@ -28,10 +31,18 @@ import { TaskStatusSelect } from "@/components/tasks/task-status-select";
 import { apiRequest } from "@/lib/client/api";
 import { TASK_STATUS_LABELS, TASK_STATUS_ORDER } from "@/lib/constants";
 import { formatShortDate, isOverdue } from "@/lib/format";
+import { springLift } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { Task, TaskStatus } from "@/types/database";
 
 type BoardTask = Task & { projectName: string };
+
+const boardCollisionDetection: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args);
+  return pointerCollisions.length > 0
+    ? pointerCollisions
+    : closestCorners(args);
+};
 
 function BoardCard({
   task,
@@ -46,14 +57,16 @@ function BoardCard({
 }) {
   const dueDate = formatShortDate(task.due_date);
   const overdue = isOverdue(task.due_date, task.status);
-
   return (
-    <article
+    <motion.article
+      data-motion-lift
+      whileHover={overlay || dragging ? undefined : { y: -2 }}
+      transition={springLift}
       className={cn(
         "space-y-3 rounded-md border border-border/60 bg-card p-3 transition-[box-shadow,border-color,opacity] duration-150",
         dragging && "opacity-40",
         overlay &&
-          "rotate-[0.5deg] border-primary/40 shadow-xl shadow-black/20",
+          "rotate-[0.5deg] border-primary/40 shadow-xl shadow-black/30",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -82,7 +95,7 @@ function BoardCard({
           <span
             className={cn(
               "inline-flex items-center gap-1 text-xs",
-              overdue ? "text-rose-800" : "text-muted-foreground",
+              overdue ? "text-rose-300" : "text-muted-foreground",
             )}
           >
             <CalendarDays className="size-3.5" aria-hidden="true" />
@@ -99,7 +112,7 @@ function BoardCard({
           taskTitle={task.title}
         />
       ) : null}
-    </article>
+    </motion.article>
   );
 }
 
@@ -273,15 +286,14 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
     <DndContext
       id="monolith-board"
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={boardCollisionDetection}
       onDragStart={handleDragStart}
       onDragCancel={() => setActiveId(null)}
       onDragEnd={handleDragEnd}
     >
       <p className="mb-3 text-xs text-muted-foreground">
-        Drag the grip to change a task&apos;s column, or use its status menu.
-        Keyboard users can pick up a grip with Space and move with the arrow
-        keys.
+        Drag the grip to change a task&apos;s column. The status menu is the
+        fully keyboard-accessible fallback.
       </p>
       <div className="grid gap-4 lg:grid-cols-3">
         {TASK_STATUS_ORDER.map((status) => (
@@ -294,7 +306,16 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
         ))}
       </div>
       <DragOverlay>
-        {activeTask ? <BoardCard task={activeTask} overlay /> : null}
+        {activeTask ? (
+          <motion.div
+            data-motion-reveal
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.14, ease: "easeOut" }}
+          >
+            <BoardCard task={activeTask} overlay />
+          </motion.div>
+        ) : null}
       </DragOverlay>
     </DndContext>
   );

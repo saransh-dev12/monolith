@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 
 import { Wordmark } from "@/components/brand/monolith-mark";
 
+import { RouteTransition } from "@/components/motion/route-transition";
 import { AppSidebar } from "@/components/shell/app-sidebar";
 import { CommandPalette } from "@/components/shell/command-palette";
 import { ProjectDialog } from "@/components/projects/project-dialog";
@@ -54,10 +55,10 @@ export default async function WorkspaceLayout({
             </div>
           </header>
           <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-10">
-            {children}
+            <RouteTransition>{children}</RouteTransition>
           </div>
         </SidebarInset>
-        <Toaster theme="light" position="top-right" />
+        <Toaster theme="dark" position="top-right" />
       </SidebarProvider>
     </TooltipProvider>
   );

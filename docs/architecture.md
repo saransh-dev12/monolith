@@ -1,6 +1,6 @@
 # Monolith architecture proposal
 
-**Status:** implemented for the v1 scope, verified locally. Scaffold, auth, schema/RLS, project/task/milestone CRUD, sidebar shell, command palette, board, dashboard, and the reviewed AI planner are in place. Production deployment and live AI-provider verification remain outstanding. Reviewed against current official documentation on 2026-10-24.
+**Status:** implemented for the v1 scope, verified locally. Scaffold, auth, schema/RLS, project/task/milestone CRUD, dark sidebar shell, command palette, motion system, board, dashboard, and the reviewed AI planner are in place. Production deployment and live AI-provider verification remain outstanding. Reviewed against current official documentation on 2026-10-24.
 
 ## Architecture decision
 
@@ -144,7 +144,7 @@ External setup needed for a deployed MVP: a Supabase project with Auth and Postg
 
 ## Design direction
 
-The references were reviewed for broad interaction and composition ideas only: Spline's confident hero composition; Skiper UI's command-palette pattern; Manus's focused prompt-first workspace; and Componentry's polished component states. Monolith should use a dark editorial surface, graphite layering, generous spacing, restrained violet or cobalt accents, clear focus, and purposeful motion. It should avoid decorative 3D and gradient-heavy dashboard patterns. No reference assets, branding, or code are to be copied.
+The references were reviewed for broad interaction and composition ideas only: Spline's confident hero composition; Skiper UI's command-palette pattern; Manus's focused prompt-first workspace; and Componentry's polished component states. Monolith should use a dark editorial surface, graphite layering, generous spacing, a restrained cobalt accent, clear focus, and purposeful motion. The implemented interface uses Fraunces for editorial display, Plus Jakarta Sans for interface text, JetBrains Mono for metadata, and Motion for React for shared interaction behavior. It should avoid decorative 3D and gradient-heavy dashboard patterns. No reference assets, branding, or code are to be copied.
 
 References: [Spline](https://spline.design/), [Skiper UI](https://skiper-ui.com/), [Manus](https://manus.im/), [Componentry](https://componentry.dev/).
 

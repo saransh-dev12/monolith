@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Archive, Plus } from "lucide-react";
 
+import { HoverLift } from "@/components/motion/hover-lift";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -64,7 +65,9 @@ export default async function ProjectsPage(props: PageProps<"/app/projects">) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <HoverLift key={project.id}>
+              <ProjectCard project={project} />
+            </HoverLift>
           ))}
         </div>
       )}

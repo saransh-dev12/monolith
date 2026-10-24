@@ -22,7 +22,7 @@ export function MetricCard({
         <Icon
           className={
             tone === "warning"
-              ? "size-3.5 text-amber-600"
+              ? "size-3.5 text-amber-400"
               : "size-3.5 text-primary"
           }
           aria-hidden="true"

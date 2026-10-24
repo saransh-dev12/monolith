@@ -253,6 +253,94 @@ test.describe("navigation shell", () => {
   });
 });
 
+
+test.describe("motion and drag", () => {
+  test("moves a task by dragging and persists the status", async ({ page }) => {
+    const projectName = unique("Drag project");
+    const taskName = unique("Drag task");
+
+    await signIn(page);
+
+    const projectResponse = await page.request.post("/api/projects", {
+      data: { name: projectName },
+      headers: { Origin: "http://localhost:3000" },
+    });
+    expect(projectResponse.status()).toBe(201);
+    const project = (await projectResponse.json()) as { project: { id: string } };
+
+    const taskResponse = await page.request.post("/api/tasks", {
+      data: { projectId: project.project.id, title: taskName },
+      headers: { Origin: "http://localhost:3000" },
+    });
+    expect(taskResponse.status()).toBe(201);
+
+    await page.goto("/app/board");
+    await expect(page.getByRole("heading", { name: "Board" })).toBeVisible();
+
+    const handle = page.getByRole("button", { name: `Drag ${taskName}` });
+    const target = page.getByRole("region", { name: "In progress" });
+    await expect(handle).toBeVisible();
+
+    const handleBox = await handle.boundingBox();
+    const targetBox = await target.boundingBox();
+    expect(handleBox).not.toBeNull();
+    expect(targetBox).not.toBeNull();
+
+    if (handleBox && targetBox) {
+      await page.mouse.move(
+        handleBox.x + handleBox.width / 2,
+        handleBox.y + handleBox.height / 2,
+      );
+      await page.mouse.down();
+      await page.mouse.move(
+        handleBox.x + handleBox.width / 2 - 10,
+        handleBox.y + handleBox.height / 2,
+        { steps: 3 },
+      );
+      await page.mouse.move(
+        targetBox.x + targetBox.width / 2,
+        targetBox.y + 80,
+        { steps: 15 },
+      );
+      await page.mouse.up();
+    }
+
+    await expect(page.getByText("Moved to In progress.")).toBeVisible();
+    await page.reload();
+    await expect(
+      page.getByRole("region", { name: "In progress" }).getByText(taskName),
+    ).toBeVisible();
+
+    const cleanup = await page.request.delete(
+      `/api/projects/${project.project.id}`,
+      { headers: { Origin: "http://localhost:3000" } },
+    );
+    expect(cleanup.status()).toBe(200);
+  });
+
+  test("removes hover lift under reduced motion and survives rapid toggles", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await signIn(page);
+    await page.goto("/app/projects");
+
+    const projectLink = page.getByRole("link", { name: "Portfolio relaunch" });
+    const liftWrapper = projectLink.locator("..");
+    await projectLink.hover();
+    await page.waitForTimeout(300);
+    await expect(liftWrapper).toHaveCSS("transform", "none");
+
+    const trigger = page
+      .locator("header")
+      .getByRole("button", { name: "Toggle Sidebar" });
+    await trigger.click();
+    await trigger.click();
+    await trigger.click();
+    await expect(page.locator("main")).toBeVisible();
+  });
+});
+
 test.describe("account and responsive layout", () => {
   test("signs up a new account, shows an empty workspace, and signs out", async ({
     page,

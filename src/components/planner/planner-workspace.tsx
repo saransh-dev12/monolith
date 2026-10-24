@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -168,12 +169,12 @@ export function PlannerWorkspace({
       {!configured ? (
         <div
           role="status"
-          className="flex gap-3 rounded-lg border border-amber-600/30 bg-amber-500/5 p-4 text-sm text-amber-900"
+          className="flex gap-3 rounded-lg border border-amber-600/30 bg-amber-500/5 p-4 text-sm text-amber-100"
         >
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <div className="space-y-1">
             <p className="font-medium">AI planning is not configured</p>
-            <p className="text-amber-800">
+            <p className="text-amber-300">
               Add <code className="font-mono text-xs">OPENAI_API_KEY</code> and{" "}
               <code className="font-mono text-xs">OPENAI_MODEL</code> on the
               server to enable generation. The rest of Monolith works without
@@ -311,7 +312,13 @@ export function PlannerWorkspace({
           </div>
         </form>
       ) : (
-        <div className="space-y-8">
+        <motion.div
+          data-motion-reveal
+          className="space-y-8"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-primary/25 bg-primary/5 px-4 py-3">
             <div>
               <p className="text-sm font-medium">Draft plan · not saved</p>
@@ -660,7 +667,7 @@ export function PlannerWorkspace({
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

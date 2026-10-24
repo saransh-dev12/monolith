@@ -82,7 +82,7 @@ export default async function ProjectDetailPage(
       />
 
       {project.archived_at ? (
-        <p className="mb-6 rounded-md border border-amber-600/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-800">
+        <p className="mb-6 rounded-md border border-amber-600/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-300">
           This project is archived. Restore it to add or move work.
         </p>
       ) : null}

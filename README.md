@@ -2,7 +2,7 @@
 
 Monolith is a project-execution workspace for students, solo developers, indie hackers, and small teams. It turns an idea into milestones and tasks, keeps the work visible on a board, and shows progress derived from stored records. AI can draft a plan, but nothing is saved until the user reviews and confirms it.
 
-**Current status:** v1 core is implemented and verified locally. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, the reviewed AI-planning workflow, and the paper-and-cobalt interface rebuild are in place. Production deployment is not configured; the OpenAI key in this environment is a placeholder, so live model output has not been verified here.
+**Current status:** v1 core is implemented and verified locally. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, the reviewed AI-planning workflow, the dark interface, revised typography, and the motion system are in place. Production deployment is not configured; the OpenAI key in this environment is a placeholder, so live model output has not been verified here.
 
 The public repository is [github.com/saransh-dev12/monolith](https://github.com/saransh-dev12/monolith). Work is tracked in the **MVP v1.0** milestone.
 
@@ -18,9 +18,9 @@ The public repository is [github.com/saransh-dev12/monolith](https://github.com/
 - Kanban board with drag-and-drop between columns, a status-select fallback for keyboard users, optimistic movement, and persistence after reload.
 - Command Center with real active/open/completed/overdue metrics, project progress, and a due-ordered “Next up” list.
 - AI planner: server-only generation, per-user daily quota, editable preview, explicit confirmation, and atomic persistence in one Postgres transaction.
-- Responsive paper-and-cobalt interface with a collapsible shadcn sidebar, mobile sheet, keyboard command palette, visible focus, reduced-motion support, skip links, empty/loading/error states, and confirmation dialogs.
+- Responsive dark interface with layered graphite surfaces, a collapsible shadcn sidebar, mobile sheet, keyboard command palette, visible focus, reduced-motion support, skip links, empty/loading/error states, and confirmation dialogs.
 - Runtime Zod validation, same-origin checks on mutations, safe error mapping, and no secret exposure to the browser.
-- 20 Vitest unit tests, 36 pgTAP database tests, and 8 Playwright browser flows. A GitHub Actions workflow runs lint, typecheck, unit tests, build, database tests, and browser tests.
+- 20 Vitest unit tests, 36 pgTAP database tests, and 10 Playwright browser flows. A GitHub Actions workflow runs lint, typecheck, unit tests, build, database tests, and browser tests.
 
 ### Not included in v1
 
@@ -34,7 +34,9 @@ The public repository is [github.com/saransh-dev12/monolith](https://github.com/
 | Layer | Choice |
 | --- | --- |
 | Framework | Next.js 16.4.3 (App Router, Turbopack), React 19.3.0, TypeScript 5.9.3 |
-| Styling | Tailwind CSS 4.3.3, shadcn/ui primitives, Lucide icons, Instrument Serif + Geist |
+| Styling | Tailwind CSS 4.3.3, shadcn/ui primitives, Lucide icons |
+| Typography | Fraunces display, Plus Jakarta Sans UI, JetBrains Mono metadata |
+| Motion | Motion for React 14.6.0 with shared variants and reduced-motion fallbacks |
 | Data and auth | Supabase Postgres, Supabase Auth, `@supabase/ssr` 0.12.7 |
 | Validation | Zod 4.6.7 |
 | DnD | `@dnd-kit/core` 6.3.1 |
@@ -106,6 +108,9 @@ Never prefix the OpenAI key with `NEXT_PUBLIC_`. With a missing key or the `plac
 
 The interface direction is documented in [`docs/design-direction.md`](docs/design-direction.md). Reused code, reference research, licenses, and attribution requirements are recorded in [`docs/design-sources.md`](docs/design-sources.md).
 
+- The final direction is a sophisticated dark workspace: deep charcoal surfaces, layered graphite panels, bone typography, and an electric cobalt accent. The marketing site and product share the same tokens and motion language.
+- Typography uses Fraunces for editorial display, Plus Jakarta Sans for interface text, and JetBrains Mono for technical metadata.
+- Motion for React drives hero and section reveals, hover lift, route transitions, planner draft entrance, and board feedback. Reduced-motion users get static layouts and no hover lift.
 - Marketing structure adapts Launch UI (MIT), with an original Monolith hero, product dossier, workflow, AI section, and security section.
 - Application primitives and the app shell use shadcn/ui (MIT), including the official sidebar and command palette.
 - No proprietary assets, screenshots, customer logos, or testimonials are included.
@@ -164,7 +169,7 @@ npm run test:e2e
 
 - `npm test` runs Vitest unit tests for schemas, planner transforms, date helpers, and provider parsing.
 - `npm run test:db` runs pgTAP against a freshly reset local database. It covers owner-scoped reads, cross-user denial, grants, constraints, archival, cascade behavior, planner quota, atomic plan persistence, and rollback.
-- `npm run test:e2e` runs Playwright against the local app and requires the Supabase stack plus seeded users. It covers auth, project/task/milestone flows, board persistence, archive/restore/delete, cross-user denial, CSRF rejection, planner confirmation, command-palette navigation, sign-out, and mobile overflow.
+- `npm run test:e2e` runs Playwright against the local app and requires the Supabase stack plus seeded users. It covers auth, project/task/milestone flows, board persistence (including pointer drag), archive/restore/delete, cross-user denial, CSRF rejection, planner confirmation, command-palette navigation, reduced-motion hover behavior, sign-out, and mobile overflow.
 
 The AI preview, edit, and confirm flow was also exercised locally against a mock OpenAI-compatible Responses endpoint. That mock is not committed, and live provider output remains unverified without a real key.
 
@@ -191,11 +196,12 @@ src/
     api/                   # validated route handlers
     auth/callback/         # Supabase session exchange
   components/
-    auth/ board/ brand/ dashboard/ marketing/ milestones/ planner/
+    auth/ board/ brand/ dashboard/ marketing/ milestones/ motion/ planner/
     projects/ shared/ shell/ tasks/ ui/
   hooks/                   # media-query store for the sidebar
   lib/
     ai/ api/ auth/ client/ data/ planner/ supabase/ validation/
+    motion.ts              # shared timing, easing, and variants
   proxy.ts                 # session refresh and optimistic route protection
 supabase/
   config.toml

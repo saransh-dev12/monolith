@@ -25,6 +25,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getSessionUser } from "@/lib/auth/session";
+import { HoverLift } from "@/components/motion/hover-lift";
+import {
+  Reveal,
+  RevealGroup,
+  RevealItem,
+} from "@/components/motion/reveal";
 
 const workflow = [
   {
@@ -113,13 +119,13 @@ export default async function HomePage() {
       <main>
         <section className="border-b border-border/70">
           <div className="mx-auto grid w-full max-w-container gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:py-24">
-            <div>
+            <Reveal>
               <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                 <span className="size-1.5 rounded-full bg-primary" />
                 Project execution, end to end
               </div>
 
-              <h1 className="mt-6 max-w-xl text-balance font-heading text-6xl leading-[0.92] tracking-[-0.025em] sm:text-7xl xl:text-[5.75rem]">
+              <h1 className="mt-6 max-w-2xl text-balance font-heading text-5xl leading-[0.96] tracking-[-0.03em] sm:text-6xl xl:text-[4.75rem]">
                 From a sentence to{" "}
                 <span className="italic text-primary">shipped work.</span>
               </h1>
@@ -173,9 +179,9 @@ export default async function HomePage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Reveal>
 
-            <div className="relative">
+            <Reveal className="relative" delay={0.12}>
               <div
                 className="absolute -right-3 -top-3 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground lg:-right-6"
                 aria-hidden="true"
@@ -183,7 +189,7 @@ export default async function HomePage() {
                 01 / Workspace
               </div>
 
-              <div className="rounded-md border border-border/80 bg-card p-2 shadow-[0_1px_0_0_rgba(21,25,26,0.04),0_20px_50px_-30px_rgba(21,25,26,0.25)]">
+              <HoverLift className="rounded-md border border-border/80 bg-card p-2 shadow-[0_1px_0_0_rgba(21,25,26,0.04),0_20px_50px_-30px_rgba(21,25,26,0.25)]">
                 <div className="rounded-sm border border-border/70">
                   <div className="flex items-center justify-between border-b border-border/70 px-4 py-2.5">
                     <div className="flex items-center gap-2">
@@ -272,18 +278,18 @@ export default async function HomePage() {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </HoverLift>
 
               <div className="mt-3 flex items-center justify-between px-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
                 <span>Illustrative workspace · shared product components</span>
                 <span>Monolith v1</span>
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <Section id="workflow" className="border-b border-border/70">
-          <div className="mx-auto max-w-container">
+          <Reveal className="mx-auto max-w-container">
             <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
               <div className="lg:sticky lg:top-24">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
@@ -321,8 +327,8 @@ export default async function HomePage() {
               </ol>
             </div>
 
-            <div className="mt-12 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-md border border-border/80 bg-card/60 p-4">
+            <RevealGroup className="mt-12 grid gap-4 sm:grid-cols-3">
+              <RevealItem className="rounded-md border border-border/80 bg-card/60 p-4">
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
                   Board state
                 </p>
@@ -351,9 +357,9 @@ export default async function HomePage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </RevealItem>
 
-              <div className="rounded-md border border-border/80 bg-card/60 p-4">
+              <RevealItem className="rounded-md border border-border/80 bg-card/60 p-4">
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
                   Milestone
                 </p>
@@ -370,9 +376,9 @@ export default async function HomePage() {
                 <p className="mt-3 font-mono text-[9px] text-muted-foreground">
                   Progress derives from completed records
                 </p>
-              </div>
+              </RevealItem>
 
-              <div className="rounded-md border border-border/80 bg-card/60 p-4">
+              <RevealItem className="rounded-md border border-border/80 bg-card/60 p-4">
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
                   Today
                 </p>
@@ -392,37 +398,37 @@ export default async function HomePage() {
                     />
                   ))}
                 </div>
-              </div>
-            </div>
-          </div>
+              </RevealItem>
+            </RevealGroup>
+          </Reveal>
         </Section>
 
         <section
           id="planner"
-          className="border-b border-border/70 bg-primary text-primary-foreground"
+          className="border-b border-border/70 bg-[var(--accent-panel)] text-foreground"
         >
           <div className="mx-auto grid w-full max-w-container gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1fr] lg:items-center lg:py-24">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary-foreground/80">
+            <Reveal>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
                 AI planner
               </p>
               <h2 className="mt-3 max-w-md text-balance font-heading text-4xl leading-[0.98] tracking-[-0.02em] sm:text-5xl">
                 A draft plan, not an{" "}
                 <span className="italic">autopilot.</span>
               </h2>
-              <p className="mt-4 max-w-md text-sm leading-6 text-primary-foreground/80">
+              <p className="mt-4 max-w-md text-sm leading-6 text-foreground/70">
                 Give the planner an idea and a horizon. It proposes milestones
                 and tasks. Every field is editable, generation never writes, and
                 saving requires one explicit confirmation.
               </p>
-              <ul className="mt-7 space-y-3 text-sm text-primary-foreground/85">
+              <ul className="mt-7 space-y-3 text-sm text-foreground/85">
                 {[
                   "Structured output validated at runtime",
                   "Per-user daily generation quota",
                   "Atomic save; a failed insert saves nothing",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5">
-                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary-foreground" />
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
                     {item}
                   </li>
                 ))}
@@ -431,7 +437,7 @@ export default async function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="bg-background text-foreground hover:bg-background/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   <Link href={user ? "/app/planner" : "/login"}>
                     {user ? "Open planner" : "Sign in to try it"}
@@ -442,16 +448,16 @@ export default async function HomePage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  className="border-foreground/20 bg-transparent text-foreground hover:bg-foreground/5 hover:text-foreground"
                 >
                   <Link href={user ? "/app/projects" : "/signup"}>
                     {user ? "Browse projects" : "Create an account"}
                   </Link>
                 </Button>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="rounded-md bg-background p-2 text-foreground shadow-2xl shadow-black/20">
+            <HoverLift className="rounded-lg bg-card p-2 text-foreground shadow-2xl shadow-black/40 ring-1 ring-white/10">
               <div className="rounded-sm border border-border/70">
                 <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -460,7 +466,7 @@ export default async function HomePage() {
                   </div>
                   <Badge
                     variant="outline"
-                    className="rounded-full border-amber-600/30 bg-amber-500/10 font-normal text-amber-800"
+                    className="rounded-full border-amber-600/30 bg-amber-500/10 font-normal text-amber-300"
                   >
                     Not saved
                   </Badge>
@@ -547,12 +553,12 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </HoverLift>
           </div>
         </section>
 
         <Section id="security" className="border-b border-border/70">
-          <div className="mx-auto grid max-w-container gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+          <Reveal className="mx-auto grid max-w-container gap-12 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
                 Security & data
@@ -584,11 +590,11 @@ export default async function HomePage() {
                 </div>
               ))}
             </dl>
-          </div>
+          </Reveal>
         </Section>
 
         <Section className="pb-24">
-          <div className="mx-auto grid max-w-container gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+          <Reveal className="mx-auto grid max-w-container gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary">
                 Start now
@@ -614,7 +620,7 @@ export default async function HomePage() {
                 </Button>
               ) : null}
             </div>
-          </div>
+          </Reveal>
         </Section>
       </main>
 

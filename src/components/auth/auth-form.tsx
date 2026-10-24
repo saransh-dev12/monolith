@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { motion } from "motion/react";
 import { LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,14 @@ export function AuthForm({
   const isSignup = mode === "signup";
 
   return (
-    <Card className="w-full max-w-md border-border/80 bg-card shadow-[0_24px_60px_-40px_rgba(21,25,26,0.35)]">
+    <motion.div
+      data-motion-reveal
+      className="w-full max-w-md"
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+    >
+    <Card className="w-full border-border/80 bg-card shadow-[0_24px_60px_-40px_rgba(0,0,0,0.8)]">
       <CardHeader>
         <h1 className="font-heading text-3xl leading-tight tracking-[-0.01em]">
           {isSignup ? "Create your workspace" : "Welcome back"}
@@ -154,5 +162,6 @@ export function AuthForm({
         ) : null}
       </CardFooter>
     </Card>
+    </motion.div>
   );
 }

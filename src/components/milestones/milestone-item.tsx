@@ -89,7 +89,7 @@ export function MilestoneItem({
         {pending ? (
           <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
         ) : completed ? (
-          <CheckCircle2 className="size-4 text-emerald-600" aria-hidden="true" />
+          <CheckCircle2 className="size-4 text-emerald-400" aria-hidden="true" />
         ) : (
           <Circle className="size-4" aria-hidden="true" />
         )}

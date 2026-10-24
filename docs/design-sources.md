@@ -10,9 +10,9 @@ This document records the reference-first research and the libraries, components
 - **License:** MIT
 - **Copyright:** Copyright (c) 2024 Mikolaj Dobrucki
 - **Used in:** `src/components/marketing/foundation.tsx`, `src/app/page.tsx`, `src/app/globals.css` (`max-w-container` utility).
-- **What was reused:** the `Section`, `LayoutLines`, `Navbar`/`NavbarLeft`/`NavbarRight`, and footer primitive composition, plus the structural layout-line idea. These were adapted for Monolith's paper surface, spacing, and content.
+- **What was reused:** the `Section`, `LayoutLines`, `Navbar`/`NavbarLeft`/`NavbarRight`, and footer primitive composition, plus the structural layout-line idea. These were adapted for Monolith's dark surface, spacing, and content.
 - **What was not reused:** Launch UI screenshots, dashboard images, logos, the glow/beam effects, its centered gradient hero, and its demo copy. Monolith's hero, product dossier, workflow rail, AI section, security section, and previews are original compositions using shared product components.
-- **Changes:** dark-mode branches and gradient/glass helpers were dropped because Monolith v1 deliberately ships a light paper-and-cobalt direction. The primitives were reduced to only the parts used.
+- **Changes:** light-only branches and gradient/glass helpers were not used. The primitives were reduced to the parts needed for Monolith's dark layout and spacing system.
 
 ### shadcn/ui — application shell and command surfaces
 
@@ -41,6 +41,7 @@ This document records the reference-first research and the libraries, components
 | `@dnd-kit/utilities` | 3.2.2 | MIT | Drag transforms |
 | `lucide-react` | 1.61.0 | ISC | Icons |
 | `sonner` | 2.0.8 | MIT (Copyright (c) 2023 Emil Kowalski) | Toast feedback |
+| `motion` | 14.6.0 | MIT | Shared animation system (`motion/react`) |
 | `class-variance-authority` | 0.7.1 | Apache-2.0 | Component variants |
 | `cn` | 0.5.0 | MIT (shadcn) | Class-name merge utility used by shadcn components |
 | `tw-animate-css` | 1.4.0 | MIT (Copyright (c) 2025 Wombosvideo) | Radix enter/exit animation utilities |
@@ -54,8 +55,9 @@ The license files for installed dependencies remain in `node_modules` as distrib
 
 ## 3. Fonts and assets
 
-- **Instrument Serif** — SIL Open Font License 1.1. Loaded through `next/font/google`; no font files are committed or redistributed by the repository.
-- **Geist** and **Geist Mono** — SIL Open Font License 1.1. Loaded through `next/font/google`; no font files are committed.
+- **Fraunces** — SIL Open Font License 1.1. Editorial display face, loaded through `next/font/google`; no font files are committed.
+- **Plus Jakarta Sans** — SIL Open Font License 1.1. Interface face, loaded through `next/font/google`; no font files are committed.
+- **JetBrains Mono** — SIL Open Font License 1.1. Metadata face, loaded through `next/font/google`; no font files are committed.
 - No stock photos, proprietary illustrations, Launch UI screenshots, or third-party brand assets are included. The Monolith mark is original SVG geometry.
 
 ## 4. License notices for copied code
@@ -113,6 +115,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## 4.1 Supplied motion reference
+
+The user-provided animated-card example (React + Framer Motion, `whileHover={{ y: -5 }}`) was used as the quality benchmark for Monolith's hover lift and spring behavior. No code or assets from that example were copied into the repository; Monolith implements its own shared variants in `src/lib/motion.ts` using Motion for React.
 
 ## 5. References studied without code reuse
 

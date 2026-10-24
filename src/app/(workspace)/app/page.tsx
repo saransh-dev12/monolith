@@ -180,7 +180,7 @@ export default async function DashboardPage() {
                           <span
                             className={
                               overdue
-                                ? "inline-flex shrink-0 items-center gap-1 text-rose-700"
+                                ? "inline-flex shrink-0 items-center gap-1 text-rose-300"
                                 : "inline-flex shrink-0 items-center gap-1"
                             }
                           >
