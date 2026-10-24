@@ -30,7 +30,10 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
           <span>Progress</span>
           <span className="tabular-nums">{project.progress.percent}%</span>
         </div>
-        <Progress value={project.progress.percent} />
+        <Progress
+          value={project.progress.percent}
+          aria-label={`${project.name} progress`}
+        />
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">

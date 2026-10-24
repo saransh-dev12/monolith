@@ -23,10 +23,23 @@ export function MonolithMark({ className }: { className?: string }) {
   );
 }
 
-export function Wordmark({ className }: { className?: string }) {
+export function Wordmark({
+  className,
+  inverted = false,
+}: {
+  className?: string;
+  inverted?: boolean;
+}) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <span className="grid size-8 place-items-center rounded-md bg-primary text-primary-foreground">
+      <span
+        className={cn(
+          "grid size-8 place-items-center rounded-md",
+          inverted
+            ? "bg-background text-primary"
+            : "bg-primary text-primary-foreground",
+        )}
+      >
         <MonolithMark />
       </span>
       <span className="text-sm font-semibold tracking-[0.14em] uppercase">

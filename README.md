@@ -2,7 +2,7 @@
 
 Monolith is a project-execution workspace for students, solo developers, indie hackers, and small teams. It turns an idea into milestones and tasks, keeps the work visible on a board, and shows progress derived from stored records. AI can draft a plan, but nothing is saved until the user reviews and confirms it.
 
-**Current status:** v1 core is implemented and verified locally. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, and the reviewed AI-planning workflow are in place. Production deployment is not configured; the OpenAI key in this environment is a placeholder, so live model output has not been verified here.
+**Current status:** v1 core is implemented and verified locally. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, the reviewed AI-planning workflow, and the paper-and-cobalt interface rebuild are in place. Production deployment is not configured; the OpenAI key in this environment is a placeholder, so live model output has not been verified here.
 
 The public repository is [github.com/saransh-dev12/monolith](https://github.com/saransh-dev12/monolith). Work is tracked in the **MVP v1.0** milestone.
 
@@ -18,15 +18,15 @@ The public repository is [github.com/saransh-dev12/monolith](https://github.com/
 - Kanban board with drag-and-drop between columns, a status-select fallback for keyboard users, optimistic movement, and persistence after reload.
 - Command Center with real active/open/completed/overdue metrics, project progress, and a due-ordered “Next up” list.
 - AI planner: server-only generation, per-user daily quota, editable preview, explicit confirmation, and atomic persistence in one Postgres transaction.
-- Responsive dark interface, visible focus, reduced-motion support, skip links, empty/loading/error states, and confirmation dialogs.
+- Responsive paper-and-cobalt interface with a collapsible shadcn sidebar, mobile sheet, keyboard command palette, visible focus, reduced-motion support, skip links, empty/loading/error states, and confirmation dialogs.
 - Runtime Zod validation, same-origin checks on mutations, safe error mapping, and no secret exposure to the browser.
-- 20 Vitest unit tests, 36 pgTAP database tests, and 7 Playwright browser flows. A GitHub Actions workflow runs lint, typecheck, unit tests, build, database tests, and browser tests.
+- 20 Vitest unit tests, 36 pgTAP database tests, and 8 Playwright browser flows. A GitHub Actions workflow runs lint, typecheck, unit tests, build, database tests, and browser tests.
 
 ### Not included in v1
 
 - Teams, collaboration, permissions, notifications, billing, recurring tasks, calendars, mobile apps, or advanced analytics.
 - Drag-to-reorder inside a column. Dragging changes status; the select control remains the accessible fallback.
-- Streaming AI responses, planner history, social login, or a command palette.
+- Streaming AI responses, planner history, social login, or a task-detail side panel.
 - A production deployment. Vercel/Supabase production credentials are not available in this environment.
 
 ## Stack
@@ -39,6 +39,7 @@ The public repository is [github.com/saransh-dev12/monolith](https://github.com/
 | Validation | Zod 4.6.7 |
 | DnD | `@dnd-kit/core` 6.3.1 |
 | AI | OpenAI SDK 7.43.0, Responses API with structured output |
+| Navigation | shadcn/ui sidebar and command palette (`cmdk` 1.1.1) |
 | Tests | Vitest 5.0.5, pgTAP via Supabase CLI, Playwright 1.64.1 |
 | Runtime | Node.js 22+ (verified on Node 26.5.0), npm 11 |
 
@@ -101,6 +102,14 @@ Never prefix the OpenAI key with `NEXT_PUBLIC_`. With a missing key or the `plac
 | `OPENAI_MODEL` | Server-only model identifier |
 | `PLANNER_DAILY_LIMIT` | Per-user daily generation limit enforced in Postgres |
 
+## Design and reuse
+
+The interface direction is documented in [`docs/design-direction.md`](docs/design-direction.md). Reused code, reference research, licenses, and attribution requirements are recorded in [`docs/design-sources.md`](docs/design-sources.md).
+
+- Marketing structure adapts Launch UI (MIT), with an original Monolith hero, product dossier, workflow, AI section, and security section.
+- Application primitives and the app shell use shadcn/ui (MIT), including the official sidebar and command palette.
+- No proprietary assets, screenshots, customer logos, or testimonials are included.
+
 ## Security and data model
 
 - Migrations: `supabase/migrations/`
@@ -155,7 +164,7 @@ npm run test:e2e
 
 - `npm test` runs Vitest unit tests for schemas, planner transforms, date helpers, and provider parsing.
 - `npm run test:db` runs pgTAP against a freshly reset local database. It covers owner-scoped reads, cross-user denial, grants, constraints, archival, cascade behavior, planner quota, atomic plan persistence, and rollback.
-- `npm run test:e2e` runs Playwright against the local app and requires the Supabase stack plus seeded users. It covers auth, project/task/milestone flows, board persistence, archive/restore/delete, cross-user denial, CSRF rejection, planner confirmation, sign-out, and mobile overflow.
+- `npm run test:e2e` runs Playwright against the local app and requires the Supabase stack plus seeded users. It covers auth, project/task/milestone flows, board persistence, archive/restore/delete, cross-user denial, CSRF rejection, planner confirmation, command-palette navigation, sign-out, and mobile overflow.
 
 The AI preview, edit, and confirm flow was also exercised locally against a mock OpenAI-compatible Responses endpoint. That mock is not committed, and live provider output remains unverified without a real key.
 
@@ -182,8 +191,9 @@ src/
     api/                   # validated route handlers
     auth/callback/         # Supabase session exchange
   components/
-    auth/ board/ brand/ dashboard/ milestones/ planner/ projects/
-    shared/ shell/ tasks/ ui/
+    auth/ board/ brand/ dashboard/ marketing/ milestones/ planner/
+    projects/ shared/ shell/ tasks/ ui/
+  hooks/                   # media-query store for the sidebar
   lib/
     ai/ api/ auth/ client/ data/ planner/ supabase/ validation/
   proxy.ts                 # session refresh and optimistic route protection
@@ -194,6 +204,11 @@ supabase/
   tests/
 tests/
   e2e/                     # Playwright flows
+docs/
+  design-direction.md
+  design-sources.md
+  architecture.md
+  implementation-plan.md
 ```
 
 ## Official references

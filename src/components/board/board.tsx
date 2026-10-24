@@ -53,7 +53,7 @@ function BoardCard({
         "space-y-3 rounded-md border border-border/60 bg-card p-3 transition-[box-shadow,border-color,opacity] duration-150",
         dragging && "opacity-40",
         overlay &&
-          "rotate-[0.5deg] border-primary/40 shadow-xl shadow-black/40",
+          "rotate-[0.5deg] border-primary/40 shadow-xl shadow-black/20",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -82,7 +82,7 @@ function BoardCard({
           <span
             className={cn(
               "inline-flex items-center gap-1 text-xs",
-              overdue ? "text-rose-300" : "text-muted-foreground",
+              overdue ? "text-rose-800" : "text-muted-foreground",
             )}
           >
             <CalendarDays className="size-3.5" aria-hidden="true" />
@@ -283,7 +283,7 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
         Keyboard users can pick up a grip with Space and move with the arrow
         keys.
       </p>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         {TASK_STATUS_ORDER.map((status) => (
           <BoardColumn
             key={status}

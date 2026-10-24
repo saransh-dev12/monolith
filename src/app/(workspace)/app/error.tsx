@@ -14,7 +14,7 @@ export default function WorkspaceError({
 }) {
   return (
     <div className="flex min-h-96 flex-col items-center justify-center rounded-lg border border-border/60 bg-card/20 px-6 py-14 text-center">
-      <AlertTriangle className="size-6 text-amber-400" aria-hidden="true" />
+      <AlertTriangle className="size-6 text-amber-600" aria-hidden="true" />
       <h1 className="mt-4 text-lg font-medium">This view could not load</h1>
       <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
         The workspace hit an unexpected error. Try again, or return to the

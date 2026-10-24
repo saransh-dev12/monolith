@@ -34,16 +34,6 @@ export default async function ProjectsPage(props: PageProps<"/app/projects">) {
                 {archived ? "Active projects" : "Archived"}
               </Link>
             </Button>
-            {!archived ? (
-              <ProjectDialog
-                trigger={
-                  <Button>
-                    <Plus className="size-4" aria-hidden="true" />
-                    New project
-                  </Button>
-                }
-              />
-            ) : null}
           </>
         }
       />

@@ -238,6 +238,21 @@ test.describe("planner", () => {
   });
 });
 
+test.describe("navigation shell", () => {
+  test("opens the command palette and navigates to the planner", async ({
+    page,
+  }) => {
+    await signIn(page);
+    await page.keyboard.press(
+      process.platform === "darwin" ? "Meta+k" : "Control+k",
+    );
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.getByRole("option", { name: /Planner/ }).click();
+    await expect(page).toHaveURL(/\/app\/planner$/);
+    await expect(page.getByRole("heading", { name: "Planner" })).toBeVisible();
+  });
+});
+
 test.describe("account and responsive layout", () => {
   test("signs up a new account, shows an empty workspace, and signs out", async ({
     page,
@@ -262,8 +277,14 @@ test.describe("account and responsive layout", () => {
     await signIn(page);
 
     await expect(
-      page.getByRole("navigation", { name: "Workspace" }),
+      page.getByRole("button", { name: "Toggle Sidebar" }),
     ).toBeVisible();
+    await page.getByRole("button", { name: "Toggle Sidebar" }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Command Center" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
 
     for (const path of ["/app", "/app/projects", "/app/planner", "/app/board"]) {
       await page.goto(path);

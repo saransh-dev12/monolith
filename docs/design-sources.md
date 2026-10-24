@@ -1,0 +1,171 @@
+# Design sources and reuse record
+
+This document records the reference-first research and the libraries, components, and code reused in the Monolith interface. It distinguishes directly reused implementations from patterns that were only studied.
+
+## 1. Directly reused code
+
+### Launch UI — structural marketing primitives
+
+- **Source:** https://github.com/launch-ui/launch-ui
+- **License:** MIT
+- **Copyright:** Copyright (c) 2024 Mikolaj Dobrucki
+- **Used in:** `src/components/marketing/foundation.tsx`, `src/app/page.tsx`, `src/app/globals.css` (`max-w-container` utility).
+- **What was reused:** the `Section`, `LayoutLines`, `Navbar`/`NavbarLeft`/`NavbarRight`, and footer primitive composition, plus the structural layout-line idea. These were adapted for Monolith's paper surface, spacing, and content.
+- **What was not reused:** Launch UI screenshots, dashboard images, logos, the glow/beam effects, its centered gradient hero, and its demo copy. Monolith's hero, product dossier, workflow rail, AI section, security section, and previews are original compositions using shared product components.
+- **Changes:** dark-mode branches and gradient/glass helpers were dropped because Monolith v1 deliberately ships a light paper-and-cobalt direction. The primitives were reduced to only the parts used.
+
+### shadcn/ui — application shell and command surfaces
+
+- **Source:** https://github.com/shadcn-ui/ui and https://ui.shadcn.com
+- **License:** MIT
+- **Copyright:** Copyright (c) 2023 shadcn
+- **Installed components:** `sidebar`, `command`, `sheet`, `tooltip`, `input-group`, `skeleton`, plus existing `dialog`, `dropdown-menu`, `alert-dialog`, `button`, `badge`, `card`, `input`, `label`, `progress`, `select`, `separator`, `sonner`, `tabs`, `textarea`.
+- **Used in:** `src/components/ui/*`, `src/components/shell/app-sidebar.tsx`, `src/components/shell/command-palette.tsx`, `src/components/shell/account-menu.tsx`, `src/app/(workspace)/app/layout.tsx`.
+- **Reuse method:** copied through the official shadcn CLI. The source remains in the repository under `src/components/ui` and is modified for Monolith's tokens, layout, and behavior.
+- **Changes:** the mobile detection hook was rewritten with `useSyncExternalStore` to satisfy the repository's React lint rules and avoid setting state synchronously inside an effect. The command palette composition wraps the shadcn command primitives in `Command` explicitly because the installed dialog does not provide that context itself.
+
+### shadcn-sidebar hook pattern
+
+- **Source:** the `use-mobile` hook distributed with shadcn/ui's sidebar.
+- **License:** MIT.
+- **Used in:** `src/hooks/use-mobile.ts`.
+- **Changes:** reimplemented with `useSyncExternalStore`; the media-query contract is unchanged.
+
+## 2. Dependencies with reusable UI code
+
+| Package | Version | License | Role |
+| --- | --- | --- | --- |
+| `cmdk` | 1.1.1 | MIT (Copyright (c) 2022 Paco Coursey) | Command palette engine used by the shadcn command component |
+| `radix-ui` | 1.8.1 | MIT | Dialog, dropdown, tooltip, progress, select, and other accessible primitives |
+| `@dnd-kit/core` | 6.3.1 | MIT (Copyright (c) 2021 Claudéric Demers) | Kanban drag-and-drop |
+| `@dnd-kit/utilities` | 3.2.2 | MIT | Drag transforms |
+| `lucide-react` | 1.61.0 | ISC | Icons |
+| `sonner` | 2.0.8 | MIT (Copyright (c) 2023 Emil Kowalski) | Toast feedback |
+| `class-variance-authority` | 0.7.1 | Apache-2.0 | Component variants |
+| `cn` | 0.5.0 | MIT (shadcn) | Class-name merge utility used by shadcn components |
+| `tw-animate-css` | 1.4.0 | MIT (Copyright (c) 2025 Wombosvideo) | Radix enter/exit animation utilities |
+| `@supabase/ssr`, `@supabase/supabase-js` | 0.12.7, 2.118.0 | MIT | Authentication and data access |
+| `openai` | 7.43.0 | Apache-2.0 | Server-only planner client |
+| `next`, `react`, `react-dom` | 16.4.3, 19.3.0 | MIT | Application runtime |
+| `tailwindcss` | 4.3.3 | MIT | Styling engine |
+| `zod` | 4.6.7 | MIT | Runtime validation |
+
+The license files for installed dependencies remain in `node_modules` as distributed and are not removed or modified.
+
+## 3. Fonts and assets
+
+- **Instrument Serif** — SIL Open Font License 1.1. Loaded through `next/font/google`; no font files are committed or redistributed by the repository.
+- **Geist** and **Geist Mono** — SIL Open Font License 1.1. Loaded through `next/font/google`; no font files are committed.
+- No stock photos, proprietary illustrations, Launch UI screenshots, or third-party brand assets are included. The Monolith mark is original SVG geometry.
+
+## 4. License notices for copied code
+
+The following notices apply to the directly adapted code listed above.
+
+### Launch UI
+
+```text
+MIT License
+
+Copyright (c) 2024 Mikolaj Dobrucki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### shadcn/ui
+
+```text
+MIT License
+
+Copyright (c) 2023 shadcn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## 5. References studied without code reuse
+
+### details.so
+
+- **Examined:** landing page, inspiration taxonomy, featured grid, FAQ, footer.
+- **Findings used:** short declarative promise, editorial pacing, small uppercase metadata, large display type, thin separators, and product demonstration over feature-card repetition.
+- **Reuse:** none. Monolith's copy, layout, and visuals are original.
+
+### designspells.com
+
+- **Examined:** index, X bookmark-sheet transition, Transit profile-menu animation, Things delete confirmation, Granola sidebar icon entry.
+- **Findings used:** origin-aware menus and sheets, short ease-out transitions, drag pickup feedback, and confirmation feedback with reduced-motion fallbacks.
+- **Reuse:** none; implemented with CSS and Radix/shadcn motion utilities.
+
+### Spline
+
+- **Examined:** landing composition, product demo embedding, category presentation.
+- **Findings used:** product-as-hero and generous section rhythm.
+- **Reuse:** none; no 3D, media, or assets from Spline.
+
+### Manus
+
+- **Examined:** prompt-first landing surface and composer.
+- **Findings used:** one dominant planner input with optional context and one primary action.
+- **Reuse:** none.
+
+### Skiper UI
+
+- **Examined:** component index and interaction examples.
+- **Findings used:** restrained hover/press feedback and command-palette discoverability.
+- **Reuse:** none; Monolith uses shadcn's command component and its own palette content.
+
+### Componentry
+
+- **Examined:** landing, component taxonomy, hover/preview behavior.
+- **Findings used:** one strong statement, restrained effects, and interaction as a component property.
+- **Reuse:** none.
+
+### Refero.design
+
+- **Attempted:** home, `/apps`, sitemap, and an app route.
+- **Limitation:** the site returned only a client-rendered document shell in this environment, so no specific screen or interaction is claimed as observed. Monolith's product IA was validated against the running application and the repository's existing workflows, not fabricated Refero study.
+
+### Additional discovery
+
+- **21st.dev:** reviewed hero listings and license metadata. The useful components commonly require a 21st API key and often add a motion dependency; not selected.
+- **Watermelon UI / Ruixen UI / Arc UI / Parable / UI Beats:** reviewed as discovery sources for section patterns. None were installed; their demos alone are not treated as permission to copy source or assets.
+- **Launch UI:** selected after verifying the MIT license and Next.js 16 / Tailwind 4 compatibility.
+
+## 6. Deliberate exclusions
+
+- No Aceternity/Magic UI-style glow or gradient effects were added; they would intensify the generic AI aesthetic the rebuild is meant to avoid.
+- No animation dependency was added. The selected interactions use CSS transitions plus Radix/tw-animate-css.
+- No third-party dashboard screenshots were used as product previews. The landing preview is assembled from Monolith's own `Progress`, `TaskStatusBadge`, `ProjectStatusBadge`, `Button`, and typography.
+- No customer logos, testimonials, usage numbers, or fake integrations are shown.

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -22,15 +22,15 @@ export function AccountMenu({
   const initial = displayName.trim().charAt(0).toUpperCase() || "M";
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         aria-label="Account menu"
-        className="flex w-full items-center gap-3 rounded-md border border-border/60 bg-card/40 p-2 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
       >
-        <span className="grid size-8 shrink-0 place-items-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+        <span className="grid size-8 shrink-0 place-items-center rounded-md bg-foreground text-xs font-semibold text-background">
           {initial}
         </span>
-        <span className="min-w-0 flex-1">
+        <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
           <span className="block truncate text-sm font-medium">{displayName}</span>
           {email ? (
             <span className="block truncate text-xs text-muted-foreground">
@@ -38,6 +38,10 @@ export function AccountMenu({
             </span>
           ) : null}
         </span>
+        <ChevronsUpDown
+          className="size-3.5 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden"
+          aria-hidden="true"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>{email ?? displayName}</DropdownMenuLabel>

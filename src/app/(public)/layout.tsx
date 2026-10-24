@@ -11,38 +11,38 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
       >
         Skip to content
       </a>
-      <div className="relative hidden flex-col justify-between border-r border-border/60 bg-card/10 p-12 lg:flex">
+      <div className="relative hidden flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
         <Link href="/" aria-label="Monolith home">
-          <Wordmark />
+          <Wordmark inverted />
         </Link>
         <div className="max-w-md">
-          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-primary-foreground/80">
             <span>Workspace access</span>
             <span className="h-px w-10 bg-border" aria-hidden="true" />
           </div>
           <h2 className="mt-6 text-balance font-heading text-5xl leading-[0.98] tracking-[-0.02em]">
             The work stays yours.
           </h2>
-          <p className="mt-5 text-sm leading-6 text-muted-foreground">
+          <p className="mt-5 text-sm leading-6 text-primary-foreground/80">
             Projects, tasks, and milestones are scoped to the signed-in account
             in the database, not just in the interface.
           </p>
-          <ul className="mt-8 divide-y divide-border/60 border-y border-border/60 text-sm">
+          <ul className="mt-8 divide-y divide-primary-foreground/20 border-y border-primary-foreground/20 text-sm">
             <li className="flex items-center justify-between py-3">
-              <span className="text-muted-foreground">Isolation</span>
+              <span className="text-primary-foreground/80">Isolation</span>
               <span>Owner-scoped RLS</span>
             </li>
             <li className="flex items-center justify-between py-3">
-              <span className="text-muted-foreground">Board movement</span>
+              <span className="text-primary-foreground/80">Board movement</span>
               <span>Pointer and keyboard</span>
             </li>
             <li className="flex items-center justify-between py-3">
-              <span className="text-muted-foreground">Progress</span>
+              <span className="text-primary-foreground/80">Progress</span>
               <span>Derived from records</span>
             </li>
           </ul>
         </div>
-        <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-primary-foreground/80">
           Local seed · demo@monolith.local
         </p>
       </div>
@@ -50,12 +50,6 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
         <header className="flex items-center justify-between p-6 lg:hidden">
           <Link href="/" aria-label="Monolith home">
             <Wordmark />
-          </Link>
-          <Link
-            href="/login"
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            Sign in
           </Link>
         </header>
         <main id="main" className="flex flex-1 items-center justify-center px-6 pb-16 lg:px-12">

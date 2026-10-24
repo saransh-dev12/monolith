@@ -89,7 +89,7 @@ export function MilestoneItem({
         {pending ? (
           <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
         ) : completed ? (
-          <CheckCircle2 className="size-4 text-emerald-400" aria-hidden="true" />
+          <CheckCircle2 className="size-4 text-emerald-600" aria-hidden="true" />
         ) : (
           <Circle className="size-4" aria-hidden="true" />
         )}
@@ -112,7 +112,7 @@ export function MilestoneItem({
       </div>
 
       {targetDate ? (
-        <span className="hidden shrink-0 items-center gap-1 text-xs text-muted-foreground sm:inline-flex">
+        <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
           <CalendarDays className="size-3.5" aria-hidden="true" />
           {targetDate}
         </span>

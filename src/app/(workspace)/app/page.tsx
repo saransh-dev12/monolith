@@ -34,16 +34,6 @@ export default async function DashboardPage() {
       <PageHeader
         title="Command Center"
         description={`${user.displayName}, here is the current state of your work. Every number comes from your own rows.`}
-        actions={
-          <ProjectDialog
-            trigger={
-              <Button>
-                <Plus className="size-4" aria-hidden="true" />
-                New project
-              </Button>
-            }
-          />
-        }
       />
 
       <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 xl:grid-cols-4">
@@ -74,7 +64,7 @@ export default async function DashboardPage() {
         />
       </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1.45fr_0.9fr]">
+      <div className="mt-10 grid gap-8 xl:grid-cols-[1.45fr_0.9fr]">
         <section className="space-y-4">
           <div className="flex items-end justify-between gap-4">
             <div>
@@ -132,7 +122,10 @@ export default async function DashboardPage() {
                     </p>
                   </div>
                   <div className="flex w-full items-center gap-3 sm:w-48">
-                    <Progress value={project.progress.percent} />
+                    <Progress
+                      value={project.progress.percent}
+                      aria-label={`${project.name} progress`}
+                    />
                     <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
                       {project.progress.percent}%
                     </span>
@@ -187,7 +180,7 @@ export default async function DashboardPage() {
                           <span
                             className={
                               overdue
-                                ? "inline-flex shrink-0 items-center gap-1 text-rose-300"
+                                ? "inline-flex shrink-0 items-center gap-1 text-rose-700"
                                 : "inline-flex shrink-0 items-center gap-1"
                             }
                           >

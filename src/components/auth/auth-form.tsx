@@ -42,7 +42,7 @@ export function AuthForm({
   const isSignup = mode === "signup";
 
   return (
-    <Card className="w-full max-w-md border-border/70 bg-card/70 shadow-2xl shadow-black/20 backdrop-blur">
+    <Card className="w-full max-w-md border-border/80 bg-card shadow-[0_24px_60px_-40px_rgba(21,25,26,0.35)]">
       <CardHeader>
         <h1 className="font-heading text-3xl leading-tight tracking-[-0.01em]">
           {isSignup ? "Create your workspace" : "Welcome back"}

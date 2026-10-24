@@ -82,12 +82,12 @@ export default async function ProjectDetailPage(
       />
 
       {project.archived_at ? (
-        <p className="mb-6 rounded-md border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-sm text-amber-200">
+        <p className="mb-6 rounded-md border border-amber-600/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-800">
           This project is archived. Restore it to add or move work.
         </p>
       ) : null}
 
-      <div className="mb-8 grid gap-4 rounded-lg border border-border/60 bg-card/30 p-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-4 rounded-lg border border-border/60 bg-card/30 p-5 lg:grid-cols-4">
         <div className="space-y-1">
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Status
@@ -123,7 +123,7 @@ export default async function ProjectDetailPage(
           </span>
           <span className="tabular-nums">{percent}%</span>
         </div>
-        <Progress value={percent} />
+        <Progress value={percent} aria-label={`${project.name} progress`} />
       </section>
 
       <div className="space-y-6">

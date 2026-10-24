@@ -1,6 +1,6 @@
 # Monolith design direction
 
-**Status:** reference study and design decisions for the v1 build. Revised 2026-10-24.
+**Status:** revision 2, reference-first rebuild. The original dark graphite direction was rejected. The shipped direction is a warm paper surface with ink typography and a cobalt accent, supported by reused shadcn/ui application primitives and adapted Launch UI marketing structure. See `docs/design-sources.md` for licenses and exact reuse.
 
 ## 1. Repository audit summary
 
@@ -52,7 +52,7 @@
 - Replace the three identical feature cards with numbered editorial sections: plan, execute, review.
 - Show a real HTML reconstruction of the workspace rather than an abstract illustration.
 
-**Difference:** Monolith keeps a dark graphite product surface and does not use a gallery, search, or member-count proof.
+**Difference:** Monolith uses a warm paper and cobalt product surface and does not use a gallery, search, or member-count proof. (The original dark direction was superseded in revision 2.)
 
 **Fidelity:** approximate principle, original layout and assets.
 
@@ -146,7 +146,85 @@
 
 **Fidelity:** principle only.
 
+### Revision 2 — reuse research and selection
+
+The rebuild was preceded by a second search for actual reusable implementations, not just visual references.
+
+- **Launch UI (MIT, Copyright (c) 2024 Mikolaj Dobrucki):** selected for its Next.js 16 / Tailwind 4 / React 19 compatibility and copy-in structural primitives. Reused `Section`, `LayoutLines`, navbar/footer primitives, and the layout-line concept. Its visual hero, screenshots, glows, and copy were not reused.
+- **shadcn/ui (MIT):** selected as the single component system. Added the official `sidebar`, `command`, `sheet`, `tooltip`, and `input-group` components. This replaces the hand-built shell rather than layering another library on top.
+- **cmdk (MIT):** the command engine behind the shadcn palette, used for keyboard-first navigation.
+- **dnd-kit (MIT):** retained for the Kanban move interaction.
+- **Details.so / Design Spells / Spline / Manus / Skiper / Componentry:** studied for composition, motion, prompt-first hierarchy, and restraint. No proprietary code or assets were copied.
+- **Refero.design:** still returns only a client-rendered document shell here. No specific Refero screen is claimed as observed.
+- **21st.dev, Watermelon UI, Ruixen UI, Arc UI, Parable, UI Beats:** reviewed for discovery. Their previews were not treated as permission to copy source, and their API-key-gated registries were not added.
+
 ## 3. Visual direction
+
+### Concept: cobalt blueprint on paper
+
+The interface reads like a working project dossier rather than a dark SaaS dashboard. Warm paper surfaces, ink-black type, cobalt annotations, fine rules, and mono metadata create the identity. The product previews use the same surface and component language as the application.
+
+### Type
+
+- **Display:** Instrument Serif for marketing headlines, page titles, and large numeric statements. Italic is reserved for one emphasized phrase, not scattered decoration.
+- **UI:** Geist for controls, body copy, tables, and forms.
+- **Metadata:** Geist Mono for section numbers, timestamps, IDs, progress values, and small uppercase labels.
+- **Scale:** 10 / 11 / 12 / 13 / 14 / 16 / 20 / 24 / 32 / 40 / 56 / 72 px. Display leading is 0.92–1.02; body leading is 1.55–1.7.
+
+### Color and surfaces
+
+| Role | Value | Use |
+| --- | --- | --- |
+| Background | warm paper `oklch(0.972 0.008 85)` | Page and marketing surface |
+| Foreground | ink `oklch(0.205 0.012 75)` | Primary text |
+| Card | near-white paper `oklch(0.992 0.004 85)` | Dossiers, forms, panels |
+| Primary | cobalt `oklch(0.43 0.2 264)` | Primary actions, active nav, focus |
+| Accent | pale cobalt `oklch(0.93 0.02 255)` | Selected navigation, soft emphasis |
+| Muted | warm grey `oklch(0.49 0.012 75)` | Secondary labels and metadata |
+| Border | ink at 14% | Hairlines and structure |
+| Success | emerald 700 | Completion |
+| Warning | amber 700 | In progress, configuration notice |
+| Destructive | rose 600/700 | Overdue, delete |
+
+No purple-grey gradients, glow fields, glassmorphism, decorative blobs, or mock charts. The cobalt band is the only large color field and is used once, for the AI planner story.
+
+### Geometry and spacing
+
+- Radius: 6 px for controls, nodes, and panels; 8 px only for a few large contained surfaces; pill shapes only for status labels.
+- Layout: 4 px base unit; 8/12/16/24/32/48/64 rhythm.
+- Marketing: centered 80 rem frame with visible dashed side rules on large screens; asymmetric hero; editorial section rules.
+- Application: 16 rem collapsible sidebar, 6rem top bar, 72rem content cap, 24–40 px gutters.
+- Borders carry hierarchy; shadows are rare and shallow.
+
+### Navigation and responsive behavior
+
+- Application shell: shadcn `Sidebar` with icon collapse, cookie-backed state, mobile sheet, tooltips, and a keyboard trigger. The old custom mobile nav row is removed.
+- Header: sidebar trigger, brand on mobile, command-palette trigger, and one global New project action.
+- Command palette: `⌘K`/`Ctrl+K`, keyboard navigation, real route destinations, Radix dialog portal.
+- Marketing: sticky paper header; anchor navigation on desktop; account CTAs remain visible on mobile.
+- Breakpoints reviewed at 1440, 1024, 768, and 390 px.
+
+### Motion
+
+- Control feedback 120–160 ms; dialogs/menus/sheets 160–200 ms with origin-aware transforms.
+- Board pickup lifts with a 140 ms shadow and opacity shift; the target column gains a cobalt border; drop settles without bounce.
+- Progress only animates when a stored value changes.
+- Reduced motion collapses all durations to 0.01 ms.
+- No animation library added; CSS transitions, Radix state animations, and `tw-animate-css` are sufficient.
+
+### Component rules
+
+- Primary cobalt button: one per view where possible.
+- Secondary: paper surface with ink border.
+- Destructive: rose outline plus confirmation dialog.
+- Status uses text and color; color is never the only signal.
+- Empty states name the missing object and offer one action.
+- Loading uses content-shaped skeletons.
+- Errors preserve entered data and name the failed action.
+- Illustrative marketing data is labeled; application data comes from Supabase.
+- All menus, dialogs, and the command palette render in portals above the sticky header.
+
+## 4. Information architecture decisions
 
 ### Type
 
@@ -199,25 +277,24 @@
 
 ## 5. Implementation decisions
 
-- Preserve the existing Next.js/Supabase architecture and shadcn primitives.
-- Add `@dnd-kit` only for board dragging; keep the status select as the keyboard-accessible fallback.
-- Add the OpenAI SDK only on the server. The key never enters a client bundle.
-- Validate model output with Zod, then validate the edited plan again before persistence.
-- Persist a confirmed plan atomically through a Postgres function; generation never writes.
-- Add a per-user daily planner quota enforced in Postgres.
-- Use Vitest for schema/domain tests and Playwright for committed browser flows.
-- Do not add a general-purpose animation library for v1; CSS and Radix transitions cover the interaction needs without extra JavaScript.
+- Preserve the existing Next.js/Supabase architecture, APIs, database schema, authentication, RLS, and AI-plan persistence contract. The rebuild changes presentation and navigation only.
+- Use shadcn/ui as the single primitive layer. The official sidebar and command components replace the previous hand-built shell and add a keyboard-first navigation surface.
+- Reuse Launch UI's MIT structural primitives for marketing rhythm, with original Monolith content and product previews.
+- Keep dnd-kit for status movement and the select control as the keyboard fallback.
+- Keep Zod validation, server-only OpenAI calls, planner quota, and atomic plan confirmation unchanged.
+- Add no animation library and no second design system.
+- Ship a light paper-and-cobalt interface; retain the dark token block only as unused future groundwork, not as a hidden active theme.
 
 ## 6. Delivered in this build
 
-- Instrument Serif display type with Geist UI type and mono data labels.
-- A rebuilt public landing page built around one promise, a real HTML product preview, numbered editorial sections, and an AI-preview demonstration.
-- A shared monolith mark, graphite surfaces, 6 px radii, hairline borders, and a single violet accent.
-- Project detail with editable milestones and a milestone timeline.
-- Planner compose/review/confirm surfaces with honest unconfigured and quota states.
-- Drag-and-drop board with pickup lift, target-column emphasis, a status-select fallback, and an SSR-stable DndContext id.
-- Dashboard metrics as one hairline ledger, a due-ordered next-up rail, and a planner entry point.
-- Mobile navigation tightened to fit four destinations without clipping.
+- Rebuilt marketing page: sticky header, asymmetric serif hero, project dossier preview built from Monolith badges and progress, four-step workflow rail, cobalt AI-planner section, security ledger, final CTA, and editorial footer.
+- Replaced the application shell with the shadcn collapsible sidebar, mobile sheet, account menu, header command trigger, and global New project action.
+- Added a keyboard command palette with real workspace destinations and the archived-projects view.
+- Rethemed every application surface to warm paper with ink borders and cobalt accents, including dashboard metrics, project list/detail, milestones, board, planner, auth, dialogs, menus, toasts, loading, and error states.
+- Removed duplicate primary actions, fixed the 1024 px dashboard overflow, corrected status color contrast for light surfaces, and added an SSR-stable DnD context id.
+- Browser-reviewed at 1440, 1024, 768, and 390 px. No horizontal overflow on marketing or workspace routes.
+- Automated checks: 20 Vitest tests, 36 pgTAP tests, 8 Playwright flows, lint, typecheck, and production build.
+- Accessibility: an axe-core WCAG 2.0/2.1 A/AA scan reported zero violations across 12 page/viewport combinations and four overlays (command palette, project dialog, account menu, mobile sidebar).
 
 ## 7. What is intentionally not in v1
 
