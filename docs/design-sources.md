@@ -55,9 +55,10 @@ The license files for installed dependencies remain in `node_modules` as distrib
 
 ## 3. Fonts and assets
 
-- **Fraunces** — SIL Open Font License 1.1. Editorial display face, loaded through `next/font/google`; no font files are committed.
-- **Plus Jakarta Sans** — SIL Open Font License 1.1. Interface face, loaded through `next/font/google`; no font files are committed.
-- **JetBrains Mono** — SIL Open Font License 1.1. Metadata face, loaded through `next/font/google`; no font files are committed.
+- **Space Grotesk** — SIL Open Font License 1.1. Production display face, loaded through `next/font/google`; no font files are committed.
+- **Inter** — SIL Open Font License 1.1. Production interface face, loaded through `next/font/google`; no font files are committed.
+- **IBM Plex Mono** — SIL Open Font License 1.1. Production metadata face, loaded through `next/font/google`; no font files are committed.
+- **Concept preview fonts** — Archivo Black, Space Mono, Instrument Serif, Manrope, JetBrains Mono, Bodoni Moda, and Inter Tight, all SIL Open Font License 1.1, loaded only in `src/app/concepts/layout.tsx` through `next/font/google`. No font files are committed.
 - No stock photos, proprietary illustrations, Launch UI screenshots, or third-party brand assets are included. The Monolith mark is original SVG geometry.
 
 ## 4. License notices for copied code
@@ -206,3 +207,31 @@ Both videos were accessed at `~/Downloads` and inspected through `ffmpeg`-extrac
 - No animation dependency was added. The selected interactions use CSS transitions plus Radix/tw-animate-css.
 - No third-party dashboard screenshots were used as product previews. The landing preview is assembled from Monolith's own `Progress`, `TaskStatusBadge`, `ProjectStatusBadge`, `Button`, and typography.
 - No customer logos, testimonials, usage numbers, or fake integrations are shown.
+
+## 7. Phase 1 concept exploration (isolated previews)
+
+Three preview routes were added under `src/app/concepts` with static demo data in `src/components/concepts/demo.ts`. They are not linked from the product, are marked `noindex` in `src/app/concepts/layout.tsx`, and contain no Supabase calls or mutations. Details and screenshots are in `docs/concepts.md` and `docs/concepts/`.
+
+### Reuse in Phase 1
+
+- **None.** No component source, screenshot, illustration, or asset was copied from Details.so, Refero.design, Design Spells, Skiper UI, Componentry, Spline, Manus, the two supplied dashboard recordings, or any component marketplace.
+- The previews reuse only Monolith's own dependencies: `motion` (MIT), `lucide-react` (ISC), Tailwind CSS, and React/Next.js.
+- The supplied recordings were used as visual benchmarks for range controls, area charts, stat cards, focus-week bars, table density, and theme selection. The October 19 and October 24 patterns are adapted to project data; no inventory or profile-app features were introduced.
+
+### Concept fonts
+
+All concept typefaces are loaded through `next/font/google` inside `src/app/concepts/layout.tsx` only, so production pages do not pay for them:
+
+| Face | License | Role in previews |
+| --- | --- | --- |
+| Archivo Black | SIL OFL 1.1 | Concept A display |
+| Space Mono | SIL OFL 1.1 | Concept A interface/data |
+| Instrument Serif | SIL OFL 1.1 | Concept B display |
+| Manrope | SIL OFL 1.1 | Concept B interface |
+| JetBrains Mono | SIL OFL 1.1 | Concept B metadata |
+| Bodoni Moda | SIL OFL 1.1 | Concept C display |
+| Inter Tight | SIL OFL 1.1 | Concept C interface |
+
+### Removal before release
+
+The concept routes are internal comparison artifacts. If the chosen direction is implemented, `/concepts` should either be deleted or kept behind an authenticated, non-indexed review flag. It currently exposes only illustrative demo data and no user records.

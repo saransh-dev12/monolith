@@ -40,7 +40,11 @@ export function ThemeSwitcher({ compact = false }: { compact?: boolean }) {
             type="button"
             onClick={() => setTheme(option.value)}
             aria-pressed={selected}
-            title={`${option.label}${option.value === "system" ? ` (currently ${resolvedTheme ?? "unknown"})` : ""}`}
+            title={
+              mounted && option.value === "system" && resolvedTheme
+                ? `${option.label} (currently ${resolvedTheme})`
+                : option.label
+            }
             className={cn(
               "relative flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium transition-colors",
               selected
