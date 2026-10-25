@@ -215,8 +215,8 @@ export function WorkTable({
                         className={cn(
                           "block h-full rounded-full",
                           overdue
-                            ? "bg-gradient-to-r from-primary to-chart-1"
-                            : "bg-gradient-to-r from-chart-2 to-chart-3",
+                            ? "bg-primary"
+                            : "bg-primary/45",
                         )}
                       />
                     </span>

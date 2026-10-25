@@ -67,15 +67,16 @@ test.describe("core workspace flow", () => {
     await taskDialog.getByLabel("Priority").selectOption("high");
     await taskDialog.getByRole("button", { name: "Add task" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
-    await expect(page.getByText(taskName).first()).toBeVisible();
+    await expect(page.locator("#main").getByText(taskName).first()).toBeVisible();
 
-    await page.getByLabel(`Status for ${taskName}`).selectOption("in_progress");
+    const detailStatus = page.locator(
+      `select[aria-label="Status for ${taskName}"]:visible`,
+    );
+    await detailStatus.selectOption("in_progress");
     await expect(page.getByText("Moved to In progress.")).toBeVisible();
     await page.reload();
-    await expect(page.getByText(taskName).first()).toBeVisible();
-    await expect(page.getByLabel(`Status for ${taskName}`)).toHaveValue(
-      "in_progress",
-    );
+    await expect(page.locator("#main").getByText(taskName).first()).toBeVisible();
+    await expect(detailStatus).toHaveValue("in_progress");
 
     await page.getByRole("button", { name: "Add milestone" }).click();
     const milestoneDialog = page.getByRole("dialog");
@@ -83,7 +84,7 @@ test.describe("core workspace flow", () => {
     await milestoneDialog.getByLabel("Target date").fill("2027-02-01");
     await milestoneDialog.getByRole("button", { name: "Add milestone" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
-    await expect(page.getByText(milestoneName)).toBeVisible();
+    await expect(page.locator("#main").getByText(milestoneName)).toBeVisible();
 
     await page
       .getByRole("button", { name: `Mark ${milestoneName} complete` })
@@ -96,7 +97,9 @@ test.describe("core workspace flow", () => {
 
     await page.goto("/app/board");
     await expect(page.getByRole("heading", { name: "Board" })).toBeVisible();
-    await page.getByLabel(`Status for ${taskName}`).selectOption("done");
+    await page
+      .locator(`select[aria-label="Status for ${taskName}"]:visible`)
+      .selectOption("done");
     await expect(page.getByText("Moved to Done.")).toBeVisible();
     await page.reload();
     await expect(
@@ -228,8 +231,8 @@ test.describe("planner", () => {
 
     await page.goto(`/app/projects/${body.projectId}`);
     await expect(page.getByRole("heading", { name: projectName })).toBeVisible();
-    await expect(page.getByText(milestoneName)).toBeVisible();
-    await expect(page.getByText(taskName).first()).toBeVisible();
+    await expect(page.locator("#main").getByText(milestoneName)).toBeVisible();
+    await expect(page.locator("#main").getByText(taskName).first()).toBeVisible();
 
     const cleanup = await page.request.delete(
       `/api/projects/${body.projectId}`,

@@ -12,10 +12,8 @@ import { cn } from "@/lib/utils";
 
 const sections = [
   { href: "#story", label: "Workflow" },
-  { href: "#command", label: "Command Center" },
-  { href: "#board", label: "Board" },
-  { href: "#planner", label: "Planner" },
-  { href: "#security", label: "Security" },
+  { href: "#product", label: "Workspace" },
+  { href: "#start", label: "Start" },
 ];
 
 export function SiteHeader({ signedIn }: { signedIn: boolean }) {
@@ -31,7 +29,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
       className={cn(
         "sticky top-0 z-50 transition-colors duration-300",
         scrolled
-          ? "border-b border-border/60 bg-background/80 backdrop-blur-xl"
+          ? "border-b border-border bg-background/95"
           : "border-b border-transparent bg-transparent",
       )}
     >

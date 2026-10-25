@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {motion} from "motion/react";
+import { motion } from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
-import { Check, CornerDownLeft, Database, Sparkles } from "lucide-react";
+import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
+import { CornerDownLeft, Sparkles } from "lucide-react";
 
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
@@ -11,27 +12,33 @@ import { cn } from "@/lib/utils";
 const story = [
   {
     number: "01",
-    label: "Describe",
-    title: "Start with a sentence.",
-    body: "Write the idea in plain language and add a horizon if it matters. No template, no wizard, no required fields beyond the thing you actually want to make.",
+    label: "Idea",
+    title: "Start with the work.",
+    body: "Describe the outcome in plain language and set a horizon. No template, no wizard, no fields you do not need.",
   },
   {
     number: "02",
-    label: "Review",
+    label: "Plan",
     title: "Read the plan before it exists.",
-    body: "The planner proposes milestones and tasks as structured data. Every title, date, and priority is editable. Nothing is written while you review.",
+    body: "The planner proposes milestones and tasks as structured data. Every title, date, and priority stays editable.",
   },
   {
     number: "03",
-    label: "Confirm",
-    title: "One explicit save.",
-    body: "Confirmation writes the project, milestones, and tasks in a single Postgres transaction. A failed insert saves nothing — there is no half-created project.",
+    label: "Tasks",
+    title: "Break the plan into moves.",
+    body: "Milestones become tasks with an owner, a due date, and a priority. The board is the same plan, not a second system.",
   },
   {
     number: "04",
-    label: "Execute",
+    label: "Execution",
     title: "Work moves; progress follows.",
-    body: "Drag or use the status menu. Each change persists first, then the board, charts, and project progress update from the same records.",
+    body: "Drag a card or use the status menu. The change persists first, then the board and charts update from the same records.",
+  },
+  {
+    number: "05",
+    label: "Progress",
+    title: "Only what the records prove.",
+    body: "Completion, overdue work, and project progress are derived from stored rows. No fabricated velocity and no mood-board metrics.",
   },
 ] as const;
 
@@ -62,6 +69,7 @@ function IdeaVisual() {
 }
 
 function PlanVisual() {
+  const reduce = useReducedMotion();
   const milestones = [
     ["Activation map approved", "4 tasks"],
     ["Guided checklist shipped", "6 tasks"],
@@ -71,8 +79,17 @@ function PlanVisual() {
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
       <div className="flex items-center justify-between">
         <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-          <Sparkles className="size-3 text-chart-2" aria-hidden="true" />
-          AI draft
+          <Sparkles className="size-3 text-primary" aria-hidden="true" />
+          {reduce ? (
+            "AI draft"
+          ) : (
+            <TextShimmer
+              duration={2.2}
+              className="[--base-color:#a5a09a] [--base-gradient-color:#f4f0e8] dark:[--base-color:#a5a09a] dark:[--base-gradient-color:#f4f0e8]"
+            >
+              AI draft
+            </TextShimmer>
+          )}
         </span>
         <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
           Not saved
@@ -97,31 +114,75 @@ function PlanVisual() {
   );
 }
 
-function ConfirmVisual() {
+function TasksVisual() {
+  const tasks = [
+    ["Map activation moments", "In progress", "High"],
+    ["Wire empty-state checklist", "To do", "Medium"],
+    ["Instrument step completion", "Done", "Low"],
+  ];
+  return (
+    <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
+      <div className="flex items-center justify-between">
+        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+          Tasks · saved plan
+        </p>
+        <span className="font-mono text-[9px] text-muted-foreground">03</span>
+      </div>
+      <ul className="mt-3 divide-y divide-border/60 rounded-xl border border-border/60 bg-card/40">
+        {tasks.map(([title, status, priority], index) => (
+          <li key={title} className="flex items-center gap-3 px-3 py-3">
+            <span
+              className={cn(
+                "grid size-5 shrink-0 place-items-center rounded-full border text-[8px]",
+                index === 2
+                  ? "border-chart-3/50 bg-chart-3/10 text-chart-3"
+                  : "border-border/70 text-muted-foreground",
+              )}
+            >
+              {index + 1}
+            </span>
+            <span className="min-w-0 flex-1 truncate text-xs">{title}</span>
+            <span className="font-mono text-[8px] uppercase tracking-[0.08em] text-muted-foreground">
+              {priority}
+            </span>
+            <span className="hidden font-mono text-[8px] uppercase tracking-[0.08em] text-primary sm:inline">
+              {status}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ProgressVisual() {
   return (
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
       <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-        Confirmation
+        Progress · derived
       </p>
-      <p className="mt-3 text-sm leading-6">
-        Save <strong className="font-semibold">Activation onboarding</strong> with 3
-        milestones and 13 tasks?
+      <p className="mt-3 font-display text-5xl leading-none tracking-[-0.04em]">
+        54<span className="text-primary">%</span>
       </p>
-      <ul className="mt-3 space-y-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-        <li className="flex items-center gap-2">
-          <Database className="size-3 text-chart-2" aria-hidden="true" />
-          Single transaction
-        </li>
-        <li className="flex items-center gap-2">
-          <Check className="size-3 text-chart-3" aria-hidden="true" />
-          Owner from verified claims
-        </li>
-      </ul>
-      <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
-        <span className="text-[10px] text-muted-foreground">You can cancel here</span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
-          Confirm &amp; save
-        </span>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Seven of thirteen tasks complete
+      </p>
+      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-muted">
+        <div className="h-full w-[54%] rounded-full bg-gradient-to-r from-[var(--chart-4)] via-primary to-chart-2" />
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        {[
+          ["Open", "06"],
+          ["Overdue", "01"],
+          ["Done", "07"],
+        ].map(([label, value]) => (
+          <div key={label} className="rounded-lg border border-border/60 bg-card/40 p-2.5">
+            <p className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+              {label}
+            </p>
+            <p className="mt-1 font-display text-xl leading-none">{value}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -179,7 +240,7 @@ function ExecuteVisual() {
   );
 }
 
-const visuals = [IdeaVisual, PlanVisual, ConfirmVisual, ExecuteVisual];
+const visuals = [IdeaVisual, PlanVisual, TasksVisual, ExecuteVisual, ProgressVisual];
 
 export function WorkflowStory() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -207,7 +268,7 @@ export function WorkflowStory() {
         const trigger = ScrollTrigger.create({
           trigger: stageRef.current,
           start: "top 64px",
-          end: "+=190%",
+          end: "+=150%",
           pin: true,
           scrub: true,
           anticipatePin: 1,
@@ -241,13 +302,13 @@ export function WorkflowStory() {
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
               The workflow
             </p>
-            <h2 className="mt-3 max-w-2xl font-display text-5xl leading-[0.9] tracking-[-0.02em] sm:text-6xl">
+            <h2 className="mt-3 max-w-2xl font-display text-5xl font-bold uppercase leading-[0.88] tracking-[-0.045em] sm:text-6xl">
               Idea to shipped work,{" "}
-              <span className="italic text-chart-2">without the handoff.</span>
+              <span className="text-primary">without the handoff.</span>
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-            Four states, one object. The plan you review is the board you run,
+            Five states, one object. The plan you review is the board you run,
             and the progress you read is the same data.
           </p>
         </div>
@@ -283,7 +344,7 @@ export function WorkflowStory() {
                           </span>
                           <h3
                             className={cn(
-                              "font-display text-3xl leading-none transition-colors",
+                              "font-display text-3xl font-semibold leading-none tracking-[-0.02em] transition-colors",
                               isActive ? "text-foreground" : "text-muted-foreground/50",
                             )}
                           >
@@ -368,7 +429,7 @@ export function WorkflowStory() {
             >
               <div className="flex items-baseline gap-3">
                 <span className="font-mono text-[10px] text-primary">{item.number}</span>
-                <h3 className="font-display text-2xl leading-none">{item.title}</h3>
+                <h3 className="font-display text-2xl font-semibold leading-none tracking-[-0.02em]">{item.title}</h3>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
               <div className="mt-4">

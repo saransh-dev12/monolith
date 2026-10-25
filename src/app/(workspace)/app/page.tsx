@@ -243,12 +243,12 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-card via-card to-chart-2/15 p-5">
+          <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-card via-card to-primary/10 p-5">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -right-8 -top-10 size-32 rounded-full bg-chart-1/20 blur-2xl"
             />
-            <Sparkles className="relative size-4 text-chart-2" aria-hidden="true" />
+            <Sparkles className="relative size-4 text-primary" aria-hidden="true" />
             <h2 className="relative mt-3 font-display text-2xl leading-none">
               Start from an idea
             </h2>

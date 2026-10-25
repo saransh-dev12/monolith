@@ -33,7 +33,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
         <Progress
           value={project.progress.percent}
           aria-label={`${project.name} progress`}
-          className="[&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-chart-2 [&>[data-slot=progress-indicator]]:to-chart-3"
+          className="[&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-primary [&>[data-slot=progress-indicator]]:to-chart-2"
         />
       </div>
 

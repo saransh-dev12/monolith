@@ -1,4 +1,14 @@
-# Monolith design direction
+**Status:** Phase 3, "Ember Obsidian" — the production direction mandated after the Atelier phase. Obsidian `#080808` canvas, charcoal `#111111`/`#191919` surfaces, warm-white `#F4F0E8` type, molten `#FF5429`/`#A92316` accent, hairline `#30302E` borders. Syne (display) + Inter Tight (interface) + JetBrains Mono (metadata), all SIL OFL 1.1. No purple/blue gradients, no endless feature-card grids, no generic glass cards. The Atelier and concept records below remain as the audit trail; where they conflict with Ember Obsidian, this section wins. Source provenance and the mandatory implementation matrix are in `docs/design-source-implementation-matrix.md`.
+
+## Phase 3 implementation — Ember Obsidian
+
+- **Canvas and surfaces:** near-black background, three tonal surface steps, 1px hairlines, restrained ember illumination. `glass-card` is now a solid charcoal panel, not a translucent gradient; `ember-field` is the only atmospheric glow utility.
+- **Typography:** Syne 700–800 for hero/page/detail display, Inter Tight for interface/body, JetBrains Mono for metadata. Display is uppercase and tightly tracked; workspace page titles use the same voice as the landing page.
+- **Accent:** `#FF5429` is the primary action and data signal. `#A92316` is the deep ember used in the sidebar mark and gradient ends. Peach, sage, amber, and clay are supporting data tones—never purple or blue.
+- **Landing:** concise four-part page: hero + large product preview; five-step Idea → Plan → Tasks → Execution → Progress sequence; three-view product tour (Command/Board/Planner); closing CTA. Aceternity Spotlight, Magic UI Shine Border, React Bits SpotlightCard/ClickSpark, GSAP, and Lenis are integrated into one system.
+- **Workspace:** Syne page titles, ember sidebar mark, molten active navigation, tonal panels, animated metric numbers (Magic UI Number Ticker), focused board, project detail/work table, preserved planner and milestone flows.
+- **Motion:** GSAP owns the pinned workflow and split headings; Lenis owns public smooth scroll; Motion owns UI, dialogs, tabs, drag and charts; Anime.js owns a scoped milestone completion pulse; Motion Primitives Text Shimmer marks draft generation/AI-draft states. Reduced motion is honored in every layer.
+- **Source rule:** the landing page is not a museum of component demos. Each sourced effect is adapted into the same obsidian/ember layout and typography.
 
 **Status:** Phase 2, "Kinetic Digital Atelier" — the selected Concept B, now implemented across the marketing site and authenticated product. Instrument Serif (display) + Manrope (interface/headings) + JetBrains Mono (metadata) via `next/font/google` (all SIL OFL 1.1); dark-first "after-hours atelier" surfaces with a daylight atelier light theme; coral `--primary`/`--chart-1`, lilac `--chart-2`, mint `--chart-3`, sky `--chart-4`, amber `--chart-5`. Sections below describing revisions 3–5 are retained as the audit trail; where they conflict with this Phase 2 section, Phase 2 wins. See `docs/design-sources.md` for licenses and exact reuse.
 

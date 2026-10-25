@@ -263,8 +263,8 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
                 className={cn(
                   "block w-full rounded-full",
                   isToday
-                    ? "bg-gradient-to-t from-[var(--chart-1)] to-[var(--chart-2)]"
-                    : "bg-[var(--chart-2)]/30",
+                    ? "bg-primary"
+                    : "bg-chart-2/45",
                 )}
               />
               <span className="font-mono text-[9px] text-muted-foreground">

@@ -118,7 +118,7 @@ export default async function ProjectDetailPage(
         <Progress
           value={percent}
           aria-label={`${project.name} progress`}
-          className="h-1.5 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-chart-1 [&>[data-slot=progress-indicator]]:to-chart-3"
+          className="h-1.5 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-primary [&>[data-slot=progress-indicator]]:to-chart-2"
         />
       </section>
 

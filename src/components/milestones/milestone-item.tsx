@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CalendarDays,
@@ -10,6 +10,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import { animate } from "animejs";
 import { toast } from "sonner";
 
 import { MilestoneDialog } from "@/components/milestones/milestone-dialog";
@@ -42,6 +43,33 @@ export function MilestoneItem({
   const router = useRouter();
   const completed = Boolean(milestone.completed_at);
   const targetDate = formatDate(milestone.target_date);
+  const rowRef = useRef<HTMLLIElement>(null);
+  const wasCompleted = useRef(completed);
+
+  useEffect(() => {
+    if (
+      completed &&
+      !wasCompleted.current &&
+      rowRef.current &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      animate(rowRef.current, {
+        backgroundColor: ["rgba(255,84,41,0.14)", "rgba(255,84,41,0)"],
+        duration: 900,
+        ease: "out(3)",
+      });
+      const dot = rowRef.current.querySelector("[data-milestone-dot]");
+      if (dot) {
+        animate(dot, {
+          scale: [1, 1.35, 1],
+          rotate: [0, 12, 0],
+          duration: 620,
+          ease: "out(3)",
+        });
+      }
+    }
+    wasCompleted.current = completed;
+  }, [completed]);
 
   async function toggleCompleted() {
     setPending(true);
@@ -74,9 +102,10 @@ export function MilestoneItem({
   }
 
   return (
-    <li className="flex items-start gap-3 px-4 py-3">
+    <li ref={rowRef} className="flex items-start gap-3 px-4 py-3">
       <button
         type="button"
+        data-milestone-dot
         onClick={toggleCompleted}
         disabled={pending || deleting}
         aria-label={

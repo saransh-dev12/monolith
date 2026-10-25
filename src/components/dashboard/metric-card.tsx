@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
 import { MetricLift } from "@/components/dashboard/metric-lift";
+import { NumberTicker } from "@/components/ui/number-ticker";
 import { cn } from "@/lib/utils";
 
 export function MetricCard({
@@ -33,8 +34,15 @@ export function MetricCard({
           <Icon className="size-4" aria-hidden="true" />
         </span>
       </div>
-      <p className="mt-3 font-display text-5xl leading-none tracking-[-0.02em] text-foreground tabular-nums">
-        {value}
+      <p
+        className="mt-3 font-display text-5xl leading-none tracking-[-0.03em] text-foreground"
+        aria-label={`${label}: ${value}`}
+      >
+        <NumberTicker
+          value={value}
+          className="font-display text-5xl leading-none tracking-[-0.03em] text-foreground"
+          aria-hidden="true"
+        />
       </p>
       <p
         className={cn(

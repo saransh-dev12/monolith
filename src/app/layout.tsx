@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, JetBrains_Mono, Manrope } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Syne } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 import { MotionProvider } from "@/components/motion/motion-provider";
@@ -8,20 +8,20 @@ import { getSiteUrl } from "@/lib/env";
 
 import "./globals.css";
 
-const instrument = Instrument_Serif({
-  variable: "--font-atelier-display",
-  weight: "400",
-  style: ["normal", "italic"],
+const syne = Syne({
+  variable: "--font-mol-display",
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
 });
 
-const manrope = Manrope({
-  variable: "--font-atelier-sans",
+const interTight = Inter_Tight({
+  variable: "--font-mol-sans",
   subsets: ["latin"],
 });
 
 const jetbrains = JetBrains_Mono({
-  variable: "--font-atelier-mono",
+  variable: "--font-mol-mono",
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
 });
 
@@ -39,8 +39,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: "dark light",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f1fa" },
-    { media: "(prefers-color-scheme: dark)", color: "#08060f" },
+    { media: "(prefers-color-scheme: light)", color: "#efede7" },
+    { media: "(prefers-color-scheme: dark)", color: "#080808" },
   ],
 };
 
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${instrument.variable} ${manrope.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${syne.variable} ${interTight.variable} ${jetbrains.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full bg-background text-foreground">

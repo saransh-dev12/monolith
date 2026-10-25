@@ -11,7 +11,7 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
       >
         Skip to content
       </a>
-      <div className="atelier-aurora relative hidden flex-col justify-between overflow-hidden border-r border-border/60 bg-[var(--accent-panel)] p-12 text-foreground lg:flex">
+      <div className="ember-field relative hidden flex-col justify-between overflow-hidden border-r border-border/60 bg-[var(--accent-panel)] p-12 text-foreground lg:flex">
         <Link href="/" aria-label="Monolith home">
           <Wordmark />
         </Link>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -22,12 +23,14 @@ export function EmptyState({
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-0 size-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-chart-2/15 blur-3xl"
       />
-      <span
+      <Image
+        src="/assets/3dicons/folder-color.png"
+        alt=""
+        width={400}
+        height={400}
+        className="relative size-20 drop-shadow-[0_18px_28px_rgba(0,0,0,0.45)]"
         aria-hidden="true"
-        className="relative grid size-10 place-items-center rounded-full border border-border/70 bg-card text-primary"
-      >
-        <span className="size-1.5 rounded-full bg-primary" />
-      </span>
+      />
       <h2 className="relative mt-4 font-display text-2xl leading-none">{title}</h2>
       <p className="relative mt-2 max-w-md text-sm leading-6 text-muted-foreground">
         {description}

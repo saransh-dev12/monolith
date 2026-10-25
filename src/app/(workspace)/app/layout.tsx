@@ -59,7 +59,7 @@ export default async function WorkspaceLayout({
           <div className="relative flex-1">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(48rem_18rem_at_18%_-20%,var(--atelier-glow),transparent_70%)]"
+              className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(48rem_18rem_at_18%_-20%,var(--ember-glow),transparent_70%)]"
             />
             <div className="relative mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
               <RouteTransition>{children}</RouteTransition>

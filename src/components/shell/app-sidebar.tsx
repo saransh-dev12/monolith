@@ -55,7 +55,7 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg" tooltip="Monolith">
               <Link href="/app">
-                <span className="grid size-8 shrink-0 place-items-center rounded-[0.7rem] bg-gradient-to-br from-chart-1 to-chart-2 text-[#160c1c] shadow-[0_8px_24px_-12px_var(--color-primary)]">
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-chart-4 text-[#160704] shadow-[0_8px_24px_-12px_var(--color-primary)]">
                   <MonolithMark />
                 </span>
                 <span className="grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
@@ -98,7 +98,7 @@ export function AppSidebar({
                             <motion.span
                               layoutId="workspace-nav-active"
                               transition={{ type: "spring", stiffness: 500, damping: 36 }}
-                              className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/20 to-chart-2/10 ring-1 ring-primary/30"
+                              className="absolute inset-0 rounded-lg bg-primary/12 ring-1 ring-primary/30"
                               aria-hidden="true"
                             />
                           ) : null}

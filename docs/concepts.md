@@ -75,7 +75,7 @@ Three working previews were built under `/concepts` with isolated, illustrative 
 
 **C · Neo-Editorial Control Room** is the recommended direction. It moves furthest from the rejected amber-on-cream system while giving the product a memorable voice and the best legibility in dense operational screens. Its bone/ink/oxblood palette with an ultramarine focus signal is distinctive without being decorative, and it adapts the supplied chart, table, and range patterns most naturally. A is the boldest and cheapest to ship; B is the most immersive but carries the highest contrast and performance risk for daily task work.
 
-**Selection:** **B · Kinetic Digital Atelier** was selected. Phase 2 implemented it across the landing page and authenticated product. All three previews remain available at `/concepts` (noindex, unlinked, static demo data only) as comparison artifacts; the production interface now uses the Atelier system. See `docs/design-direction.md` and `docs/design-sources.md` §8 for the production record.
+**Selection:** **B · Kinetic Digital Atelier** was selected for the concept gate and Phase 2. The later Ember Obsidian mandate replaced its visual system in production while retaining the motion architecture; the concept previews remain available as exploration artifacts. All three previews remain available at `/concepts` (noindex, unlinked, static demo data only) as comparison artifacts; the production interface now uses the Atelier system. See `docs/design-direction.md` and `docs/design-sources.md` §8 for the production record.
 
 ## Motion personalities (addendum)
 

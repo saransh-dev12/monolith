@@ -14,7 +14,7 @@ test.describe("motion toolkit", () => {
     await expect(page.locator("html")).toHaveClass(/lenis/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveAttribute(
       "aria-label",
-      "Ideas, given form.",
+      "Ideas don't ship. Execution does.",
     );
 
     await page.getByRole("link", { name: "Workflow" }).click();
@@ -37,7 +37,7 @@ test.describe("motion toolkit", () => {
     );
 
     const labels: string[] = [];
-    for (const delta of [0, 700, 1100, 1500]) {
+    for (const delta of [0, 300, 520, 740, 960, 1180, 1400]) {
       await page.evaluate(
         ({ y, offset }) => window.scrollTo(0, y + offset),
         { y: storyY, offset: delta },
@@ -48,9 +48,23 @@ test.describe("motion toolkit", () => {
       );
     }
 
-    expect(labels).toContain("Review");
-    expect(labels).toContain("Confirm");
-    expect(labels).toContain("Execute");
+    expect(labels).toContain("Plan");
+    expect(labels).toContain("Tasks");
+    expect(labels).toContain("Execution");
+    expect(labels).toContain("Progress");
+
+    await page.getByRole("tab", { name: "Board" }).click();
+    await expect(
+      page.getByText("Click a card to advance", { exact: false }).first(),
+    ).toBeVisible();
+    await page.getByRole("tab", { name: "Planner" }).click();
+    await expect(
+      page.getByText("Community run club", { exact: false }).first(),
+    ).toBeVisible();
+    await page.getByRole("tab", { name: "Command" }).click();
+    await expect(
+      page.getByText("Completion pulse", { exact: false }).first(),
+    ).toBeVisible();
     expect(errors).toEqual([]);
   });
 
@@ -90,7 +104,7 @@ test.describe("motion toolkit", () => {
     await expect(
       reducedPage
         .getByText(
-          "Confirmation writes the project, milestones, and tasks in a single Postgres transaction.",
+          "Only what the records prove.",
         )
         .first(),
     ).toBeVisible();

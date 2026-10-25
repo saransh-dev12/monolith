@@ -15,6 +15,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
+import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -77,6 +80,7 @@ export function PlannerWorkspace({
   initialQuota: Quota;
 }) {
   const [plan, setPlan] = useState<PlannerPreview | null>(null);
+  const reduce = useReducedMotion();
   const [quota, setQuota] = useState<Quota>(initialQuota);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -304,7 +308,20 @@ export function PlannerWorkspace({
               ) : (
                 <Sparkles className="size-4" aria-hidden="true" />
               )}
-              {generating ? "Building a draft" : "Generate draft"}
+              {generating ? (
+                reduce ? (
+                  "Building a draft"
+                ) : (
+                  <TextShimmer
+                    duration={1.4}
+                    className="[--base-color:#8f8880] [--base-gradient-color:#f4f0e8] dark:[--base-color:#8f8880] dark:[--base-gradient-color:#f4f0e8]"
+                  >
+                    Building a draft
+                  </TextShimmer>
+                )
+              ) : (
+                "Generate draft"
+              )}
             </Button>
             <p className="text-xs text-muted-foreground">
               Draft only. Nothing is written to your workspace yet.

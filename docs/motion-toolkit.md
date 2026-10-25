@@ -11,6 +11,10 @@ Phase 2 addendum: GSAP, Lenis, and selected React Bits components. This document
 | Motion for React | Route transitions, reveals, dialogs, menus, board drag/lift, chart state transitions, studio demo step changes | Scroll progress or pinned choreography |
 | CSS/Tailwind | Hover/press/focus states, reduced-motion resets, spotlight surface, simple state transitions | Anything already owned by GSAP, Lenis, or Motion |
 | React Bits (adapted) | Pointer spotlight on the studio preview; click spark on primary marketing CTAs | Page layout, scroll, or product state |
+| Aceternity Spotlight | One-shot hero light beam | Layout, scroll, product state |
+| Magic UI | Number counting in metrics; shine border on hero/CTA | Layout, scroll, product state |
+| Anime.js | One scoped milestone-completion pulse | Scroll, layout, dialogs, charts, or general UI |
+| Motion Primitives Text Shimmer | AI-draft and planner-generating labels | Scroll, layout, or general UI |
 
 No two layers animate the same property on the same element. The one deliberate composition is the StudioHero: Motion owns the panel entrance/tilt, SpotlightSurface owns only a background overlay, and ClickSpark owns only its canvas.
 
@@ -95,7 +99,7 @@ Tested against the running dev server in Chromium.
 - **Reduced motion:** Lenis absent, GSAP skipped, all workflow/concept details visible, zero hydration/console errors.
 - **Concepts:** all three routes at 1440 and 390; Lenis active; motion study counters advance to `03 / 03`; zero overflow/errors. Reduced-motion concept details computed at `0.6` opacity (visible).
 - **Navigation:** landing → Workflow anchor (`#story`) updates the hash and scrolls; direct `/#story` lands at the story; back returns to `/`; workspace routes have no Lenis class; concept A → B → C → A leaves one Lenis instance and no errors.
-- **Performance (headless Chromium, 1440):** CLS `0.0081`, no long tasks recorded during a full scroll, ~25 MB JS heap after load/scroll. No continuous shader, pointer RAF loop, or perpetual animation was added.
+- **Performance (production build, headless Chromium, 1440):** CLS `0.0044`, no long tasks recorded during a full scroll, ~10 MB JS heap after load/scroll. No shader or pointer RAF loop was added. ShineBorder and TextShimmer are cheap CSS/Motion loops and are disabled or replaced under reduced motion.
 - **Known trade-offs:** pinning is desktop-only to protect small-screen layouts; ClickSpark is limited to primary CTAs rather than every click; the spotlight is a single composited gradient rather than a full pointer simulation.
 - **Checks:** lint, typecheck, Vitest 20/20, Playwright 12/12, production build pass.
 
@@ -104,3 +108,19 @@ Tested against the running dev server in Chromium.
 - **GSAP** — Standard "no charge" license, https://gsap.com/standard-license. GSAP states it is free for everyone, including commercial use, under that license. Copyright GreenSock/Webflow.
 - **Lenis** — MIT, Copyright (c) 2024 darkroom.engineering, https://github.com/darkroomengineering/lenis/blob/main/LICENSE.
 - **React Bits** — MIT + Commons Clause, Copyright (c) 2026 David Haz, https://github.com/DavidHDev/react-bits/blob/main/LICENSE.md. Adapted components retain the notice in their headers. Not redistributed as a standalone component library.
+
+
+## Ember Obsidian update
+
+The visual system was replaced after the motion pass. The ownership above still applies; the tokens, typefaces, and surfaces changed.
+
+- **GSAP** retains the hero SplitText, the five-step pinned workflow (`+=150%`), and concept studies. The production hero now uses Syne and an obsidian/ember surface.
+- **Lenis** remains public-only at `0.08` on the landing page and concept-specific lerps.
+- **React Bits** SpotlightSurface remains on the StudioHero preview; ClickSpark remains on primary CTAs.
+- **Anime.js 4.2.2** (MIT) is now used only for the milestone completion pulse in `src/components/milestones/milestone-item.tsx`. It is skipped under reduced motion and owns no other properties.
+- **Motion Primitives Text Shimmer** (MIT, `src/components/motion-primitives/text-shimmer.tsx`) marks the AI-draft label in the workflow and the planner generating label. The planner path is conditionally disabled because OpenAI is not configured in this environment; the landing label is exercised in the browser.
+- **Magic UI Number Ticker** (MIT) owns metric-number counting in the Command Center; **Shine Border** owns the hero/CTA border; **Aceternity Spotlight** owns the hero beam.
+- **3dicons** folder asset is used in the shared empty state.
+- Retained: Motion for route/tab/dialog/board/chart transitions; dnd-kit for drag; CSS for hover/press/focus.
+
+Reduced-motion checks were rerun after the Ember change: Lenis is absent, GSAP is skipped, all workflow details remain visible, the static labels replace shimmer, and Anime.js does not run.

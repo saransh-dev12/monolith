@@ -9,7 +9,7 @@ This document records the reference-first research and the libraries, components
 - **Source:** https://github.com/launch-ui/launch-ui
 - **License:** MIT
 - **Copyright:** Copyright (c) 2024 Mikolaj Dobrucki
-- **Used in:** `src/components/marketing/foundation.tsx`, `src/app/page.tsx`, `src/app/globals.css` (`max-w-container` utility).
+- **Used in:** `src/components/marketing/foundation.tsx` and `src/app/globals.css` (`max-w-container` utility) in earlier revisions. The Ember Obsidian landing no longer imports the Launch UI primitives; they remain in the repository as part of the audit trail.
 - **What was reused:** the `Section`, `LayoutLines`, `Navbar`/`NavbarLeft`/`NavbarRight`, and footer primitive composition, plus the structural layout-line idea. These were adapted for Monolith's dark surface, spacing, and content.
 - **What was not reused:** Launch UI screenshots, dashboard images, logos, the glow/beam effects, its centered gradient hero, and its demo copy. Monolith's hero, product dossier, workflow rail, AI section, security section, and previews are original compositions using shared product components.
 - **Changes:** light-only branches and gradient/glass helpers were not used. The primitives were reduced to the parts needed for Monolith's dark layout and spacing system.
@@ -42,6 +42,9 @@ This document records the reference-first research and the libraries, components
 | `lucide-react` | 1.61.0 | ISC | Icons |
 | `sonner` | 2.0.8 | MIT (Copyright (c) 2023 Emil Kowalski) | Toast feedback |
 | `motion` | 14.6.0 | MIT | Shared animation system (`motion/react`) |
+| `gsap` / `@gsap/react` | 3.15.0 / 2.1.2 | GSAP standard "no charge" | Pinned scroll, SplitText, hero/workflow choreography |
+| `lenis` | 1.3.27 | MIT | Public smooth scrolling |
+| `animejs` | 4.2.2 | MIT | Milestone completion pulse only |
 | `class-variance-authority` | 0.7.1 | Apache-2.0 | Component variants |
 | `cn` | 0.5.0 | MIT (shadcn) | Class-name merge utility used by shadcn components |
 | `tw-animate-css` | 1.4.0 | MIT (Copyright (c) 2025 Wombosvideo) | Radix enter/exit animation utilities |
@@ -55,9 +58,9 @@ The license files for installed dependencies remain in `node_modules` as distrib
 
 ## 3. Fonts and assets
 
-- **Space Grotesk** — SIL Open Font License 1.1. Production display face, loaded through `next/font/google`; no font files are committed.
-- **Inter** — SIL Open Font License 1.1. Production interface face, loaded through `next/font/google`; no font files are committed.
-- **IBM Plex Mono** — SIL Open Font License 1.1. Production metadata face, loaded through `next/font/google`; no font files are committed.
+- **Syne** — SIL Open Font License 1.1. Production display face for Ember Obsidian, loaded through `next/font/google`; no font files are committed.
+- **Inter Tight** — SIL Open Font License 1.1. Production interface face, loaded through `next/font/google`; no font files are committed.
+- **JetBrains Mono** — SIL Open Font License 1.1. Production metadata face, loaded through `next/font/google`; no font files are committed.
 - **Concept preview fonts** — Archivo Black, Space Mono, Instrument Serif, Manrope, JetBrains Mono, Bodoni Moda, and Inter Tight, all SIL Open Font License 1.1, loaded only in `src/app/concepts/layout.tsx` through `next/font/google`. No font files are committed.
 - No stock photos, proprietary illustrations, Launch UI screenshots, or third-party brand assets are included. The Monolith mark is original SVG geometry.
 
@@ -220,7 +223,7 @@ Three preview routes were added under `src/app/concepts` with static demo data i
 
 ### Concept fonts
 
-Concept typefaces are loaded through `next/font/google` inside `src/app/concepts/layout.tsx`. Instrument Serif, Manrope, and JetBrains Mono were later moved into the production root layout for Phase 2; Archivo Black, Space Mono, Bodoni Moda, and Inter Tight remain concept-only:
+Concept typefaces are loaded through `next/font/google` inside `src/app/concepts/layout.tsx`. Production now uses Syne, Inter Tight, and JetBrains Mono from the root layout; Archivo Black, Space Mono, Instrument Serif, Manrope, Bodoni Moda, and Inter Tight remain available only to the concept previews:
 
 | Face | License | Role in previews |
 | --- | --- | --- |
@@ -272,3 +275,18 @@ GSAP, Lenis, and selected React Bits components were researched, licensed, and i
 - **GSAP 3.15.0** — Standard "no charge" license; ScrollTrigger, SplitText, and the React `useGSAP` integration. Used for hero typography, the pinned marketing workflow, and three concept motion studies.
 - **Lenis 1.3.27** — MIT; public marketing and concept previews only, synced to GSAP's ticker using the official integration. Not used in the authenticated workspace.
 - **React Bits** — MIT + Commons Clause; adapted `SpotlightCard` and `ClickSpark` for the Atelier surface and CTAs. Attribution remains in the component headers; no standalone redistribution.
+
+
+## 10. Ember Obsidian source pass
+
+The mandatory catalog was investigated and recorded in `docs/design-source-implementation-matrix.md`. New actual implementations:
+
+- **Aceternity UI Spotlight** — installed from the public Aceternity registry; `src/components/ui/spotlight.tsx`, used in the hero. Free commercial use under the Aceternity license; no redistribution.
+- **Magic UI Number Ticker / Shine Border** — installed from the Magic UI registry; metric animation and hero/CTA border. MIT.
+- **Motion Primitives Text Shimmer** — installed through its CLI and adapted; planner generation and landing AI-draft labels. MIT.
+- **Anime.js** — milestone completion pulse only; MIT.
+- **3dicons folder/rocket** — CC0 assets in `public/assets/3dicons/`, used in the empty state.
+- **shadcn/ui Tabs** — the real tab primitive behind the landing product tour.
+- **GSAP / Lenis / React Bits** — retained from the prior motion pass with the ownership documented in `docs/motion-toolkit.md`.
+
+Blocked or rejected sources are recorded honestly in the matrix: Refero's gated screens, 21st.dev's API-key registry, Uiverse's Cloudflare block, MicroKit's unavailable source, mapcn's lack of product fit, Liquid Glass's conflict with the art direction, and Kitbitz's illustration style mismatch.
