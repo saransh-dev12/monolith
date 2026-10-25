@@ -76,3 +76,15 @@ Three working previews were built under `/concepts` with isolated, illustrative 
 **C · Neo-Editorial Control Room** is the recommended direction. It moves furthest from the rejected amber-on-cream system while giving the product a memorable voice and the best legibility in dense operational screens. Its bone/ink/oxblood palette with an ultramarine focus signal is distinctive without being decorative, and it adapts the supplied chart, table, and range patterns most naturally. A is the boldest and cheapest to ship; B is the most immersive but carries the highest contrast and performance risk for daily task work.
 
 **Selection:** **B · Kinetic Digital Atelier** was selected. Phase 2 implemented it across the landing page and authenticated product. All three previews remain available at `/concepts` (noindex, unlinked, static demo data only) as comparison artifacts; the production interface now uses the Atelier system. See `docs/design-direction.md` and `docs/design-sources.md` §8 for the production record.
+
+## Motion personalities (addendum)
+
+Each concept now includes a live GSAP scroll study, Lenis with a distinct lerp, and a GSAP SplitText hero; all three respect reduced motion and keep content visible.
+
+| Concept | Lenis | Scroll sequence | Additional motion |
+| --- | --- | --- | --- |
+| A · Brutalism | 0.16, snappy | Pinned ledger with hard `clipPath` wipes and linear scrub | ClickSpark on the primary CTA |
+| B · Atelier | 0.075, cinematic | Pinned layered idea → plan → board stack | SpotlightCard surface + ClickSpark |
+| C · Editorial | 0.12, measured | Pinned columns sliding like a turned spread | ClickSpark on the primary CTA |
+
+The production site uses B's motion language: 0.085 Lenis, a GSAP-pinned 190% workflow, SplitText hero, SpotlightCard studio preview, and ClickSpark CTA. Details and verification are in `docs/motion-toolkit.md`.

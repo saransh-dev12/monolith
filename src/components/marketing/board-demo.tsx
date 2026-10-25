@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import {motion} from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowDownRight, GripVertical } from "lucide-react";
 
 import { cn } from "@/lib/utils";

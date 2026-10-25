@@ -223,6 +223,22 @@
 }
 
 @layer base {
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
   html {
     color-scheme: light dark;
     scrollbar-color: var(--color-muted) transparent;
@@ -285,6 +301,33 @@
 
 @utility atelier-rule {
   border-color: color-mix(in oklab, var(--color-border) 70%, transparent);
+}
+
+@utility spotlight-surface {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: var(--spot-opacity, 0);
+    background: radial-gradient(
+      18rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      color-mix(in oklab, var(--spot-color, var(--color-chart-1)) 20%, transparent),
+      transparent 68%
+    );
+    mix-blend-mode: screen;
+    transition: opacity 240ms ease;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 @utility text-glow {

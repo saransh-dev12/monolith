@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import {motion} from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import {
@@ -12,6 +13,10 @@ import {
   demoStatusOrder,
   demoTasks,
 } from "@/components/concepts/demo";
+import { ConceptMotionStudy } from "@/components/concepts/motion-study";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { SplitHeading } from "@/components/motion/split-heading";
+import { ClickSpark } from "@/components/reactbits/click-spark";
 import { cn } from "@/lib/utils";
 import type { TaskStatus } from "@/types/database";
 
@@ -114,6 +119,7 @@ export default function EditorialPage() {
   const windowSeries = demoSeries.slice(-windowDays);
 
   return (
+    <SmoothScroll lerp={0.12}>
     <div style={palette} className="bg-[var(--e-paper)] font-[family-name:var(--font-editorial-sans)] text-[var(--e-ink)]">
       {/* MASTHEAD */}
       <header className="border-b-2 border-[var(--e-ink)] bg-[var(--e-paper)]">
@@ -174,15 +180,13 @@ export default function EditorialPage() {
               <Eyebrow>Planning, review, and the board</Eyebrow>
             </motion.div>
 
-            <motion.h1
-              initial={reduce ? false : { y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.75, ease, delay: 0.05 }}
+            <SplitHeading
+              label="A control room for work that matters."
               className="mt-5 max-w-3xl text-balance font-[family-name:var(--font-editorial-display)] text-[15vw] leading-[0.84] tracking-[-0.035em] sm:text-[11vw] lg:text-[7.5rem]"
             >
               A control room for{" "}
               <span className="italic text-[var(--e-oxblood)]">work that matters.</span>
-            </motion.h1>
+            </SplitHeading>
 
             <div className="mt-7 grid gap-5 border-t border-[var(--e-rule)] pt-5 sm:grid-cols-[1.2fr_0.8fr]">
               <motion.p
@@ -201,13 +205,15 @@ export default function EditorialPage() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex flex-wrap items-start gap-3 sm:justify-end"
               >
-                <a
-                  href="/signup"
-                  className="group inline-flex items-center gap-2 border border-[var(--e-ink)] bg-[var(--e-ink)] px-4 py-2.5 text-xs font-medium text-[var(--e-paper)] transition-colors hover:bg-[var(--e-oxblood)]"
-                >
-                  Start a project
-                  <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </a>
+                <ClickSpark color="var(--e-oxblood)">
+                  <a
+                    href="/signup"
+                    className="group inline-flex items-center gap-2 border border-[var(--e-ink)] bg-[var(--e-ink)] px-4 py-2.5 text-xs font-medium text-[var(--e-paper)] transition-colors hover:bg-[var(--e-oxblood)]"
+                  >
+                    Start a project
+                    <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </a>
+                </ClickSpark>
                 <a
                   href="#preview"
                   className="inline-flex items-center gap-2 border border-[var(--e-ink)]/30 px-4 py-2.5 text-xs transition-colors hover:border-[var(--e-ink)]"
@@ -299,6 +305,8 @@ export default function EditorialPage() {
       </section>
 
       {/* TYPE + COLOR */}
+      <ConceptMotionStudy variant="editorial" />
+
       <section className="border-y border-[var(--e-rule)] bg-[var(--e-paper-2)]">
         <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-3 py-8 sm:px-6 lg:grid-cols-[0.95fr_1.05fr]">
           <div>
@@ -738,5 +746,6 @@ export default function EditorialPage() {
         </div>
       </footer>
     </div>
+    </SmoothScroll>
   );
 }

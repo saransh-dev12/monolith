@@ -12,7 +12,7 @@
 - **Geometry:** `--radius: 0.875rem`; 2xl panels for cards and sections; pills for badges, range controls, and primary CTAs. Workspace content caps at 1200 px with a 64 px blurred sticky header.
 - **Landing:** sticky site header with scroll state; auto-advancing Describe/Review/Execute hero demo (pauses on hover, reduced-motion safe); 340vh scroll-linked workflow stage on desktop with stacked mobile fallback; illustrative Command Center, Board, and Planner sections built from Monolith tokens; honest-data captions.
 - **Product:** Command Center metric strip, execution chart, focus-week bars, project index, next-up list, board columns/cards/drop states, project detail work table, planner review surface, auth split layout, and empty states all use the Atelier system.
-- **Motion:** shared `motion` variants plus scroll-linked storytelling; transforms and opacity only; `prefers-reduced-motion` forces reveals visible and removes lift/route transforms. No new animation dependency.
+- **Motion:** GSAP ScrollTrigger owns the pinned workflow and concept scroll studies; GSAP SplitText owns hero typography; Lenis smooths public marketing scrolling only; Motion retains route/UI/drag/chart transitions; adapted React Bits `SpotlightCard` and `ClickSpark` add pointer and click accents. See `docs/motion-toolkit.md` for ownership, licenses, cleanup, and reduced-motion behavior.
 - **Honesty constraints:** no invented metrics, charts, customers, or AI output. Illustrative sections are labelled "illustrative" or "demo state"; product numbers still come from `getExecutionSeries`, `getDashboardData`, and owner-scoped rows.
 - **Reuse:** none from third-party previews or the supplied recordings beyond observed patterns; all layouts, copy, and demo data are original.
 

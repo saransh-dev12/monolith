@@ -1,7 +1,8 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import {motion} from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 
 import { cn } from "@/lib/utils";
 import type { ExecutionDay } from "@/lib/data/projects";

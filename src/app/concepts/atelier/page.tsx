@@ -1,14 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import {AnimatePresence, motion, useMotionValue, useSpring, useTransform, } from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowUpRight, CircleDashed, Layers, Sparkles } from "lucide-react";
 
 import {
@@ -18,6 +12,11 @@ import {
   demoTasks,
   demoWeek,
 } from "@/components/concepts/demo";
+import { ConceptMotionStudy } from "@/components/concepts/motion-study";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { SplitHeading } from "@/components/motion/split-heading";
+import { ClickSpark } from "@/components/reactbits/click-spark";
+import { SpotlightSurface } from "@/components/reactbits/spotlight-surface";
 import { cn } from "@/lib/utils";
 import type { TaskStatus } from "@/types/database";
 
@@ -110,6 +109,7 @@ export default function AtelierPage() {
   const progress = Math.round((done / demoTasks.length) * 100);
 
   return (
+    <SmoothScroll lerp={0.075}>
     <div
       style={palette}
       className="bg-[var(--t-void)] font-[family-name:var(--font-atelier-sans)] text-[var(--t-text)]"
@@ -151,16 +151,14 @@ export default function AtelierPage() {
               </span>
             </motion.div>
 
-            <motion.h1
-              initial={reduce ? false : { y: 40, opacity: 0, filter: "blur(8px)" }}
-              animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            <SplitHeading
+              label="Ideas, given form."
               className="mt-7 font-[family-name:var(--font-atelier-display)] text-[18vw] leading-[0.82] tracking-[-0.02em] sm:text-[13vw] lg:text-[7.4rem]"
             >
               Ideas,
               <br />
               <span className="italic text-[var(--t-lilac)]">given form.</span>
-            </motion.h1>
+            </SplitHeading>
 
             <motion.p
               initial={reduce ? false : { y: 20, opacity: 0 }}
@@ -179,13 +177,15 @@ export default function AtelierPage() {
               transition={{ ...spring, delay: 0.38 }}
               className="mt-8 flex flex-wrap gap-3"
             >
-              <a
-                href="/signup"
-                className="group inline-flex items-center gap-2 rounded-full bg-[var(--t-coral)] px-5 py-3 text-xs font-semibold tracking-[0.02em] text-[#1a0d09] transition-transform hover:-translate-y-0.5"
-              >
-                Start a project
-                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+              <ClickSpark color="var(--t-mint)">
+                <a
+                  href="/signup"
+                  className="group inline-flex items-center gap-2 rounded-full bg-[var(--t-coral)] px-5 py-3 text-xs font-semibold tracking-[0.02em] text-[#1a0d09] transition-transform hover:-translate-y-0.5"
+                >
+                  Start a project
+                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              </ClickSpark>
               <a
                 href="/login"
                 className="inline-flex items-center gap-2 rounded-full border border-[var(--t-line)] px-5 py-3 text-xs font-medium text-[var(--t-text)]/80 transition-colors hover:border-[var(--t-lilac)]/60 hover:text-[var(--t-text)]"
@@ -206,6 +206,7 @@ export default function AtelierPage() {
 
           {/* Layered hero panel */}
           <div className="relative z-10 [perspective:1400px]">
+            <SpotlightSurface className="rounded-[28px]" color="var(--t-coral)">
             <motion.div
               style={
                 reduce
@@ -299,6 +300,7 @@ export default function AtelierPage() {
                 </div>
               </div>
             </motion.div>
+            </SpotlightSurface>
 
             <motion.div
               aria-hidden="true"
@@ -315,6 +317,8 @@ export default function AtelierPage() {
           </div>
         </div>
       </section>
+
+      <ConceptMotionStudy variant="atelier" />
 
       {/* SYSTEM */}
       <section className="border-y border-[var(--t-line)] bg-[var(--t-panel)]/40 px-3 py-10 sm:px-5">
@@ -858,6 +862,7 @@ export default function AtelierPage() {
         </div>
       </footer>
     </div>
+    </SmoothScroll>
   );
 }
 

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {AnimatePresence, motion} from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
 
+import { SpotlightSurface } from "@/components/reactbits/spotlight-surface";
 import { cn } from "@/lib/utils";
 
 const steps = [
@@ -64,6 +66,7 @@ export function StudioHero() {
         aria-hidden="true"
         className="absolute -inset-6 -z-10 rounded-[3rem] bg-gradient-to-br from-chart-1/20 via-transparent to-chart-2/20 blur-2xl"
       />
+      <SpotlightSurface className="rounded-[1.75rem]" color="var(--color-chart-2)">
       <motion.div
         initial={reduce ? false : { y: 28, opacity: 0, rotate: 1.5 }}
         animate={{ y: 0, opacity: 1, rotate: 0 }}
@@ -281,6 +284,7 @@ export function StudioHero() {
           </span>
         </div>
       </motion.div>
+      </SpotlightSurface>
     </div>
   );
 }

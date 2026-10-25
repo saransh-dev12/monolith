@@ -204,7 +204,7 @@ Both videos were accessed at `~/Downloads` and inspected through `ffmpeg`-extrac
 ## 6. Deliberate exclusions
 
 - No Aceternity/Magic UI-style glow or gradient effects were added; they would intensify the generic AI aesthetic the rebuild is meant to avoid.
-- No animation dependency was added. The selected interactions use CSS transitions plus Radix/tw-animate-css.
+- Earlier revisions added no animation dependency; the Phase 2 motion addendum now adds GSAP 3.15.0 and Lenis 1.3.27 with explicit ownership and cleanup rules. Motion for React remains the ordinary UI animation layer. See `docs/motion-toolkit.md`.
 - No third-party dashboard screenshots were used as product previews. The landing preview is assembled from Monolith's own `Progress`, `TaskStatusBadge`, `ProjectStatusBadge`, `Button`, and typography.
 - No customer logos, testimonials, usage numbers, or fake integrations are shown.
 
@@ -220,7 +220,7 @@ Three preview routes were added under `src/app/concepts` with static demo data i
 
 ### Concept fonts
 
-All concept typefaces are loaded through `next/font/google` inside `src/app/concepts/layout.tsx` only, so production pages do not pay for them:
+Concept typefaces are loaded through `next/font/google` inside `src/app/concepts/layout.tsx`. Instrument Serif, Manrope, and JetBrains Mono were later moved into the production root layout for Phase 2; Archivo Black, Space Mono, Bodoni Moda, and Inter Tight remain concept-only:
 
 | Face | License | Role in previews |
 | --- | --- | --- |
@@ -261,5 +261,14 @@ All three load through `next/font/google` in `src/app/layout.tsx`. Concept-only 
 - Authenticated routes checked at 1440, 1024, 768, and 390 px: `/app`, `/app/projects`, `/app/projects/[projectId]`, `/app/board`, `/app/planner`; public `/` and `/login`.
 - Zero horizontal overflow and zero console/page errors in Chromium; no hydration warnings after the theme-switcher mount gate.
 - Light and dark themes checked; reduced-motion checked on the board and landing.
-- Lint, typecheck, Vitest 20/20, Playwright 10/10, and production build pass.
+- Lint, typecheck, Vitest 20/20, Playwright 12/12, and production build pass.
 - Playwright drag coverage now uses a real board card so the drag handle and target column are visible together; the moved card is returned to Todo after the assertion to keep the demo seed stable.
+
+
+## 9. Motion toolkit addendum
+
+GSAP, Lenis, and selected React Bits components were researched, licensed, and integrated after Phase 2. Full ownership, source links, licenses, reduced-motion behavior, and verification are recorded in `docs/motion-toolkit.md`.
+
+- **GSAP 3.15.0** — Standard "no charge" license; ScrollTrigger, SplitText, and the React `useGSAP` integration. Used for hero typography, the pinned marketing workflow, and three concept motion studies.
+- **Lenis 1.3.27** — MIT; public marketing and concept previews only, synced to GSAP's ticker using the official integration. Not used in the authenticated workspace.
+- **React Bits** — MIT + Commons Clause; adapted `SpotlightCard` and `ClickSpark` for the Atelier surface and CTAs. Attribution remains in the component headers; no standalone redistribution.

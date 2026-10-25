@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import {motion} from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowDownRight, ArrowUpRight, Asterisk } from "lucide-react";
 
 import {
@@ -11,6 +12,10 @@ import {
   demoStatusOrder,
   demoTasks,
 } from "@/components/concepts/demo";
+import { ConceptMotionStudy } from "@/components/concepts/motion-study";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { SplitHeading } from "@/components/motion/split-heading";
+import { ClickSpark } from "@/components/reactbits/click-spark";
 import { cn } from "@/lib/utils";
 import type { TaskStatus } from "@/types/database";
 
@@ -77,6 +82,7 @@ export default function BrutalismPage() {
       };
 
   return (
+    <SmoothScroll lerp={0.16}>
     <div
       style={palette}
       className="bg-[var(--b-paper)] font-[family-name:var(--font-brutal-mono)] text-[var(--b-ink)]"
@@ -94,10 +100,8 @@ export default function BrutalismPage() {
               </span>
             </div>
 
-            <motion.h1
-              initial={reduce ? false : { y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.55, ease }}
+            <SplitHeading
+              label="Plan less. Ship more."
               className="mt-6 font-[family-name:var(--font-brutal-display)] text-[19vw] leading-[0.8] tracking-[-0.045em] sm:text-[13vw] lg:text-[8.6rem]"
             >
               PLAN
@@ -111,7 +115,7 @@ export default function BrutalismPage() {
                 SHIP
               </span>{" "}
               MORE.
-            </motion.h1>
+            </SplitHeading>
 
             <motion.p
               initial={reduce ? false : { opacity: 0 }}
@@ -125,13 +129,15 @@ export default function BrutalismPage() {
             </motion.p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="/signup"
-                className="group inline-flex items-center gap-2 border-2 border-[var(--b-ink)] bg-[var(--b-acid)] px-5 py-3 text-xs font-bold uppercase tracking-[0.17em] transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-2 active:translate-y-2"
-              >
-                Start a project
-                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+              <ClickSpark color="var(--b-verm)">
+                <a
+                  href="/signup"
+                  className="group inline-flex items-center gap-2 border-2 border-[var(--b-ink)] bg-[var(--b-acid)] px-5 py-3 text-xs font-bold uppercase tracking-[0.17em] transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-2 active:translate-y-2"
+                >
+                  Start a project
+                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              </ClickSpark>
               <a
                 href="/login"
                 className="inline-flex items-center gap-2 border-2 border-[var(--b-ink)] bg-transparent px-5 py-3 text-xs font-bold uppercase tracking-[0.17em] transition-colors hover:bg-[var(--b-ink)] hover:text-[var(--b-paper)]"
@@ -236,6 +242,8 @@ export default function BrutalismPage() {
       </section>
 
       {/* TYPE + COLOR SYSTEM */}
+      <ConceptMotionStudy variant="brutalism" />
+
       <section className="border-b-2 border-[var(--b-ink)]">
         <div className="mx-auto grid w-full max-w-[1500px] divide-y-2 divide-[var(--b-ink)] px-3 sm:px-5 lg:grid-cols-[0.9fr_1.1fr] lg:divide-x-2 lg:divide-y-0">
           <div className="py-8 lg:pr-8">
@@ -595,5 +603,6 @@ export default function BrutalismPage() {
         </div>
       </footer>
     </div>
+    </SmoothScroll>
   );
 }

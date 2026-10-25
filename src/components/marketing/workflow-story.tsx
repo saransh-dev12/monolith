@@ -1,14 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-} from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import {motion} from "motion/react";
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { Check, CornerDownLeft, Database, Sparkles } from "lucide-react";
 
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 const story = [
@@ -185,23 +182,59 @@ function ExecuteVisual() {
 const visuals = [IdeaVisual, PlanVisual, ConfirmVisual, ExecuteVisual];
 
 export function WorkflowStory() {
-  const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLSpanElement>(null);
+  const mmRef = useRef<ReturnType<typeof gsap.matchMedia> | null>(null);
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
 
-  useMotionValueEvent(scrollYProgress, "change", (value) => {
-    const next = Math.min(story.length - 1, Math.floor(value * story.length));
-    setActive(next);
-  });
+  useEffect(
+    () => () => {
+      mmRef.current?.revert();
+      mmRef.current = null;
+    },
+    [],
+  );
+
+  useGSAP(
+    () => {
+      if (reduce || !sectionRef.current || !stageRef.current) return;
+
+      const mm = gsap.matchMedia();
+      mmRef.current = mm;
+      mm.add("(min-width: 1024px)", () => {
+        const trigger = ScrollTrigger.create({
+          trigger: stageRef.current,
+          start: "top 64px",
+          end: "+=190%",
+          pin: true,
+          scrub: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const next = Math.min(
+              story.length - 1,
+              Math.floor(self.progress * story.length),
+            );
+            setActive(next);
+            if (railRef.current) {
+              gsap.set(railRef.current, { scaleX: self.progress });
+            }
+          },
+        });
+        return () => trigger.kill();
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef, dependencies: [reduce] },
+  );
 
   const ActiveVisual = visuals[active];
 
   return (
-    <section id="story" className="border-y border-border/60">
+    <section ref={sectionRef} id="story" className="border-y border-border/60">
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-16 sm:px-6 lg:pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -220,9 +253,12 @@ export function WorkflowStory() {
         </div>
       </div>
 
-      {/* Desktop: scroll-linked stage */}
-      <div ref={ref} className="relative hidden lg:block" style={{ height: "340vh" }}>
-        <div className="sticky top-16 flex h-[calc(100dvh-4rem)] items-center">
+      {/* Desktop: GSAP-pinned stage */}
+      <div
+        ref={stageRef}
+        data-gsap-stage
+        className="relative hidden h-[calc(100dvh-4rem)] items-center lg:flex"
+      >
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.9fr_1.1fr] gap-14 px-6">
             <div className="flex flex-col justify-center">
               <ol className="space-y-1">
@@ -254,19 +290,25 @@ export function WorkflowStory() {
                             {item.title}
                           </h3>
                         </div>
-                        <motion.div
-                          initial={false}
-                          animate={{
-                            height: isActive ? "auto" : 0,
-                            opacity: isActive ? 1 : 0,
-                          }}
-                          transition={{ duration: reduce ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-                          className="overflow-hidden"
-                        >
+                        {reduce ? (
                           <p className="max-w-md pt-2 text-sm leading-6 text-muted-foreground">
                             {item.body}
                           </p>
-                        </motion.div>
+                        ) : (
+                          <motion.div
+                            initial={false}
+                            animate={{
+                              height: isActive ? "auto" : 0,
+                              opacity: isActive ? 1 : 0,
+                            }}
+                            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <p className="max-w-md pt-2 text-sm leading-6 text-muted-foreground">
+                              {item.body}
+                            </p>
+                          </motion.div>
+                        )}
                       </div>
                     </li>
                   );
@@ -274,12 +316,16 @@ export function WorkflowStory() {
               </ol>
               <div className="mt-6 flex items-center gap-3 pl-5">
                 <div className="h-px flex-1 bg-border/60">
-                  <motion.div
-                    className="h-px bg-primary"
-                    style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
+                  <span
+                    ref={railRef}
+                    className="block h-px origin-left bg-primary"
+                    style={{ transform: reduce ? "scaleX(1)" : "scaleX(0)" }}
                   />
                 </div>
-                <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span
+                  data-step-label
+                  className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground"
+                >
                   {story[active].label}
                 </span>
               </div>
@@ -309,7 +355,6 @@ export function WorkflowStory() {
               </motion.div>
             </div>
           </div>
-        </div>
       </div>
 
       {/* Mobile/tablet: stacked steps */}

@@ -16,6 +16,9 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { StudioHero } from "@/components/marketing/studio-hero";
 import { WorkflowStory } from "@/components/marketing/workflow-story";
 import { Reveal } from "@/components/motion/reveal";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { SplitHeading } from "@/components/motion/split-heading";
+import { ClickSpark } from "@/components/reactbits/click-spark";
 import { ThemeSwitcher } from "@/components/shell/theme-switcher";
 import { Button } from "@/components/ui/button";
 import { getSessionUser } from "@/lib/auth/session";
@@ -44,6 +47,7 @@ export default async function HomePage() {
   const secondaryLabel = user ? "Open the planner" : "Sign in to explore";
 
   return (
+    <SmoothScroll lerp={0.085}>
     <div className="atelier-aurora min-h-dvh overflow-x-clip">
       <SiteHeader signedIn={Boolean(user)} />
 
@@ -61,7 +65,6 @@ export default async function HomePage() {
 
           <div className="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-14">
             <div>
-              <Reveal>
                 <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/50 px-3 py-1.5 backdrop-blur">
                   <Sparkles className="size-3.5 text-chart-2" aria-hidden="true" />
                   <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -69,11 +72,14 @@ export default async function HomePage() {
                   </span>
                 </div>
 
-                <h1 className="mt-6 font-display text-[17vw] leading-[0.82] tracking-[-0.035em] text-balance sm:text-[12vw] lg:text-[6.6rem]">
+                <SplitHeading
+                  label="Ideas, given form."
+                  className="mt-6 font-display text-[17vw] leading-[0.82] tracking-[-0.035em] text-balance sm:text-[12vw] lg:text-[6.6rem]"
+                >
                   Ideas,
                   <br />
                   <span className="italic text-chart-2">given form.</span>
-                </h1>
+                </SplitHeading>
 
                 <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
                   Monolith turns a rough idea into a project you can actually
@@ -83,12 +89,14 @@ export default async function HomePage() {
                 </p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <Button asChild className="h-11 rounded-full px-5 text-sm">
-                    <Link href={primaryHref}>
-                      {primaryLabel}
-                      <ArrowRight className="size-4" aria-hidden="true" />
-                    </Link>
-                  </Button>
+                  <ClickSpark color="var(--color-chart-3)">
+                    <Button asChild className="h-11 rounded-full px-5 text-sm">
+                      <Link href={primaryHref}>
+                        {primaryLabel}
+                        <ArrowRight className="size-4" aria-hidden="true" />
+                      </Link>
+                    </Button>
+                  </ClickSpark>
                   <Button
                     asChild
                     variant="outline"
@@ -110,7 +118,6 @@ export default async function HomePage() {
                     </li>
                   ))}
                 </ul>
-              </Reveal>
             </div>
 
             <Reveal delay={0.1}>
@@ -527,5 +534,6 @@ export default async function HomePage() {
         </div>
       </footer>
     </div>
+    </SmoothScroll>
   );
 }
