@@ -38,9 +38,15 @@ export default async function HomePage() {
   return (
     <SmoothScroll lerp={0.08}>
       <div className="ember-field min-h-dvh overflow-x-clip">
+        <a
+          href="#main"
+          className="sr-only z-50 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        >
+          Skip to content
+        </a>
         <SiteHeader signedIn={Boolean(user)} />
 
-        <main>
+        <main id="main">
           <section className="relative mx-auto w-full max-w-[1240px] px-4 pb-14 pt-12 sm:px-6 lg:pb-24 lg:pt-20">
             <Spotlight
               className="-top-56 left-0 opacity-70 sm:-top-40 md:left-1/4"
