@@ -62,6 +62,7 @@ Copy `.env.example` to `.env.local` and use the values printed by `supabase star
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<local publishable key>
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SUPABASE_SERVICE_ROLE_KEY=<local service role key>
 OPENAI_API_KEY=placeholder
 OPENAI_MODEL=placeholder
 PLANNER_DAILY_LIMIT=5
@@ -87,6 +88,7 @@ Open <http://localhost:3000>. The local seed creates two fictional accounts:
 
 AI planning is optional. To enable generation, set these **server-side** variables:
 
+- `SUPABASE_SERVICE_ROLE_KEY`: server-only Supabase service-role key, required for planner quota mutations; never expose it to the browser.
 - `OPENAI_API_KEY`: an API key with access to the chosen model.
 - `OPENAI_MODEL`: the exact model id enabled for that key.
 - `PLANNER_DAILY_LIMIT`: optional integer from 1 to 50; defaults to 5.
@@ -100,6 +102,7 @@ Never prefix the OpenAI key with `NEXT_PUBLIC_`. With a missing key or the `plac
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable/anon key; RLS still enforces access |
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin used for auth redirects and metadata |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase service-role key for planner quota |
 | `OPENAI_API_KEY` | Server-only key for plan generation |
 | `OPENAI_MODEL` | Server-only model identifier |
 | `PLANNER_DAILY_LIMIT` | Per-user daily generation limit enforced in Postgres |
@@ -173,7 +176,7 @@ npm run test:e2e
 
 The AI preview, edit, and confirm flow was also exercised locally against a mock OpenAI-compatible Responses endpoint. That mock is not committed, and live provider output remains unverified without a real key.
 
-The CI workflow in `.github/workflows/ci.yml` runs lint, typecheck, unit tests, build, pgTAP, and Playwright on GitHub-hosted runners. It has been written but not yet observed running on GitHub.
+The CI workflow in `.github/workflows/ci.yml` runs lint, typecheck, unit tests, build, pgTAP, and Playwright on GitHub-hosted runners. The current-head GitHub run passed both jobs; production verification is separate.
 
 ## Deployment
 

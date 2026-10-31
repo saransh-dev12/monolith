@@ -159,7 +159,7 @@ export type Database = {
     Views: Record<string, never>;
     Functions: {
       consume_planner_generation: {
-        Args: { p_limit?: number };
+        Args: { p_user_id: string; p_limit: number };
         Returns: {
           allowed: boolean;
           used: number;
@@ -168,7 +168,7 @@ export type Database = {
         }[];
       };
       release_planner_generation: {
-        Args: Record<string, never>;
+        Args: { p_user_id: string };
         Returns: number;
       };
       create_project_plan: {
