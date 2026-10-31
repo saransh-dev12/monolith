@@ -46,6 +46,8 @@ test.describe("core workspace flow", () => {
     const milestoneName = unique("E2E milestone");
 
     await signIn(page);
+    await expect(page.getByText("Currently done tasks by last update; edits can change the date")).toBeVisible();
+    await expect(page.getByRole("img", { name: /Currently done tasks by their last update date/ })).toBeVisible();
     await page.goto("/app/projects");
 
     await page.getByRole("button", { name: "New project" }).click();

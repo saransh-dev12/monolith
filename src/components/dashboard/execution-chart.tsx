@@ -69,7 +69,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
           <p className="mt-2 font-display text-5xl leading-none tabular-nums">
             {completedTotal}
             <span className="ml-2 align-middle font-sans text-xs font-normal text-muted-foreground">
-              tasks done · {createdTotal} created
+              done tasks updated · {createdTotal} created
             </span>
           </p>
         </div>
@@ -131,7 +131,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
           key={range}
           viewBox={`0 0 ${width} ${height}`}
           role="img"
-          aria-label={`Tasks completed per day over the last ${range} days. Total ${completedTotal}.`}
+          aria-label={`Currently done tasks by their last update date over the last ${range} days. Total ${completedTotal}.`}
           className="block w-full"
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -195,7 +195,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
               transform: "translate(-50%, -100%)",
             }}
           >
-            {days[active].date} · {days[active].completed} done ·{" "}
+            {days[active].date} · {days[active].completed} done tasks updated ·{" "}
             {days[active].created} new
           </p>
         ) : null}
@@ -203,7 +203,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
         <p className="font-mono text-[10px] text-muted-foreground">
-          Done dated by last update · from your own task rows
+          Currently done tasks by last update; edits can change the date
         </p>
         <details className="font-mono text-[10px] text-muted-foreground">
           <summary className="cursor-pointer hover:text-foreground">
@@ -212,7 +212,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
           <ul className="mt-2 max-h-28 space-y-1 overflow-auto pr-2">
             {days.map((day) => (
               <li key={day.date} className="tabular-nums">
-                {day.date}: {day.completed} done, {day.created} created
+                {day.date}: {day.completed} done tasks updated, {day.created} created
               </li>
             ))}
           </ul>
@@ -239,11 +239,11 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
         <p className="font-display text-3xl leading-none tabular-nums">
           {total}
           <span className="ml-1 font-sans text-[11px] font-normal text-muted-foreground">
-            done
+            done tasks updated
           </span>
         </p>
       </div>
-      <div className="mt-4 flex items-end gap-2" role="img" aria-label={`${total} tasks completed in the last 7 days`}>
+      <div className="mt-4 flex items-end gap-2" role="img" aria-label={`${total} currently done tasks last updated in the last 7 days`}>
         {days.map((day, index) => {
           const height = Math.max(8, (day.completed / max) * 96);
           const isToday = index === days.length - 1;
@@ -259,7 +259,7 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 style={{ height, transformOrigin: "bottom" }}
-                title={`${day.date}: ${day.completed} done`}
+                title={`${day.date}: ${day.completed} done tasks updated`}
                 className={cn(
                   "block w-full rounded-full",
                   isToday
