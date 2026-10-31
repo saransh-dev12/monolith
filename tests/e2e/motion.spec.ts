@@ -29,13 +29,25 @@ test.describe("motion toolkit", () => {
   test("the demo can be paused beyond the autoplay interval", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Pause demo" }).click();
+    await expect(page.getByRole("button", { name: "Resume demo" })).toBeVisible();
     const active = page.getByRole("button", { name: "Describe" });
     await active.click();
     await page.mouse.move(0, 0);
-    await page.locator("body").click({ position: { x: 1, y: 1 } });
+    await page.getByRole("heading", { level: 1 }).click();
     await page.waitForTimeout(5000);
     await expect(active).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("button", { name: "Resume demo" })).toBeVisible();
+  });
+
+  test("keyboard focus keeps the demo paused after the pointer leaves", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("button", { name: "Pause demo" })).toBeEnabled();
+    const active = page.getByRole("button", { name: "Describe" });
+    await active.click();
+    await page.mouse.move(0, 0);
+    await expect(active).toBeFocused();
+    await page.waitForTimeout(5000);
+    await expect(active).toHaveAttribute("aria-pressed", "true");
   });
 
   test("concepts demonstrate motion and stay static when reduced", async ({

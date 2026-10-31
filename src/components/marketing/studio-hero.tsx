@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import {AnimatePresence, motion} from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
@@ -43,9 +43,11 @@ const columns = [
 export function StudioHero() {
   const reduce = useReducedMotion();
   const [step, setStep] = useState<StepId>("idea");
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const [userPaused, setUserPaused] = useState(false);
-  const [interactionPaused, setInteractionPaused] = useState(false);
-  const paused = reduce || userPaused || interactionPaused;
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const paused = reduce || userPaused || hovered || focused;
 
   useEffect(() => {
     if (reduce || paused) return;
@@ -59,11 +61,11 @@ export function StudioHero() {
   return (
     <div
       className="relative"
-      onMouseEnter={() => setInteractionPaused(true)}
-      onMouseLeave={() => setInteractionPaused(false)}
-      onFocusCapture={() => setInteractionPaused(true)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
       onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setInteractionPaused(false);
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
       }}
     >
       <div
@@ -288,8 +290,9 @@ export function StudioHero() {
           ) : (
             <button
               type="button"
+              disabled={!mounted}
               onClick={() => setUserPaused((value) => !value)}
-              className="rounded-sm font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-sm font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
             >
               {userPaused ? "Resume demo" : "Pause demo"}
             </button>
