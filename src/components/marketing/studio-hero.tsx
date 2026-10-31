@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import {AnimatePresence, motion} from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { ArrowRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
@@ -43,7 +43,11 @@ const columns = [
 export function StudioHero() {
   const reduce = useReducedMotion();
   const [step, setStep] = useState<StepId>("idea");
-  const [paused, setPaused] = useState(false);
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
+  const [userPaused, setUserPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const paused = reduce || userPaused || hovered || focused;
 
   useEffect(() => {
     if (reduce || paused) return;
@@ -57,10 +61,12 @@ export function StudioHero() {
   return (
     <div
       className="relative"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+      }}
     >
       <div
         aria-hidden="true"
@@ -68,9 +74,9 @@ export function StudioHero() {
       />
       <SpotlightSurface className="rounded-[1.75rem]" color="var(--color-chart-2)">
       <motion.div
-        initial={reduce ? false : { y: 28, opacity: 0, rotate: 1.5 }}
-        animate={{ y: 0, opacity: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.15 }}
+        initial={reduce ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.25, delay: 0.15 }}
         className="overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/85 shadow-[0_48px_120px_-56px_rgba(0,0,0,0.9)] backdrop-blur-xl"
       >
         <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
@@ -279,9 +285,18 @@ export function StudioHero() {
             <Sparkles className="size-3 text-chart-2" aria-hidden="true" />
             Demo walkthrough · no writes
           </span>
-          <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground/70">
-            {paused ? "Paused" : "Auto-playing"}
-          </span>
+          {reduce ? (
+            <span className="font-mono text-[10px] text-muted-foreground">Motion reduced</span>
+          ) : (
+            <button
+              type="button"
+              disabled={!mounted}
+              onClick={() => setUserPaused((value) => !value)}
+              className="-my-2.5 -mr-3 min-h-11 rounded-sm px-3 font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+            >
+              {userPaused ? "Resume demo" : "Pause demo"}
+            </button>
+          )}
         </div>
       </motion.div>
       </SpotlightSurface>

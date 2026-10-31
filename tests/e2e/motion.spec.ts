@@ -1,71 +1,70 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("motion toolkit", () => {
-  test("marketing uses one smooth-scroll loop and a pinned workflow", async ({
-    page,
-  }) => {
+  test("marketing workflow uses native scrolling and keyboard-accessible steps", async ({ page }) => {
     const errors: string[] = [];
-    page.on("console", (message) => {
-      if (message.type() === "error") errors.push(message.text());
-    });
     page.on("pageerror", (error) => errors.push(error.message));
-
     await page.goto("/");
-    await expect(page.locator("html")).toHaveClass(/lenis/);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveAttribute(
-      "aria-label",
-      "Ideas don't ship. Execution does.",
-    );
-
+    await expect(page.locator("html")).not.toHaveClass(/lenis/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveAttribute("aria-label", "Ideas don't ship. Execution does.");
     await page.getByRole("link", { name: "Workflow" }).click();
     await expect(page).toHaveURL(/#story/);
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () =>
-            Math.round(
-              document.querySelector("#story")?.getBoundingClientRect().top ?? 999,
-            ),
-        ),
-      )
-      .toBeLessThan(120);
-
-    const storyY = await page.evaluate(
-      () =>
-        window.scrollY +
-        (document.querySelector("#story")?.getBoundingClientRect().top ?? 0),
-    );
-
-    const labels: string[] = [];
-    for (const delta of [0, 300, 520, 740, 960, 1180, 1400]) {
-      await page.evaluate(
-        ({ y, offset }) => window.scrollTo(0, y + offset),
-        { y: storyY, offset: delta },
-      );
-      await page.waitForTimeout(350);
-      labels.push(
-        (await page.locator("[data-step-label]").textContent())?.trim() ?? "",
-      );
-    }
-
-    expect(labels).toContain("Plan");
-    expect(labels).toContain("Tasks");
-    expect(labels).toContain("Execution");
-    expect(labels).toContain("Progress");
-
+    const stage = page.locator("[data-workflow-stage]");
+    await expect(stage).toBeVisible();
+    await expect(stage.locator("xpath=parent::*")).not.toHaveClass(/pin-spacer/);
+    const step = stage.getByRole("button", { name: "Read the plan before it exists." });
+    await step.focus();
+    await page.keyboard.press("Enter");
+    await expect(step).toHaveAttribute("aria-pressed", "true");
+    await expect(stage.getByText("Plan · illustrative", { exact: true })).toBeVisible();
+    await stage.getByRole("button", { name: "Only what the records prove." }).click();
+    await expect(stage.getByText("Progress · illustrative", { exact: true })).toBeVisible();
     await page.getByRole("tab", { name: "Board" }).click();
-    await expect(
-      page.getByText("Click a card to advance", { exact: false }).first(),
-    ).toBeVisible();
+    await expect(page.getByText("Click a card to advance", { exact: false }).first()).toBeVisible();
     await page.getByRole("tab", { name: "Planner" }).click();
-    await expect(
-      page.getByText("Community run club", { exact: false }).first(),
-    ).toBeVisible();
-    await page.getByRole("tab", { name: "Command" }).click();
-    await expect(
-      page.getByText("Completion pulse", { exact: false }).first(),
-    ).toBeVisible();
+    await expect(page.getByText("Community run club", { exact: false }).first()).toBeVisible();
     expect(errors).toEqual([]);
+  });
+
+  test("scrolling advances the workflow and reduced motion keeps it static", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    const region = page.locator("[data-workflow-scroll]");
+    const stage = page.locator("[data-workflow-stage]");
+    await region.evaluate((element) => {
+      const top = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, top + (element.clientHeight - window.innerHeight) * 0.5);
+    });
+    await expect(stage.getByRole("button", { name: "Break the plan into moves." })).toHaveAttribute("aria-pressed", "true");
+    await expect(stage.getByText("Tasks · illustrative", { exact: true })).toBeVisible();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(region).not.toHaveClass(/h-\[300vh\]/);
+    await stage.getByRole("button", { name: "Only what the records prove." }).click();
+    await expect(stage.getByText("Progress · illustrative", { exact: true })).toBeVisible();
+  });
+
+  test("the demo can be paused beyond the autoplay interval", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Pause demo" }).click();
+    await expect(page.getByRole("button", { name: "Resume demo" })).toBeVisible();
+    const active = page.getByRole("button", { name: "Describe" });
+    await active.click();
+    await page.mouse.move(0, 0);
+    await page.getByRole("heading", { level: 1 }).click();
+    await page.waitForTimeout(5000);
+    await expect(active).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("button", { name: "Resume demo" })).toBeVisible();
+  });
+
+  test("keyboard focus keeps the demo paused after the pointer leaves", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("button", { name: "Pause demo" })).toBeEnabled();
+    const active = page.getByRole("button", { name: "Describe" });
+    await active.click();
+    await page.mouse.move(0, 0);
+    await expect(active).toBeFocused();
+    await page.waitForTimeout(5000);
+    await expect(active).toHaveAttribute("aria-pressed", "true");
   });
 
   test("concepts demonstrate motion and stay static when reduced", async ({

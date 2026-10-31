@@ -368,6 +368,36 @@ test.describe("account and responsive layout", () => {
     await page.waitForURL("**/login");
   });
 
+  test("keeps the workspace within tablet and desktop viewports", async ({ page }) => {
+    await signIn(page);
+    for (const width of [768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const path of ["/app", "/app/projects", "/app/planner", "/app/board"]) {
+        await page.goto(path);
+        await expect(page.locator("main")).toBeVisible();
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+        expect(overflow, `${path} at ${width}px should not overflow`).toBe(false);
+      }
+    }
+  });
+
+  test("keeps the board status selector touch-sized", async ({ browser }) => {
+    const context = await browser.newContext({
+      baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+      viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
+    });
+    const page = await context.newPage();
+    try {
+      await signIn(page);
+      await page.goto("/app/board");
+      const selector = page.locator('select[aria-label^="Status for "]').first();
+      await expect(selector).toBeVisible();
+      expect((await selector.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+    } finally {
+      await context.close();
+    }
+  });
+
   test("keeps the workspace usable at a mobile viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await signIn(page);

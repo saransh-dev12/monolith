@@ -6,7 +6,7 @@ export const motionDurations = {
   micro: 0.14,
   fast: 0.2,
   base: 0.28,
-  reveal: 0.55,
+  reveal: 0.35,
   page: 0.24,
 } as const;
 

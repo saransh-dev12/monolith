@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
-import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
 import { CornerDownLeft, Sparkles } from "lucide-react";
 
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 const story = [
@@ -26,7 +24,7 @@ const story = [
     number: "03",
     label: "Tasks",
     title: "Break the plan into moves.",
-    body: "Milestones become tasks with an owner, a due date, and a priority. The board is the same plan, not a second system.",
+    body: "Milestones become tasks with a due date and a priority. The board is the same plan, not a second system.",
   },
   {
     number: "04",
@@ -57,7 +55,7 @@ function IdeaVisual() {
           4 weeks
         </span>
         <span className="rounded-full border border-border/70 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
-          Small team
+          Individual
         </span>
         <span className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
           Draft with planner
@@ -69,7 +67,6 @@ function IdeaVisual() {
 }
 
 function PlanVisual() {
-  const reduce = useReducedMotion();
   const milestones = [
     ["Activation map approved", "4 tasks"],
     ["Guided checklist shipped", "6 tasks"],
@@ -80,16 +77,7 @@ function PlanVisual() {
       <div className="flex items-center justify-between">
         <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
           <Sparkles className="size-3 text-primary" aria-hidden="true" />
-          {reduce ? (
-            "AI draft"
-          ) : (
-            <TextShimmer
-              duration={2.2}
-              className="[--base-color:#a5a09a] [--base-gradient-color:#f4f0e8] dark:[--base-color:#a5a09a] dark:[--base-gradient-color:#f4f0e8]"
-            >
-              AI draft
-            </TextShimmer>
-          )}
+          AI draft
         </span>
         <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
           Not saved
@@ -242,60 +230,38 @@ function ExecuteVisual() {
 
 const visuals = [IdeaVisual, PlanVisual, TasksVisual, ExecuteVisual, ProgressVisual];
 
+function ScrollDescription() {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end center"] });
+  const first = useTransform(scrollYProgress, [0, 0.45], [0.65, 1]);
+  const second = useTransform(scrollYProgress, [0.2, 0.75], [0.65, 1]);
+  const third = useTransform(scrollYProgress, [0.45, 1], [0.65, 1]);
+
+  return (
+    <p ref={ref} className="max-w-sm text-sm leading-6 text-foreground">
+      <motion.span style={reduce ? undefined : { opacity: first }}>Five states, one object. </motion.span>
+      <motion.span style={reduce ? undefined : { opacity: second }}>The plan you review is the board you run, </motion.span>
+      <motion.span style={reduce ? undefined : { opacity: third }}>and the progress you read is the same data.</motion.span>
+    </p>
+  );
+}
+
 export function WorkflowStory() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLSpanElement>(null);
-  const mmRef = useRef<ReturnType<typeof gsap.matchMedia> | null>(null);
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
-
-  useEffect(
-    () => () => {
-      mmRef.current?.revert();
-      mmRef.current = null;
-    },
-    [],
-  );
-
-  useGSAP(
-    () => {
-      if (reduce || !sectionRef.current || !stageRef.current) return;
-
-      const mm = gsap.matchMedia();
-      mmRef.current = mm;
-      mm.add("(min-width: 1024px)", () => {
-        const trigger = ScrollTrigger.create({
-          trigger: stageRef.current,
-          start: "top 64px",
-          end: "+=150%",
-          pin: true,
-          scrub: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const next = Math.min(
-              story.length - 1,
-              Math.floor(self.progress * story.length),
-            );
-            setActive(next);
-            if (railRef.current) {
-              gsap.set(railRef.current, { scaleX: self.progress });
-            }
-          },
-        });
-        return () => trigger.kill();
-      });
-
-      return () => mm.revert();
-    },
-    { scope: sectionRef, dependencies: [reduce] },
-  );
+  const scrollRegion = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: scrollRegion, offset: ["start start", "end end"] });
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    if (reduce || !window.matchMedia("(min-width: 1024px)").matches) return;
+    if (scrollRegion.current?.contains(document.activeElement)) return;
+    setActive(Math.min(story.length - 1, Math.floor(progress * story.length)));
+  });
 
   const ActiveVisual = visuals[active];
 
   return (
-    <section ref={sectionRef} id="story" className="border-y border-border/60">
+    <section id="story" className="border-y border-border/60">
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-16 sm:px-6 lg:pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -307,29 +273,27 @@ export function WorkflowStory() {
               <span className="text-primary">without the handoff.</span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-            Five states, one object. The plan you review is the board you run,
-            and the progress you read is the same data.
-          </p>
+          <ScrollDescription />
         </div>
       </div>
 
-      {/* Desktop: GSAP-pinned stage */}
+      {/* Native scrolling advances the desktop story; controls remain available. */}
+      <div ref={scrollRegion} data-workflow-scroll className={cn("hidden lg:block", !reduce && "lg:h-[300vh]")}>
       <div
-        ref={stageRef}
-        data-gsap-stage
-        className="relative hidden h-[calc(100dvh-4rem)] items-center lg:flex"
+        data-workflow-stage
+        className={cn("relative hidden h-[calc(100dvh-4rem)] items-center lg:flex", !reduce && "lg:sticky lg:top-16")}
       >
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.9fr_1.1fr] gap-14 px-6">
             <div className="flex flex-col justify-center">
-              <ol className="space-y-1">
+              <p className="mb-3 pl-5 text-xs text-muted-foreground">Scroll or select a step to preview</p>
+              <ol aria-label="Workflow preview steps" className="space-y-1">
                 {story.map((item, index) => {
                   const isActive = index === active;
                   return (
                     <li key={item.number}>
                       <div
                         className={cn(
-                          "border-l-2 py-3 pl-5 transition-colors duration-300",
+                          "border-l-2 py-3 pl-5 transition-colors duration-200",
                           isActive ? "border-primary" : "border-border/50",
                         )}
                       >
@@ -337,39 +301,32 @@ export function WorkflowStory() {
                           <span
                             className={cn(
                               "font-mono text-[10px] tabular-nums transition-colors",
-                              isActive ? "text-primary" : "text-muted-foreground/60",
+                              isActive ? "text-primary" : "text-muted-foreground",
                             )}
                           >
                             {item.number}
                           </span>
                           <h3
-                            className={cn(
-                              "font-display text-3xl font-semibold leading-none tracking-[-0.02em] transition-colors",
-                              isActive ? "text-foreground" : "text-muted-foreground/50",
-                            )}
+                            className="font-display text-3xl font-semibold leading-none tracking-[-0.02em]"
                           >
-                            {item.title}
+                            <button
+                              type="button"
+                              aria-pressed={isActive}
+                              onClick={() => setActive(index)}
+                              className={cn(
+                                "min-h-11 rounded-sm text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                              )}
+                            >
+                              {item.title}
+                            </button>
                           </h3>
                         </div>
-                        {reduce ? (
+                        {isActive ? (
                           <p className="max-w-md pt-2 text-sm leading-6 text-muted-foreground">
                             {item.body}
                           </p>
-                        ) : (
-                          <motion.div
-                            initial={false}
-                            animate={{
-                              height: isActive ? "auto" : 0,
-                              opacity: isActive ? 1 : 0,
-                            }}
-                            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                            className="overflow-hidden"
-                          >
-                            <p className="max-w-md pt-2 text-sm leading-6 text-muted-foreground">
-                              {item.body}
-                            </p>
-                          </motion.div>
-                        )}
+                        ) : null}
                       </div>
                     </li>
                   );
@@ -378,9 +335,8 @@ export function WorkflowStory() {
               <div className="mt-6 flex items-center gap-3 pl-5">
                 <div className="h-px flex-1 bg-border/60">
                   <span
-                    ref={railRef}
                     className="block h-px origin-left bg-primary"
-                    style={{ transform: reduce ? "scaleX(1)" : "scaleX(0)" }}
+                    style={{ transform: `scaleX(${(active + 1) / story.length})` }}
                   />
                 </div>
                 <span
@@ -399,9 +355,9 @@ export function WorkflowStory() {
               />
               <motion.div
                 key={active}
-                initial={reduce ? false : { opacity: 0, y: 20, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                initial={reduce ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="rounded-[1.75rem] border border-border/70 bg-card/80 p-3 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)] backdrop-blur-xl"
               >
                 <div className="mb-3 flex items-center justify-between px-2 pt-1">
@@ -416,6 +372,8 @@ export function WorkflowStory() {
               </motion.div>
             </div>
           </div>
+      </div>
+
       </div>
 
       {/* Mobile/tablet: stacked steps */}
