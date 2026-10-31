@@ -2,6 +2,7 @@ import "server-only";
 
 import { todayIsoDate } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { createQuotaClient } from "@/lib/supabase/quota-server";
 import type { PlannerPreview } from "@/lib/validation/schemas";
 
 export const DEFAULT_PLANNER_DAILY_LIMIT = 5;
@@ -43,13 +44,14 @@ export async function getPlannerUsage(): Promise<PlannerUsage> {
   };
 }
 
-export async function reservePlannerGeneration(): Promise<
+export async function reservePlannerGeneration(userId: string): Promise<
   PlannerUsage & { allowed: boolean }
 > {
-  const supabase = await createClient();
+  const supabase = createQuotaClient();
   const limit = getPlannerDailyLimit();
 
   const { data, error } = await supabase.rpc("consume_planner_generation", {
+    p_user_id: userId,
     p_limit: limit,
   });
 
@@ -71,9 +73,9 @@ export async function reservePlannerGeneration(): Promise<
   };
 }
 
-export async function releasePlannerGeneration(): Promise<void> {
-  const supabase = await createClient();
-  const { error } = await supabase.rpc("release_planner_generation");
+export async function releasePlannerGeneration(userId: string): Promise<void> {
+  const supabase = createQuotaClient();
+  const { error } = await supabase.rpc("release_planner_generation", { p_user_id: userId });
 
   if (error) {
     console.error("Could not release planner quota", {
