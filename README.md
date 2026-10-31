@@ -175,6 +175,8 @@ The AI preview, edit, and confirm flow was also exercised locally against a mock
 
 The CI workflow in `.github/workflows/ci.yml` runs lint, typecheck, unit tests, build, pgTAP, and Playwright on GitHub-hosted runners. It has been written but not yet observed running on GitHub.
 
+See [v1.0 release readiness](docs/v1-release-readiness.md) for evidence and outstanding release blockers.
+
 ## Deployment
 
 Production deployment is pending credentials. The intended path:
