@@ -12,7 +12,7 @@ export function safeNextPath(value: unknown): string {
 
   try {
     const url = new URL(value, INTERNAL_ORIGIN);
-    if (url.origin !== INTERNAL_ORIGIN) return "/app";
+    if (url.origin !== INTERNAL_ORIGIN || url.pathname.startsWith("//")) return "/app";
     return `${url.pathname}${url.search}${url.hash}`;
   } catch {
     return "/app";
