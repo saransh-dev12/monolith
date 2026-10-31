@@ -158,6 +158,14 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      dashboard_totals: {
+        Args: Record<string, never>;
+        Returns: { active_projects: number; open_tasks: number; completed_tasks: number; overdue_tasks: number }[];
+      };
+      dashboard_execution_series: {
+        Args: { p_days: number };
+        Returns: { day: string; created: number; completed: number }[];
+      };
       consume_planner_generation: {
         Args: { p_limit?: number };
         Returns: {
