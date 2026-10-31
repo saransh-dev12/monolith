@@ -38,7 +38,7 @@ test("project, board, and dashboard include more than 1,000 tasks", async ({ pag
     await expect(page.getByLabel(`Overdue tasks: ${baseline.data[0].overdue_tasks + 505}`)).toBeVisible();
 
     await page.goto("/app/projects");
-    await expect(page.locator(`a[href="/app/projects/${projectId}"]`).getByText("505 open · 500 done", { exact: true })).toBeVisible();
+    await expect(page.locator(`a[href="/app/projects/${projectId}"]`).filter({ has: page.getByRole("heading", { name, exact: true }) }).getByText("505 open · 500 done", { exact: true })).toBeVisible();
     await page.goto(`/app/projects/${projectId}`);
     await expect(page.getByText("505 open · 500 done", { exact: true })).toBeVisible();
     await expect(page.getByText(`${name} task 1004`, { exact: true }).first()).toBeVisible();
