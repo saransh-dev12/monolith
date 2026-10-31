@@ -43,7 +43,9 @@ const columns = [
 export function StudioHero() {
   const reduce = useReducedMotion();
   const [step, setStep] = useState<StepId>("idea");
-  const [paused, setPaused] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const [interactionPaused, setInteractionPaused] = useState(false);
+  const paused = reduce || userPaused || interactionPaused;
 
   useEffect(() => {
     if (reduce || paused) return;
@@ -57,10 +59,12 @@ export function StudioHero() {
   return (
     <div
       className="relative"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
+      onMouseEnter={() => setInteractionPaused(true)}
+      onMouseLeave={() => setInteractionPaused(false)}
+      onFocusCapture={() => setInteractionPaused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setInteractionPaused(false);
+      }}
     >
       <div
         aria-hidden="true"
@@ -279,9 +283,17 @@ export function StudioHero() {
             <Sparkles className="size-3 text-chart-2" aria-hidden="true" />
             Demo walkthrough · no writes
           </span>
-          <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground/70">
-            {paused ? "Paused" : "Auto-playing"}
-          </span>
+          {reduce ? (
+            <span className="font-mono text-[10px] text-muted-foreground">Motion reduced</span>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setUserPaused((value) => !value)}
+              className="rounded-sm font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {userPaused ? "Resume demo" : "Pause demo"}
+            </button>
+          )}
         </div>
       </motion.div>
       </SpotlightSurface>

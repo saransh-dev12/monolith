@@ -13,7 +13,6 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { StudioHero } from "@/components/marketing/studio-hero";
 import { WorkflowStory } from "@/components/marketing/workflow-story";
 import { Reveal } from "@/components/motion/reveal";
-import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { ClickSpark } from "@/components/reactbits/click-spark";
 import { ThemeSwitcher } from "@/components/shell/theme-switcher";
@@ -36,7 +35,7 @@ export default async function HomePage() {
   const secondaryLabel = user ? "Open the planner" : "Sign in to explore";
 
   return (
-    <SmoothScroll lerp={0.08}>
+    <>
       <div className="ember-field min-h-dvh overflow-x-clip">
         <a
           href="#main"
@@ -260,6 +259,6 @@ export default async function HomePage() {
           </div>
         </footer>
       </div>
-    </SmoothScroll>
+    </>
   );
 }

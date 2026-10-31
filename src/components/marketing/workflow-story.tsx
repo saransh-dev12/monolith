@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
 import { CornerDownLeft, Sparkles } from "lucide-react";
 
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 const story = [
@@ -26,7 +25,7 @@ const story = [
     number: "03",
     label: "Tasks",
     title: "Break the plan into moves.",
-    body: "Milestones become tasks with an owner, a due date, and a priority. The board is the same plan, not a second system.",
+    body: "Milestones become tasks with a due date and a priority. The board is the same plan, not a second system.",
   },
   {
     number: "04",
@@ -57,7 +56,7 @@ function IdeaVisual() {
           4 weeks
         </span>
         <span className="rounded-full border border-border/70 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
-          Small team
+          Individual
         </span>
         <span className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
           Draft with planner
@@ -243,59 +242,13 @@ function ExecuteVisual() {
 const visuals = [IdeaVisual, PlanVisual, TasksVisual, ExecuteVisual, ProgressVisual];
 
 export function WorkflowStory() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLSpanElement>(null);
-  const mmRef = useRef<ReturnType<typeof gsap.matchMedia> | null>(null);
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
-
-  useEffect(
-    () => () => {
-      mmRef.current?.revert();
-      mmRef.current = null;
-    },
-    [],
-  );
-
-  useGSAP(
-    () => {
-      if (reduce || !sectionRef.current || !stageRef.current) return;
-
-      const mm = gsap.matchMedia();
-      mmRef.current = mm;
-      mm.add("(min-width: 1024px)", () => {
-        const trigger = ScrollTrigger.create({
-          trigger: stageRef.current,
-          start: "top 64px",
-          end: "+=150%",
-          pin: true,
-          scrub: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const next = Math.min(
-              story.length - 1,
-              Math.floor(self.progress * story.length),
-            );
-            setActive(next);
-            if (railRef.current) {
-              gsap.set(railRef.current, { scaleX: self.progress });
-            }
-          },
-        });
-        return () => trigger.kill();
-      });
-
-      return () => mm.revert();
-    },
-    { scope: sectionRef, dependencies: [reduce] },
-  );
 
   const ActiveVisual = visuals[active];
 
   return (
-    <section ref={sectionRef} id="story" className="border-y border-border/60">
+    <section id="story" className="border-y border-border/60">
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-16 sm:px-6 lg:pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -314,22 +267,22 @@ export function WorkflowStory() {
         </div>
       </div>
 
-      {/* Desktop: GSAP-pinned stage */}
+      {/* Desktop: user-controlled workflow preview */}
       <div
-        ref={stageRef}
-        data-gsap-stage
+        data-workflow-stage
         className="relative hidden h-[calc(100dvh-4rem)] items-center lg:flex"
       >
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.9fr_1.1fr] gap-14 px-6">
             <div className="flex flex-col justify-center">
-              <ol className="space-y-1">
+              <p className="mb-3 pl-5 text-xs text-muted-foreground">Select a step to preview</p>
+              <ol aria-label="Workflow preview steps" className="space-y-1">
                 {story.map((item, index) => {
                   const isActive = index === active;
                   return (
                     <li key={item.number}>
                       <div
                         className={cn(
-                          "border-l-2 py-3 pl-5 transition-colors duration-300",
+                          "border-l-2 py-3 pl-5 transition-colors duration-200",
                           isActive ? "border-primary" : "border-border/50",
                         )}
                       >
@@ -337,39 +290,32 @@ export function WorkflowStory() {
                           <span
                             className={cn(
                               "font-mono text-[10px] tabular-nums transition-colors",
-                              isActive ? "text-primary" : "text-muted-foreground/60",
+                              isActive ? "text-primary" : "text-muted-foreground",
                             )}
                           >
                             {item.number}
                           </span>
                           <h3
-                            className={cn(
-                              "font-display text-3xl font-semibold leading-none tracking-[-0.02em] transition-colors",
-                              isActive ? "text-foreground" : "text-muted-foreground/50",
-                            )}
+                            className="font-display text-3xl font-semibold leading-none tracking-[-0.02em]"
                           >
-                            {item.title}
+                            <button
+                              type="button"
+                              aria-pressed={isActive}
+                              onClick={() => setActive(index)}
+                              className={cn(
+                                "min-h-11 rounded-sm text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                              )}
+                            >
+                              {item.title}
+                            </button>
                           </h3>
                         </div>
-                        {reduce ? (
+                        {isActive ? (
                           <p className="max-w-md pt-2 text-sm leading-6 text-muted-foreground">
                             {item.body}
                           </p>
-                        ) : (
-                          <motion.div
-                            initial={false}
-                            animate={{
-                              height: isActive ? "auto" : 0,
-                              opacity: isActive ? 1 : 0,
-                            }}
-                            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                            className="overflow-hidden"
-                          >
-                            <p className="max-w-md pt-2 text-sm leading-6 text-muted-foreground">
-                              {item.body}
-                            </p>
-                          </motion.div>
-                        )}
+                        ) : null}
                       </div>
                     </li>
                   );
@@ -378,9 +324,8 @@ export function WorkflowStory() {
               <div className="mt-6 flex items-center gap-3 pl-5">
                 <div className="h-px flex-1 bg-border/60">
                   <span
-                    ref={railRef}
                     className="block h-px origin-left bg-primary"
-                    style={{ transform: reduce ? "scaleX(1)" : "scaleX(0)" }}
+                    style={{ transform: `scaleX(${(active + 1) / story.length})` }}
                   />
                 </div>
                 <span
@@ -399,9 +344,9 @@ export function WorkflowStory() {
               />
               <motion.div
                 key={active}
-                initial={reduce ? false : { opacity: 0, y: 20, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                initial={reduce ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="rounded-[1.75rem] border border-border/70 bg-card/80 p-3 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)] backdrop-blur-xl"
               >
                 <div className="mb-3 flex items-center justify-between px-2 pt-1">

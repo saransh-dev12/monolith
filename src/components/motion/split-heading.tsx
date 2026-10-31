@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { gsap, SplitText } from "@/lib/gsap";
 
 type SplitHeadingProps = {
@@ -22,11 +23,12 @@ export function SplitHeading({
   label,
 }: SplitHeadingProps) {
   const ref = useRef<HTMLHeadingElement>(null);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (reduce) return;
 
     let cancelled = false;
     let split: SplitText | null = null;
@@ -41,10 +43,9 @@ export function SplitHeading({
       });
       context = gsap.context(() => {
         gsap.from(split?.words ?? [], {
-          yPercent: 118,
+          yPercent: 40,
           opacity: 0,
-          rotate: 1.5,
-          duration: 0.95,
+          duration: 0.55,
           ease: "power4.out",
           stagger,
           delay,
@@ -63,7 +64,7 @@ export function SplitHeading({
       context?.revert();
       split?.revert();
     };
-  }, [delay, stagger, label]);
+  }, [delay, stagger, label, reduce]);
 
   const props = { ref, className, "aria-label": label };
 
