@@ -2,38 +2,53 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(15);
+select plan(20);
 
 select set_config(
   'request.jwt.claims',
   '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}',
   true
 );
-set local role authenticated;
+set local role service_role;
 
 select is(
-  (select allowed from public.consume_planner_generation(2)),
+  (select allowed from public.consume_planner_generation('11111111-1111-4111-8111-111111111111', 2)),
   true,
   'first generation is allowed'
 );
 
 select is(
-  (select used from public.consume_planner_generation(2)),
+  (select used from public.consume_planner_generation('11111111-1111-4111-8111-111111111111', 2)),
   2,
   'second generation increments usage'
 );
 
 select is(
-  (select allowed from public.consume_planner_generation(2)),
+  (select allowed from public.consume_planner_generation('11111111-1111-4111-8111-111111111111', 2)),
   false,
   'generation over the quota is rejected'
 );
 
 select is(
-  public.release_planner_generation(),
+  public.release_planner_generation('11111111-1111-4111-8111-111111111111', (now() at time zone 'utc')::date),
   1,
   'a failed generation can release its reservation'
 );
+
+-- Simulate a reservation before UTC midnight and another on the new day.
+insert into public.planner_usage (user_id, period_start, generations)
+values ('11111111-1111-4111-8111-111111111111', (now() at time zone 'utc')::date - 1, 1);
+select is(
+  public.release_planner_generation('11111111-1111-4111-8111-111111111111', (now() at time zone 'utc')::date - 1),
+  0, 'a failed request releases its original day after midnight'
+);
+select is(
+  (select generations from public.planner_usage where user_id = '11111111-1111-4111-8111-111111111111' and period_start = (now() at time zone 'utc')::date),
+  1, 'releasing yesterday does not decrement today'
+);
+delete from public.planner_usage where period_start = (now() at time zone 'utc')::date - 1;
+
+set local role authenticated;
 
 select is(
   (select count(*)::int from public.planner_usage),
@@ -152,12 +167,16 @@ reset role;
 select is(
   has_function_privilege(
     'anon',
-    'public.consume_planner_generation(integer)',
+    'public.consume_planner_generation(uuid,integer)',
     'execute'
   ),
   false,
   'anonymous users cannot consume planner quota'
 );
+
+select is(has_function_privilege('authenticated', 'public.consume_planner_generation(uuid,integer)', 'execute'), false, 'authenticated users cannot choose a quota or user');
+select is(has_function_privilege('authenticated', 'public.release_planner_generation(uuid,date)', 'execute'), false, 'authenticated users cannot release quota');
+select is(has_function_privilege('service_role', 'public.release_planner_generation(uuid,date)', 'execute'), true, 'server role can release quota');
 
 select is(
   has_function_privilege(

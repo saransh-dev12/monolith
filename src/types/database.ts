@@ -158,17 +158,26 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      dashboard_totals: {
+        Args: Record<string, never>;
+        Returns: { active_projects: number; open_tasks: number; completed_tasks: number; overdue_tasks: number }[];
+      };
+      dashboard_execution_series: {
+        Args: { p_days: number };
+        Returns: { day: string; created: number; completed: number }[];
+      };
       consume_planner_generation: {
-        Args: { p_limit?: number };
+        Args: { p_user_id: string; p_limit: number };
         Returns: {
           allowed: boolean;
           used: number;
           quota: number;
           remaining: number;
+          reservation_date: string;
         }[];
       };
       release_planner_generation: {
-        Args: Record<string, never>;
+        Args: { p_user_id: string; p_reservation_date: string };
         Returns: number;
       };
       create_project_plan: {

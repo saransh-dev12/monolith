@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { fetchAll, fetchByProjectBatches } from "@/lib/data/pagination";
 import type { Milestone, Project, Task } from "@/types/database";
 import type {
   ProjectCreateInput,
@@ -54,18 +55,11 @@ export async function listProjects(options?: {
   const supabase = await createClient();
   const archived = options?.archived ?? false;
 
-  const query = supabase.from("projects").select("*");
-  const filtered = archived
-    ? query.not("archived_at", "is", null)
-    : query.is("archived_at", null);
-
-  const { data: projects, error } = await filtered.order("updated_at", {
-    ascending: false,
-  });
-
-  if (error) {
-    throw new Error(`Could not load projects: ${error.message}`);
-  }
+  const projects = await fetchAll((from, to) => {
+    const query = supabase.from("projects").select("*", { count: "exact" });
+    return (archived ? query.not("archived_at", "is", null) : query.is("archived_at", null))
+      .order("updated_at", { ascending: false }).order("id").range(from, to);
+  }, "Could not load projects");
 
   if (projects.length === 0) {
     return [];
@@ -73,26 +67,14 @@ export async function listProjects(options?: {
 
   const projectIds = projects.map((project) => project.id);
 
-  const [tasksResult, milestonesResult] = await Promise.all([
-    supabase
-      .from("tasks")
-      .select("project_id,status")
-      .in("project_id", projectIds),
-    supabase
-      .from("milestones")
-      .select("project_id,completed_at")
-      .in("project_id", projectIds),
+  const [tasks, milestones] = await Promise.all([
+    fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase
+      .from("tasks").select("project_id,status", { count: "exact" }).in("project_id", ids)
+      .order("id").range(from, to), "Could not load task counts")),
+    fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase
+      .from("milestones").select("project_id,completed_at", { count: "exact" }).in("project_id", ids)
+      .order("id").range(from, to), "Could not load milestone counts")),
   ]);
-
-  if (tasksResult.error) {
-    throw new Error(`Could not load task counts: ${tasksResult.error.message}`);
-  }
-
-  if (milestonesResult.error) {
-    throw new Error(
-      `Could not load milestone counts: ${milestonesResult.error.message}`,
-    );
-  }
 
   const progressByProject = new Map<string, ProjectProgress>();
 
@@ -100,7 +82,7 @@ export async function listProjects(options?: {
     progressByProject.set(project.id, emptyProgress());
   }
 
-  for (const task of tasksResult.data) {
+  for (const task of tasks) {
     const progress = progressByProject.get(task.project_id);
     if (!progress) {
       continue;
@@ -114,7 +96,7 @@ export async function listProjects(options?: {
     }
   }
 
-  for (const milestone of milestonesResult.data) {
+  for (const milestone of milestones) {
     const progress = progressByProject.get(milestone.project_id);
     if (!progress) {
       continue;
@@ -139,7 +121,7 @@ export async function getProjectDetail(
 
   const { data: project, error } = await supabase
     .from("projects")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("id", projectId)
     .maybeSingle();
 
@@ -151,35 +133,15 @@ export async function getProjectDetail(
     return null;
   }
 
-  const [tasksResult, milestonesResult] = await Promise.all([
-    supabase
-      .from("tasks")
-      .select("*")
-      .eq("project_id", projectId)
-      .order("position", { ascending: true })
-      .order("created_at", { ascending: true }),
-    supabase
-      .from("milestones")
-      .select("*")
-      .eq("project_id", projectId)
-      .order("target_date", { ascending: true, nullsFirst: false }),
+  const [tasks, milestones] = await Promise.all([
+    fetchAll((from, to) => supabase.from("tasks").select("*", { count: "exact" })
+      .eq("project_id", projectId).order("position").order("created_at").order("id")
+      .range(from, to), "Could not load tasks"),
+    fetchAll((from, to) => supabase.from("milestones").select("*", { count: "exact" })
+      .eq("project_id", projectId).order("target_date", { ascending: true, nullsFirst: false })
+      .order("id").range(from, to), "Could not load milestones"),
   ]);
-
-  if (tasksResult.error) {
-    throw new Error(`Could not load tasks: ${tasksResult.error.message}`);
-  }
-
-  if (milestonesResult.error) {
-    throw new Error(
-      `Could not load milestones: ${milestonesResult.error.message}`,
-    );
-  }
-
-  return {
-    project,
-    tasks: tasksResult.data,
-    milestones: milestonesResult.data,
-  };
+  return { project, tasks, milestones };
 }
 
 export type BoardData = {
@@ -190,16 +152,9 @@ export type BoardData = {
 export async function getBoardData(): Promise<BoardData> {
   const supabase = await createClient();
 
-  const { data: projects, error } = await supabase
-    .from("projects")
-    .select("id,name")
-    .is("archived_at", null)
-    .eq("status", "active")
-    .order("updated_at", { ascending: false });
-
-  if (error) {
-    throw new Error(`Could not load the board: ${error.message}`);
-  }
+  const projects = await fetchAll((from, to) => supabase.from("projects").select("id,name", { count: "exact" })
+    .is("archived_at", null).eq("status", "active")
+    .order("updated_at", { ascending: false }).order("id").range(from, to), "Could not load the board");
 
   if (projects.length === 0) {
     return { projects: [], tasks: [] };
@@ -207,19 +162,10 @@ export async function getBoardData(): Promise<BoardData> {
 
   const projectNames = new Map(projects.map((project) => [project.id, project.name]));
 
-  const { data: tasks, error: tasksError } = await supabase
-    .from("tasks")
-    .select("*")
-    .in(
-      "project_id",
-      projects.map((project) => project.id),
-    )
-    .order("position", { ascending: true })
-    .order("created_at", { ascending: true });
-
-  if (tasksError) {
-    throw new Error(`Could not load board tasks: ${tasksError.message}`);
-  }
+  const tasks = await fetchByProjectBatches(projects.map((project) => project.id), (ids) =>
+    fetchAll((from, to) => supabase.from("tasks").select("*", { count: "exact" }).in("project_id", ids)
+      .order("position").order("created_at").order("id").range(from, to), "Could not load board tasks"));
+  tasks.sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at) || a.id.localeCompare(b.id));
 
   return {
     projects,
@@ -249,15 +195,9 @@ export type DashboardData = {
 export async function getDashboardData(): Promise<DashboardData> {
   const supabase = await createClient();
 
-  const { data: projects, error } = await supabase
-    .from("projects")
-    .select("*")
-    .is("archived_at", null)
-    .order("updated_at", { ascending: false });
-
-  if (error) {
-    throw new Error(`Could not load the dashboard: ${error.message}`);
-  }
+  const projects = await fetchAll((from, to) => supabase.from("projects").select("*", { count: "exact" })
+    .is("archived_at", null).order("updated_at", { ascending: false }).order("id")
+    .range(from, to), "Could not load the dashboard");
 
   if (projects.length === 0) {
     return {
@@ -273,39 +213,26 @@ export async function getDashboardData(): Promise<DashboardData> {
   }
 
   const projectIds = projects.map((project) => project.id);
-  const today = new Date().toISOString().slice(0, 10);
-
-  const [tasksResult, milestonesResult] = await Promise.all([
-    supabase
-      .from("tasks")
-      .select("id,project_id,title,status,priority,due_date")
-      .in("project_id", projectIds),
-    supabase
-      .from("milestones")
-      .select("project_id,completed_at")
-      .in("project_id", projectIds),
+  const [tasks, milestones, totalsResult] = await Promise.all([
+    fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase.from("tasks")
+      .select("id,project_id,title,status,priority,due_date", { count: "exact" }).in("project_id", ids)
+      .order("id").range(from, to), "Could not load task metrics")),
+    fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase.from("milestones")
+      .select("project_id,completed_at", { count: "exact" }).in("project_id", ids)
+      .order("id").range(from, to), "Could not load milestone metrics")),
+    supabase.rpc("dashboard_totals"),
   ]);
-
-  if (tasksResult.error) {
-    throw new Error(`Could not load task metrics: ${tasksResult.error.message}`);
+  if (totalsResult.error || !totalsResult.data?.[0]) {
+    throw new Error("Could not load dashboard totals");
   }
-
-  if (milestonesResult.error) {
-    throw new Error(
-      `Could not load milestone metrics: ${milestonesResult.error.message}`,
-    );
-  }
+  const totals = totalsResult.data[0];
 
   const progressByProject = new Map<string, ProjectProgress>();
   for (const project of projects) {
     progressByProject.set(project.id, emptyProgress());
   }
 
-  let openTasks = 0;
-  let completedTasks = 0;
-  let overdueTasks = 0;
-
-  for (const task of tasksResult.data) {
+  for (const task of tasks) {
     const progress = progressByProject.get(task.project_id);
     if (!progress) {
       continue;
@@ -314,19 +241,13 @@ export async function getDashboardData(): Promise<DashboardData> {
     progress.totalTasks += 1;
 
     if (task.status === "done") {
-      completedTasks += 1;
       progress.doneTasks += 1;
     } else {
-      openTasks += 1;
       progress.openTasks += 1;
-
-      if (task.due_date && task.due_date < today) {
-        overdueTasks += 1;
-      }
     }
   }
 
-  for (const milestone of milestonesResult.data) {
+  for (const milestone of milestones) {
     const progress = progressByProject.get(milestone.project_id);
     if (!progress) {
       continue;
@@ -342,7 +263,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     projects.map((project) => [project.id, project.name]),
   );
 
-  const nextTasks = tasksResult.data
+  const nextTasks = tasks
     .filter((task) => task.status !== "done")
     .sort((left, right) => {
       if (left.due_date && right.due_date) {
@@ -360,11 +281,10 @@ export async function getDashboardData(): Promise<DashboardData> {
 
   return {
     metrics: {
-      activeProjects: projects.filter((project) => project.status === "active")
-        .length,
-      openTasks,
-      completedTasks,
-      overdueTasks,
+      activeProjects: totals.active_projects,
+      openTasks: totals.open_tasks,
+      completedTasks: totals.completed_tasks,
+      overdueTasks: totals.overdue_tasks,
     },
     projects: projects.map((project) => {
       const progress = progressByProject.get(project.id) ?? emptyProgress();
@@ -384,103 +304,17 @@ export type ExecutionDay = {
   completed: number;
 };
 
-function toDayKey(value: string): string {
-  return value.slice(0, 10);
-}
-
-function dayLabel(date: Date): string {
-  return date.toLocaleDateString("en-US", { weekday: "short" });
-}
-
-/**
- * Daily task activity for the trailing `days` window, derived entirely from
- * the user's own task rows. Completions are dated by `updated_at` (tasks
- * carry no separate completed-at column) and the caption must say so.
- */
+/** Daily activity uses the last update of currently done tasks as its date. */
 export async function getExecutionSeries(days = 30): Promise<ExecutionDay[]> {
-  const windowDays = [7, 14, 30].includes(days) ? days : 30;
   const supabase = await createClient();
-
-  const { data: projects, error } = await supabase
-    .from("projects")
-    .select("id")
-    .is("archived_at", null);
-
-  if (error) {
-    throw new Error(`Could not load execution data: ${error.message}`);
-  }
-
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
-
-  const series: ExecutionDay[] = Array.from(
-    { length: windowDays },
-    (_, index) => {
-      const date = new Date(today);
-      date.setUTCDate(today.getUTCDate() - (windowDays - 1 - index));
-      const iso = date.toISOString().slice(0, 10);
-      return { date: iso, label: dayLabel(date), created: 0, completed: 0 };
-    },
-  );
-  const byDay = new Map(series.map((day) => [day.date, day]));
-
-  if (projects.length === 0) {
-    return series;
-  }
-
-  const since = series[0].date;
-
-  const { data: tasks, error: tasksError } = await supabase
-    .from("tasks")
-    .select("status,created_at,updated_at")
-    .in(
-      "project_id",
-      projects.map((project) => project.id),
-    )
-    .gte("created_at", `${since}T00:00:00Z`);
-
-  if (tasksError) {
-    throw new Error(`Could not load execution data: ${tasksError.message}`);
-  }
-
-  for (const task of tasks) {
-    const created = byDay.get(toDayKey(task.created_at));
-    if (created) {
-      created.created += 1;
-    }
-    if (task.status === "done") {
-      const completed = byDay.get(toDayKey(task.updated_at));
-      if (completed) {
-        completed.completed += 1;
-      }
-    }
-  }
-
-  // Done tasks whose last update predates the window's created-at filter are
-  // still real completions; count them through a second bounded query.
-  const { data: doneTasks, error: doneError } = await supabase
-    .from("tasks")
-    .select("updated_at")
-    .in(
-      "project_id",
-      projects.map((project) => project.id),
-    )
-    .eq("status", "done")
-    .gte("updated_at", `${since}T00:00:00Z`)
-    .lt("created_at", `${since}T00:00:00Z`);
-
-  if (doneError) {
-    throw new Error(`Could not load execution data: ${doneError.message}`);
-  }
-
-  for (const task of doneTasks ?? []) {
-    const completed = byDay.get(toDayKey(task.updated_at));
-    if (completed) {
-      completed.completed += 1;
-    }
-  }
-
-  return series;
+  const { data, error } = await supabase.rpc("dashboard_execution_series", { p_days: days });
+  if (error || !data) throw new Error("Could not load execution data");
+  return data.map((row) => ({
+    date: row.day,
+    label: new Date(`${row.day}T00:00:00Z`).toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" }),
+    created: row.created,
+    completed: row.completed,
+  }));
 }
 
 export async function createProject(

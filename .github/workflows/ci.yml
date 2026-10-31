@@ -44,12 +44,15 @@ jobs:
         with:
           version: latest
       - run: npm ci
+      - name: Exercise a lower API row cap
+        run: sed -i 's/^max_rows = 1000$/max_rows = 200/' supabase/config.toml
       - run: supabase start -x studio,imgproxy,storage-api,realtime,logflare,vector,supavisor,edge-runtime,postgres-meta
       - name: Configure local environment
         run: |
           echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> .env.local
           echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(supabase status -o json | jq -r .PUBLISHABLE_KEY)" >> .env.local
           echo "NEXT_PUBLIC_SITE_URL=http://localhost:3000" >> .env.local
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o json | jq -r .SERVICE_ROLE_KEY)" >> .env.local
           echo "OPENAI_API_KEY=placeholder" >> .env.local
           echo "OPENAI_MODEL=placeholder" >> .env.local
           echo "PLANNER_DAILY_LIMIT=5" >> .env.local

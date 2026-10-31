@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
   let reservation;
 
   try {
-    reservation = await reservePlannerGeneration();
+    reservation = await reservePlannerGeneration(user.id);
   } catch {
     return jsonError(500, "Could not check the planning quota. Try again.");
   }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ plan, quota });
   } catch (error) {
-    await releasePlannerGeneration();
+    await releasePlannerGeneration(user.id, reservation.reservationDate);
 
     if (error instanceof PlannerConfigError) {
       return NextResponse.json(

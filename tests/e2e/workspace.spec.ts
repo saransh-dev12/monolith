@@ -19,6 +19,17 @@ async function signIn(
 }
 
 test.describe("public and protected routes", () => {
+  test("rejects an external backslash redirect before and after sign-in", async ({ page }) => {
+    const unsafeLogin = "/login?next=%2F%5Cattacker.example";
+    await page.goto(unsafeLogin);
+    await page.getByLabel("Email").fill("demo@monolith.local");
+    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.waitForURL("**/app");
+    await page.goto(unsafeLogin);
+    await expect(page).toHaveURL(/\/app$/);
+  });
+
   test("redirects unauthenticated visitors and returns 401 from mutations", async ({
     page,
   }) => {
@@ -46,6 +57,8 @@ test.describe("core workspace flow", () => {
     const milestoneName = unique("E2E milestone");
 
     await signIn(page);
+    await expect(page.getByText("Currently done tasks by last update; edits can change the date")).toBeVisible();
+    await expect(page.getByRole("img", { name: /Currently done tasks by their last update date/ })).toBeVisible();
     await page.goto("/app/projects");
 
     await page.getByRole("button", { name: "New project" }).click();

@@ -1,14 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { createClient } from "@/lib/supabase/server";
 
-function safeNextPath(value: string | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/app";
-  }
-
-  return value;
-}
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
