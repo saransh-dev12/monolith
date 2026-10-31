@@ -5,12 +5,12 @@ This document records the release gates still to be verified. It does not assert
 ## Evidence and scope
 
 - The `main` commit `3fbb484cb61694339222b696fec6735d719e98c2` passed the [CI workflow](https://github.com/saransh-dev12/monolith/actions/runs/41092835207), including lint, typecheck, unit tests, build, local Supabase database tests, and Playwright.
-- [Integration PR #16](https://github.com/saransh-dev12/monolith/pull/16) combines draft PRs #11–#15 and contains follow-up fixes for auth redirects, quota rollover, and API limits below the requested page size. These changes are not part of `main` until approved and merged. Verify CI on the exact release commit before release.
+- [Integration PR #16](https://github.com/saransh-dev12/monolith/pull/16) combines PRs #11–#15 and their follow-up fixes for auth redirects, quota rollover, and API limits below the requested page size. Verify CI on the exact release commit before release.
 - Local and CI results use test configuration; they do not verify the production services or live AI provider.
 
 ## Release blockers
 
-- [ ] Review and approve the combined changes, including the auth redirect, quota rollover, and pagination regression tests. Configure the server-only Supabase service-role key and coordinate the database migration and application rollout. The migration removes the old quota RPC signatures, so an uncoordinated rollout can temporarily interrupt plan generation.
+- [ ] Configure the server-only Supabase service-role key and coordinate the database migration and application rollout. The migration removes the old quota RPC signatures, so an uncoordinated rollout can temporarily interrupt plan generation.
 - [ ] Identify and configure the production Supabase project. Apply and verify all migrations, grants, and RLS policies against the intended production database without running the development seed.
 - [ ] Configure the production site URL and auth redirect allowlist. Verify signup, email confirmation if enabled, sign-in, sign-out, session refresh, and protected routes using real production configuration.
 - [ ] Configure production server-only OpenAI credentials and model, the server-only Supabase service-role key, public Supabase values, site URL, and quota. Verify that no secret is exposed in client assets or logs.
