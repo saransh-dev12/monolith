@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
-import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
 import { CornerDownLeft, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -68,7 +67,6 @@ function IdeaVisual() {
 }
 
 function PlanVisual() {
-  const reduce = useReducedMotion();
   const milestones = [
     ["Activation map approved", "4 tasks"],
     ["Guided checklist shipped", "6 tasks"],
@@ -79,16 +77,7 @@ function PlanVisual() {
       <div className="flex items-center justify-between">
         <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
           <Sparkles className="size-3 text-primary" aria-hidden="true" />
-          {reduce ? (
-            "AI draft"
-          ) : (
-            <TextShimmer
-              duration={2.2}
-              className="[--base-color:#a5a09a] [--base-gradient-color:#f4f0e8] dark:[--base-color:#a5a09a] dark:[--base-gradient-color:#f4f0e8]"
-            >
-              AI draft
-            </TextShimmer>
-          )}
+          AI draft
         </span>
         <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
           Not saved
