@@ -173,10 +173,11 @@ export type Database = {
           used: number;
           quota: number;
           remaining: number;
+          reservation_date: string;
         }[];
       };
       release_planner_generation: {
-        Args: { p_user_id: string };
+        Args: { p_user_id: string; p_reservation_date: string };
         Returns: number;
       };
       create_project_plan: {

@@ -45,7 +45,7 @@ export async function getPlannerUsage(): Promise<PlannerUsage> {
 }
 
 export async function reservePlannerGeneration(userId: string): Promise<
-  PlannerUsage & { allowed: boolean }
+  PlannerUsage & { allowed: boolean; reservationDate: string }
 > {
   const supabase = createQuotaClient();
   const limit = getPlannerDailyLimit();
@@ -70,12 +70,13 @@ export async function reservePlannerGeneration(userId: string): Promise<
     used: usage.used,
     limit: usage.quota,
     remaining: usage.remaining,
+    reservationDate: usage.reservation_date,
   };
 }
 
-export async function releasePlannerGeneration(userId: string): Promise<void> {
+export async function releasePlannerGeneration(userId: string, reservationDate: string): Promise<void> {
   const supabase = createQuotaClient();
-  const { error } = await supabase.rpc("release_planner_generation", { p_user_id: userId });
+  const { error } = await supabase.rpc("release_planner_generation", { p_user_id: userId, p_reservation_date: reservationDate });
 
   if (error) {
     console.error("Could not release planner quota", {

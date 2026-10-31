@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { getSiteUrl } from "@/lib/env";
 import type { AuthState } from "@/lib/auth/state";
 import { createClient } from "@/lib/supabase/server";
@@ -61,11 +62,7 @@ export async function signInAction(
     return { error: authErrorMessage(error.message) };
   }
 
-  const next = formData.get("next");
-  const destination =
-    typeof next === "string" && next.startsWith("/") && !next.startsWith("//")
-      ? next
-      : "/app";
+  const destination = safeNextPath(formData.get("next"));
 
   redirect(destination);
 }

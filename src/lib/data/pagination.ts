@@ -1,16 +1,18 @@
 /** Fetch bounded pages until all rows are returned; callers must supply a stable unique order. */
 export async function fetchAll<T>(
-  fetchPage: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>,
+  fetchPage: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null; count: number | null }>,
   context: string,
 ): Promise<T[]> {
   const pageSize = 500;
   const rows: T[] = [];
-  for (let from = 0; ; from += pageSize) {
-    const { data, error } = await fetchPage(from, from + pageSize - 1);
+  for (;;) {
+    const from = rows.length;
+    const { data, error, count } = await fetchPage(from, from + pageSize - 1);
     if (error) throw new Error(`${context}: ${error.message}`);
-    if (!data) throw new Error(`${context}: no data returned`);
+    if (!data || count === null) throw new Error(`${context}: missing page or exact count`);
     rows.push(...data);
-    if (data.length < pageSize) return rows;
+    if (rows.length >= count) return rows;
+    if (data.length === 0) throw new Error(`${context}: incomplete page`);
   }
 }
 

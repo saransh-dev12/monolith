@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ plan, quota });
   } catch (error) {
-    await releasePlannerGeneration(user.id);
+    await releasePlannerGeneration(user.id, reservation.reservationDate);
 
     if (error instanceof PlannerConfigError) {
       return NextResponse.json(

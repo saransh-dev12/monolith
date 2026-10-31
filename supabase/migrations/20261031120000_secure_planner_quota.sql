@@ -3,7 +3,7 @@ drop function public.consume_planner_generation(integer);
 drop function public.release_planner_generation();
 
 create or replace function public.consume_planner_generation(p_user_id uuid, p_limit integer)
-returns table (allowed boolean, used integer, quota integer, remaining integer)
+returns table (allowed boolean, used integer, quota integer, remaining integer, reservation_date date)
 language plpgsql
 security definer
 set search_path = ''
@@ -35,15 +35,15 @@ begin
     where usage.user_id = v_user_id
       and usage.period_start = v_period;
 
-    return query select false, coalesce(v_used, p_limit), p_limit, 0;
+    return query select false, coalesce(v_used, p_limit), p_limit, 0, v_period;
     return;
   end if;
 
-  return query select true, v_used, p_limit, greatest(p_limit - v_used, 0);
+  return query select true, v_used, p_limit, greatest(p_limit - v_used, 0), v_period;
 end;
 $$;
 
-create or replace function public.release_planner_generation(p_user_id uuid)
+create or replace function public.release_planner_generation(p_user_id uuid, p_reservation_date date)
 returns integer
 language plpgsql
 security definer
@@ -51,17 +51,16 @@ set search_path = ''
 as $$
 declare
   v_user_id uuid := p_user_id;
-  v_period date := (now() at time zone 'utc')::date;
   v_used integer;
 begin
-  if v_user_id is null then
-    raise exception 'not authenticated' using errcode = '42501';
+  if v_user_id is null or p_reservation_date is null then
+    raise exception 'invalid reservation' using errcode = '22023';
   end if;
 
   update public.planner_usage
   set generations = greatest(generations - 1, 0)
   where user_id = v_user_id
-    and period_start = v_period
+    and period_start = p_reservation_date
   returning generations into v_used;
 
   return coalesce(v_used, 0);
@@ -69,6 +68,6 @@ end;
 $$;
 
 revoke all on function public.consume_planner_generation(uuid, integer) from public, anon, authenticated;
-revoke all on function public.release_planner_generation(uuid) from public, anon, authenticated;
+revoke all on function public.release_planner_generation(uuid, date) from public, anon, authenticated;
 grant execute on function public.consume_planner_generation(uuid, integer) to service_role;
-grant execute on function public.release_planner_generation(uuid) to service_role;
+grant execute on function public.release_planner_generation(uuid, date) to service_role;

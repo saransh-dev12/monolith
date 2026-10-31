@@ -44,6 +44,8 @@ jobs:
         with:
           version: latest
       - run: npm ci
+      - name: Exercise a lower API row cap
+        run: sed -i 's/^max_rows = 1000$/max_rows = 200/' supabase/config.toml
       - run: supabase start -x studio,imgproxy,storage-api,realtime,logflare,vector,supavisor,edge-runtime,postgres-meta
       - name: Configure local environment
         run: |

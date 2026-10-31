@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(18);
+select plan(20);
 
 select set_config(
   'request.jwt.claims',
@@ -30,10 +30,23 @@ select is(
 );
 
 select is(
-  public.release_planner_generation('11111111-1111-4111-8111-111111111111'),
+  public.release_planner_generation('11111111-1111-4111-8111-111111111111', (now() at time zone 'utc')::date),
   1,
   'a failed generation can release its reservation'
 );
+
+-- Simulate a reservation before UTC midnight and another on the new day.
+insert into public.planner_usage (user_id, period_start, generations)
+values ('11111111-1111-4111-8111-111111111111', (now() at time zone 'utc')::date - 1, 1);
+select is(
+  public.release_planner_generation('11111111-1111-4111-8111-111111111111', (now() at time zone 'utc')::date - 1),
+  0, 'a failed request releases its original day after midnight'
+);
+select is(
+  (select generations from public.planner_usage where user_id = '11111111-1111-4111-8111-111111111111' and period_start = (now() at time zone 'utc')::date),
+  1, 'releasing yesterday does not decrement today'
+);
+delete from public.planner_usage where period_start = (now() at time zone 'utc')::date - 1;
 
 set local role authenticated;
 
@@ -162,8 +175,8 @@ select is(
 );
 
 select is(has_function_privilege('authenticated', 'public.consume_planner_generation(uuid,integer)', 'execute'), false, 'authenticated users cannot choose a quota or user');
-select is(has_function_privilege('authenticated', 'public.release_planner_generation(uuid)', 'execute'), false, 'authenticated users cannot release quota');
-select is(has_function_privilege('service_role', 'public.release_planner_generation(uuid)', 'execute'), true, 'server role can release quota');
+select is(has_function_privilege('authenticated', 'public.release_planner_generation(uuid,date)', 'execute'), false, 'authenticated users cannot release quota');
+select is(has_function_privilege('service_role', 'public.release_planner_generation(uuid,date)', 'execute'), true, 'server role can release quota');
 
 select is(
   has_function_privilege(

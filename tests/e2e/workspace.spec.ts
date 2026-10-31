@@ -19,6 +19,17 @@ async function signIn(
 }
 
 test.describe("public and protected routes", () => {
+  test("rejects an external backslash redirect before and after sign-in", async ({ page }) => {
+    const unsafeLogin = "/login?next=%2F%5Cattacker.example";
+    await page.goto(unsafeLogin);
+    await page.getByLabel("Email").fill("demo@monolith.local");
+    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.waitForURL("**/app");
+    await page.goto(unsafeLogin);
+    await expect(page).toHaveURL(/\/app$/);
+  });
+
   test("redirects unauthenticated visitors and returns 401 from mutations", async ({
     page,
   }) => {
