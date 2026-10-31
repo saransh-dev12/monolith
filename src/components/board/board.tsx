@@ -136,7 +136,7 @@ function DraggableCard({
       ref={setActivatorNodeRef}
       aria-label={`Drag ${task.title}`}
       disabled={disabled}
-      className="shrink-0 cursor-grab rounded p-1 text-muted-foreground/60 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing disabled:cursor-wait disabled:opacity-40"
+      className="shrink-0 cursor-grab rounded p-1 [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing disabled:cursor-wait disabled:opacity-40"
       {...attributes}
       {...listeners}
     >
@@ -192,12 +192,12 @@ function BoardColumn({
           />
           <h2
             id={`column-${status}`}
-            className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+            className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground"
           >
             {TASK_STATUS_LABELS[status]}
           </h2>
         </div>
-        <span className="rounded-full border border-border/70 px-2 py-0.5 font-mono text-[10px] tabular-nums text-muted-foreground">
+        <span className="rounded-full border border-border/70 px-2 py-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">
           {String(tasks.length).padStart(2, "0")}
         </span>
       </header>
@@ -307,7 +307,7 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
       onDragCancel={() => setActiveId(null)}
       onDragEnd={handleDragEnd}
     >
-      <p className="mb-4 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+      <p className="mb-4 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
         <span className="size-1.5 rounded-full bg-chart-2" aria-hidden="true" />
         Drag the grip to move work · the status menu is the keyboard fallback
       </p>

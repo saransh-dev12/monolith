@@ -62,7 +62,7 @@ export function AppSidebar({
                   <span className="font-display text-lg tracking-[-0.02em]">
                     Monolith
                   </span>
-                  <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Studio workspace
                   </span>
                 </span>
@@ -75,7 +75,7 @@ export function AppSidebar({
       <SidebarContent>
         <nav aria-label="Workspace">
           <SidebarGroup>
-            <SidebarGroupLabel className="font-mono text-[9px] uppercase tracking-[0.18em]">
+            <SidebarGroupLabel className="font-mono text-[11px] uppercase tracking-[0.18em]">
               Workspace
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -116,7 +116,7 @@ export function AppSidebar({
           </SidebarGroup>
 
           <SidebarGroup>
-            <SidebarGroupLabel className="font-mono text-[9px] uppercase tracking-[0.18em]">
+            <SidebarGroupLabel className="font-mono text-[11px] uppercase tracking-[0.18em]">
               Library
             </SidebarGroupLabel>
             <SidebarGroupContent>

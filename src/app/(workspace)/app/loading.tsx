@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WorkspaceLoading() {
   return (
-    <div className="space-y-8">
+    <div role="status" aria-label="Loading workspace" className="space-y-8">
       <div className="space-y-2">
         <Skeleton className="h-7 w-56" />
         <Skeleton className="h-4 w-96 max-w-full" />

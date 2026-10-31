@@ -20,7 +20,7 @@ export function MetricCard({
   return (
     <MetricLift>
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
           {label}
         </p>
         <span

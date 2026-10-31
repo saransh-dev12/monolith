@@ -94,7 +94,7 @@ export default async function DashboardPage() {
         <section className="space-y-4">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                 Active work
               </p>
               <h2 className="mt-1 font-display text-3xl leading-none">Projects</h2>
@@ -129,7 +129,7 @@ export default async function DashboardPage() {
             />
           ) : (
             <div className="glass-card overflow-hidden rounded-2xl">
-              <div className="hidden grid-cols-[1fr_10rem_4rem] gap-3 border-b border-border/50 px-5 py-2 font-mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground sm:grid">
+              <div className="hidden grid-cols-[1fr_10rem_4rem] gap-3 border-b border-border/50 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground sm:grid">
                 <span>Project</span>
                 <span>Progress</span>
                 <span className="text-right">State</span>
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                     className="group grid gap-2 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[1fr_10rem_4rem] sm:items-center sm:gap-3"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="font-mono text-[9px] tabular-nums text-muted-foreground/50">
+                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <div className="min-w-0">
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                         value={project.progress.percent}
                         aria-label={`${project.name} progress`}
                       />
-                      <span className="w-9 shrink-0 text-right font-mono text-[10px] tabular-nums text-muted-foreground">
+                      <span className="w-9 shrink-0 text-right font-mono text-[11px] tabular-nums text-muted-foreground">
                         {project.progress.percent}%
                       </span>
                     </div>
@@ -184,7 +184,7 @@ export default async function DashboardPage() {
           >
             <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
               <div>
-                <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground">
+                <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                   Attention
                 </p>
                 <h2 id="next-up-heading" className="mt-0.5 font-display text-2xl leading-none">

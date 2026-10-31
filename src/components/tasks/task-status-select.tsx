@@ -56,7 +56,7 @@ export function TaskStatusSelect({
       value={value}
       onChange={handleChange}
       disabled={pending}
-      className="h-8 rounded-md border border-input bg-transparent px-2 text-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
+      className="h-8 [@media(pointer:coarse)]:min-h-11 rounded-md border border-input bg-transparent px-2 text-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
     >
       {TASK_STATUS_ORDER.map((option) => (
         <option key={option} value={option}>
