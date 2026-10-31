@@ -74,9 +74,9 @@ export function StudioHero() {
       />
       <SpotlightSurface className="rounded-[1.75rem]" color="var(--color-chart-2)">
       <motion.div
-        initial={reduce ? false : { y: 28, opacity: 0, rotate: 1.5 }}
-        animate={{ y: 0, opacity: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.15 }}
+        initial={reduce ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.25, delay: 0.15 }}
         className="overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/85 shadow-[0_48px_120px_-56px_rgba(0,0,0,0.9)] backdrop-blur-xl"
       >
         <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
@@ -292,7 +292,7 @@ export function StudioHero() {
               type="button"
               disabled={!mounted}
               onClick={() => setUserPaused((value) => !value)}
-              className="rounded-sm font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+              className="-my-2.5 -mr-3 min-h-11 rounded-sm px-3 font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
             >
               {userPaused ? "Resume demo" : "Pause demo"}
             </button>
