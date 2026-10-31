@@ -16,6 +16,8 @@ This document records the release gates still to be verified. It does not assert
 - [ ] Configure production server-only OpenAI credentials and model, the server-only Supabase service-role key, public Supabase values, site URL, and quota. Verify that no secret is exposed in client assets or logs.
 - [ ] Exercise a live AI generation, edit and review the proposal, and confirm it once. Verify provider failure and quota handling, and verify that generation does not persist projects or tasks before confirmation.
 - [ ] Run production smoke tests for user isolation, project/task/milestone CRUD, board status persistence, dashboard accuracy, and planner confirmation. Use explicitly disposable test data and remove it after verification.
+- [ ] Resolve and test truncated results for larger accounts: the local Supabase API is configured with a 1,000-row maximum, while project, board, dashboard, and execution-series queries do not paginate. Verify counts and lists beyond that boundary against the production API configuration.
+- [ ] Review the execution chart wording and data: it uses a done task’s last update as a completion-date proxy, so later edits can move the apparent completion date.
 - [ ] Complete the actual rendered visual audit at mobile, tablet, and desktop sizes, including focus, keyboard interactions, contrast, reduced motion, and loading/error states. The light primary token pair was calculated at 4.19:1 for normal text and needs a rendered usage audit and correction where applicable.
 - [ ] Re-run the complete CI and local checks for the release commit; reconcile open issues against their acceptance criteria and update release notes with verified results.
 - [ ] Create a v1.0 tag only after every applicable release gate has passed.
