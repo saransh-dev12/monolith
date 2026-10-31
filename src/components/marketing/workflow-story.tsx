@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "motion/react";
+import { useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
 import { CornerDownLeft, Sparkles } from "lucide-react";
 
@@ -230,9 +230,33 @@ function ExecuteVisual() {
 
 const visuals = [IdeaVisual, PlanVisual, TasksVisual, ExecuteVisual, ProgressVisual];
 
+function ScrollDescription() {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end center"] });
+  const first = useTransform(scrollYProgress, [0, 0.45], [0.65, 1]);
+  const second = useTransform(scrollYProgress, [0.2, 0.75], [0.65, 1]);
+  const third = useTransform(scrollYProgress, [0.45, 1], [0.65, 1]);
+
+  return (
+    <p ref={ref} className="max-w-sm text-sm leading-6 text-foreground">
+      <motion.span style={reduce ? undefined : { opacity: first }}>Five states, one object. </motion.span>
+      <motion.span style={reduce ? undefined : { opacity: second }}>The plan you review is the board you run, </motion.span>
+      <motion.span style={reduce ? undefined : { opacity: third }}>and the progress you read is the same data.</motion.span>
+    </p>
+  );
+}
+
 export function WorkflowStory() {
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
+  const scrollRegion = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: scrollRegion, offset: ["start start", "end end"] });
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    if (reduce || !window.matchMedia("(min-width: 1024px)").matches) return;
+    if (scrollRegion.current?.contains(document.activeElement)) return;
+    setActive(Math.min(story.length - 1, Math.floor(progress * story.length)));
+  });
 
   const ActiveVisual = visuals[active];
 
@@ -249,21 +273,19 @@ export function WorkflowStory() {
               <span className="text-primary">without the handoff.</span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-            Five states, one object. The plan you review is the board you run,
-            and the progress you read is the same data.
-          </p>
+          <ScrollDescription />
         </div>
       </div>
 
-      {/* Desktop: user-controlled workflow preview */}
+      {/* Native scrolling advances the desktop story; controls remain available. */}
+      <div ref={scrollRegion} data-workflow-scroll className={cn("hidden lg:block", !reduce && "lg:h-[300vh]")}>
       <div
         data-workflow-stage
-        className="relative hidden h-[calc(100dvh-4rem)] items-center lg:flex"
+        className={cn("relative hidden h-[calc(100dvh-4rem)] items-center lg:flex", !reduce && "lg:sticky lg:top-16")}
       >
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.9fr_1.1fr] gap-14 px-6">
             <div className="flex flex-col justify-center">
-              <p className="mb-3 pl-5 text-xs text-muted-foreground">Select a step to preview</p>
+              <p className="mb-3 pl-5 text-xs text-muted-foreground">Scroll or select a step to preview</p>
               <ol aria-label="Workflow preview steps" className="space-y-1">
                 {story.map((item, index) => {
                   const isActive = index === active;
@@ -350,6 +372,8 @@ export function WorkflowStory() {
               </motion.div>
             </div>
           </div>
+      </div>
+
       </div>
 
       {/* Mobile/tablet: stacked steps */}

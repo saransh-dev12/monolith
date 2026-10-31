@@ -26,6 +26,23 @@ test.describe("motion toolkit", () => {
     expect(errors).toEqual([]);
   });
 
+  test("scrolling advances the workflow and reduced motion keeps it static", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    const region = page.locator("[data-workflow-scroll]");
+    const stage = page.locator("[data-workflow-stage]");
+    await region.evaluate((element) => {
+      const top = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, top + (element.clientHeight - window.innerHeight) * 0.5);
+    });
+    await expect(stage.getByRole("button", { name: "Break the plan into moves." })).toHaveAttribute("aria-pressed", "true");
+    await expect(stage.getByText("Tasks · illustrative", { exact: true })).toBeVisible();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(region).not.toHaveClass(/h-\[300vh\]/);
+    await stage.getByRole("button", { name: "Only what the records prove." }).click();
+    await expect(stage.getByText("Progress · illustrative", { exact: true })).toBeVisible();
+  });
+
   test("the demo can be paused beyond the autoplay interval", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Pause demo" }).click();
