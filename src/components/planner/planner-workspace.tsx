@@ -212,11 +212,11 @@ export function PlannerWorkspace({
           className="space-y-6 rounded-2xl border border-border/60 bg-card/40 p-5 sm:p-6"
         >
           <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-chart-1/25 to-chart-2/25 text-primary">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-primary/30 bg-primary/12 text-primary">
               <WandSparkles className="size-4" aria-hidden="true" />
             </span>
             <div>
-              <h2 className="font-display text-2xl leading-none">Describe the idea</h2>
+              <h2 className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">Describe the idea</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 A little context produces a more useful draft. You will review
                 every item before it can become a project.
@@ -314,7 +314,7 @@ export function PlannerWorkspace({
                 ) : (
                   <TextShimmer
                     duration={1.4}
-                    className="[--base-color:#8f8880] [--base-gradient-color:#f4f0e8] dark:[--base-color:#8f8880] dark:[--base-gradient-color:#f4f0e8]"
+                    className="[--base-color:var(--color-muted-foreground)] [--base-gradient-color:var(--color-foreground)]"
                   >
                     Building a draft
                   </TextShimmer>
@@ -338,7 +338,7 @@ export function PlannerWorkspace({
         >
           <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-primary/25 bg-primary/8 px-4 py-3">
             <div>
-              <p className="font-display text-2xl leading-none">Draft plan · not saved</p>
+              <p className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">Draft plan · not saved</p>
               <p className="mt-0.5 text-xs text-muted-foreground">
                 Edit anything below. Only the final confirmation writes to the
                 database.
@@ -358,7 +358,7 @@ export function PlannerWorkspace({
           </div>
 
           <section aria-labelledby="draft-project-heading" className="space-y-4">
-            <h2 id="draft-project-heading" className="font-display text-2xl leading-none">
+            <h2 id="draft-project-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
               Project
             </h2>
             <div className="grid gap-4 rounded-2xl border border-border/60 bg-card/30 p-5 sm:grid-cols-2">
@@ -400,7 +400,7 @@ export function PlannerWorkspace({
           <section aria-labelledby="draft-milestones-heading" className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="draft-milestones-heading" className="font-display text-2xl leading-none">
+                <h2 id="draft-milestones-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
                   Milestones
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -504,7 +504,7 @@ export function PlannerWorkspace({
           <section aria-labelledby="draft-tasks-heading" className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="draft-tasks-heading" className="font-display text-2xl leading-none">
+                <h2 id="draft-tasks-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
                   Tasks
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -631,9 +631,9 @@ export function PlannerWorkspace({
             </div>
           ) : null}
 
-          <div className="flex flex-col gap-3 rounded-2xl border border-chart-3/25 bg-gradient-to-r from-card to-chart-3/10 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-2xl border border-chart-3/25 bg-chart-3/10 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-display text-2xl leading-none">Ready to save?</p>
+              <p className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">Ready to save?</p>
               <p className="text-xs text-muted-foreground">
                 {plan.milestones.length} milestones · {plan.tasks.length} tasks
                 · saved in one transaction
@@ -655,7 +655,7 @@ export function PlannerWorkspace({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="font-display text-3xl">Create this project now?</AlertDialogTitle>
+                  <AlertDialogTitle className="font-sans text-lg font-semibold">Create this project now?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This writes the project, {plan.milestones.length} milestones,
                     and {plan.tasks.length} tasks to your workspace. If any

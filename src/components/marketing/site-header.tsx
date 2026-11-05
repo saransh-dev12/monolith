@@ -6,7 +6,6 @@ import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 
 import { Wordmark } from "@/components/brand/monolith-mark";
-import { ThemeSwitcher } from "@/components/shell/theme-switcher";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +17,7 @@ const sections = [
 
 export function SiteHeader({ signedIn }: { signedIn: boolean }) {
   const [scrolled, setScrolled] = useState(false);
-  const { scrollY } = useScroll();
+  const { scrollY, scrollYProgress } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (value) => {
     setScrolled(value > 24);
@@ -54,9 +53,6 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden sm:inline-flex">
-            <ThemeSwitcher compact />
-          </span>
           {signedIn ? (
             <Button asChild className="h-9 rounded-full px-4">
               <Link href="/app">
@@ -87,9 +83,8 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
 
       <motion.div
         aria-hidden="true"
-        className="h-px origin-left bg-gradient-to-r from-transparent via-primary/70 to-transparent"
-        animate={{ opacity: scrolled ? 1 : 0 }}
-        transition={{ duration: 0.2 }}
+        className="absolute inset-x-0 bottom-0 h-px origin-left bg-gradient-to-r from-primary via-primary to-chart-4"
+        style={{ scaleX: scrollYProgress }}
       />
     </header>
   );

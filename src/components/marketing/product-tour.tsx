@@ -17,38 +17,38 @@ const tabs = [
 
 function PlannerPreview() {
   return (
-    <div className="rounded-[1.5rem] border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
+    <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
         <div className="flex items-center gap-2">
           <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="eyebrow text-muted-foreground">
             Draft · Community run club
           </p>
         </div>
-        <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
+        <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 eyebrow text-primary">
           Not saved
         </span>
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg border border-border/60 bg-background/50 p-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="eyebrow text-muted-foreground">
             Project
           </p>
           <p className="mt-1 text-sm">Community run club</p>
-          <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="mt-4 eyebrow text-muted-foreground">
             Horizon
           </p>
           <p className="mt-1 text-sm">4 weeks</p>
         </div>
         <div className="rounded-lg border border-border/60 bg-background/50 p-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="eyebrow text-muted-foreground">
             Milestones
           </p>
           <ul className="mt-2 space-y-2">
             {["Route library live", "Weekly schedule live"].map((title, index) => (
               <li key={title} className="flex items-center justify-between gap-2 text-xs">
                 <span>{title}</span>
-                <span className="font-mono text-[9px] text-muted-foreground">W{index + 1}</span>
+                <span className="num text-[10px] text-muted-foreground">W{index + 1}</span>
               </li>
             ))}
           </ul>
@@ -56,10 +56,10 @@ function PlannerPreview() {
       </div>
       <div className="mt-3 rounded-lg border border-border/60 bg-background/50 p-3">
         <div className="flex items-center justify-between">
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="eyebrow text-muted-foreground">
             Tasks
           </p>
-          <span className="font-mono text-[9px] text-muted-foreground">03</span>
+          <span className="num text-[10px] text-muted-foreground">03</span>
         </div>
         <ul className="mt-2 divide-y divide-border/50">
           {[
@@ -69,7 +69,7 @@ function PlannerPreview() {
           ].map(([title, priority]) => (
             <li key={title} className="flex items-center justify-between gap-3 py-2 text-xs">
               <span className="truncate">{title}</span>
-              <span className="font-mono text-[9px] uppercase text-muted-foreground">
+              <span className="num text-[10px] uppercase text-muted-foreground">
                 {priority}
               </span>
             </li>
@@ -77,7 +77,7 @@ function PlannerPreview() {
         </ul>
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
-        <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="eyebrow text-muted-foreground">
           Generation never writes
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
@@ -97,10 +97,10 @@ export function ProductTour() {
     <section id="product" className="mx-auto w-full max-w-[1240px] px-4 py-16 sm:px-6 lg:py-24">
       <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-12">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+          <p className="eyebrow text-primary">
             The workspace
           </p>
-          <h2 className="mt-3 max-w-md font-display text-5xl leading-[0.9] tracking-[-0.04em] sm:text-6xl">
+          <h2 className="mt-4 max-w-md display-lg">
             One plan. Three honest views.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
@@ -129,13 +129,13 @@ export function ProductTour() {
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
-                    className="rounded-full px-3 font-mono text-[9px] uppercase tracking-[0.12em] data-active:bg-primary data-active:text-primary-foreground"
+                    className="rounded-full px-3 eyebrow data-active:bg-primary data-active:text-primary-foreground"
                   >
                     {item.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
-              <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="eyebrow text-muted-foreground">
                 Illustrative data
               </span>
             </div>

@@ -80,10 +80,10 @@ export function WorkTable({
             key={label}
             className="glass-card rounded-2xl px-4 py-3"
           >
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+            <p className="eyebrow text-muted-foreground">
               {label}
             </p>
-            <p className="mt-1 font-display text-3xl leading-none tabular-nums">
+            <p className="mt-1 font-brand text-2xl font-bold leading-none tabular-nums tracking-[-0.02em]">
               {value}
             </p>
           </div>
@@ -92,9 +92,9 @@ export function WorkTable({
 
       <div className="glass-card overflow-hidden rounded-2xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
-          <h2 id="work-table-heading" className="font-display text-2xl leading-none">
+          <h2 id="work-table-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
             Work items
-            <span className="ml-2 font-mono text-[10px] text-muted-foreground">
+            <span className="ml-2 num text-[10px] text-muted-foreground">
               {visible.length} of {tasks.length}
             </span>
           </h2>
@@ -137,7 +137,7 @@ export function WorkTable({
           </div>
         </div>
 
-        <div className="hidden grid-cols-[1fr_8rem_10rem_9rem_7rem] gap-3 border-b border-border/60 px-4 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground lg:grid">
+        <div className="hidden grid-cols-[1fr_8rem_10rem_9rem_7rem] gap-3 border-b border-border/60 px-4 py-2 eyebrow text-muted-foreground lg:grid">
           <span>Task</span>
           <span>Priority</span>
           <span>Due proximity</span>
@@ -183,7 +183,7 @@ export function WorkTable({
                     >
                       {task.title}
                     </p>
-                    <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 flex items-center gap-1 num text-[10px] text-muted-foreground">
                       <CalendarDays className="size-3" aria-hidden="true" />
                       {due ?? "No date"}
                       {overdue ? (

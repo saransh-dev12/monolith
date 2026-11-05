@@ -62,16 +62,12 @@ export function StudioHero() {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div
-        aria-hidden="true"
-        className="absolute -inset-6 -z-10 rounded-[3rem] bg-gradient-to-br from-chart-1/20 via-transparent to-chart-2/20 blur-2xl"
-      />
-      <SpotlightSurface className="rounded-[1.75rem]" color="var(--color-chart-2)">
+      <SpotlightSurface className="rounded-3xl" color="var(--color-chart-2)">
       <motion.div
         initial={reduce ? false : { y: 28, opacity: 0, rotate: 1.5 }}
         animate={{ y: 0, opacity: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.15 }}
-        className="overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/85 shadow-[0_48px_120px_-56px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+        className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-[0_48px_120px_-56px_rgba(0,0,0,0.9)]"
       >
         <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
           <div className="flex items-center gap-2">
@@ -80,11 +76,11 @@ export function StudioHero() {
               <span className="size-1.5 rounded-full bg-chart-2" />
               <span className="size-1.5 rounded-full bg-chart-3" />
             </span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+            <span className="eyebrow text-muted-foreground">
               Monolith studio
             </span>
           </div>
-          <span className="rounded-full border border-border/70 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="rounded-full border border-border/70 px-2 py-0.5 eyebrow text-muted-foreground">
             Illustrative
           </span>
         </div>
@@ -99,7 +95,7 @@ export function StudioHero() {
                 onClick={() => setStep(item.id)}
                 aria-pressed={active}
                 className={cn(
-                  "relative flex-1 rounded-full px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] transition-colors",
+                  "relative flex-1 rounded-full px-3 py-1.5 eyebrow transition-colors",
                   active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -127,20 +123,20 @@ export function StudioHero() {
             >
               {step === "idea" ? (
                 <div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                  <p className="eyebrow text-muted-foreground">
                     Project idea
                   </p>
-                  <div className="mt-3 rounded-2xl border border-border/70 bg-background/60 p-4">
+                  <div className="mt-3 rounded-xl border border-border/70 bg-background/60 p-4">
                     <p className="text-sm leading-6">
                       Launch a guided onboarding flow for new accounts — a short
                       checklist, a first-run email sequence, and a clear empty
                       state. Four weeks.
                     </p>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="rounded-full bg-muted px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+                      <span className="rounded-full bg-muted px-2.5 py-1 eyebrow text-muted-foreground">
                         Horizon · 4 weeks
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground">
                         Draft a plan
                         <CornerDownLeft className="size-3" aria-hidden="true" />
                       </span>
@@ -156,10 +152,10 @@ export function StudioHero() {
                         key={label}
                         className="rounded-xl border border-border/60 bg-card/60 p-2.5"
                       >
-                        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground">
+                        <p className="eyebrow text-muted-foreground">
                           {label}
                         </p>
-                        <p className="mt-1 font-display text-xl leading-none">{value}</p>
+                        <p className="mt-1 font-brand text-lg font-bold leading-none">{value}</p>
                       </div>
                     ))}
                   </div>
@@ -169,14 +165,14 @@ export function StudioHero() {
               {step === "plan" ? (
                 <div>
                   <div className="flex items-center justify-between">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                    <p className="eyebrow text-muted-foreground">
                       Proposed plan
                     </p>
-                    <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
+                    <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 eyebrow text-primary">
                       Not saved
                     </span>
                   </div>
-                  <p className="mt-2 font-display text-2xl leading-tight">
+                  <p className="mt-2 font-brand text-xl font-semibold leading-tight tracking-[-0.02em]">
                     Activation onboarding
                   </p>
                   <ul className="mt-3 space-y-2">
@@ -186,26 +182,26 @@ export function StudioHero() {
                         initial={reduce ? false : { opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.08 + index * 0.08 }}
-                        className="flex items-center gap-3 rounded-xl border border-border/60 bg-background/40 px-3 py-2.5"
+                        className="flex items-center gap-3 rounded-lg border border-border/60 bg-background/40 px-3 py-2.5"
                       >
-                        <span className="grid size-5 place-items-center rounded-full border border-chart-2/40 font-mono text-[8px] text-chart-2">
+                        <span className="grid size-5 place-items-center rounded-full border border-chart-2/40 num text-[10px] text-chart-2">
                           {index + 1}
                         </span>
                         <span className="flex-1 text-xs">{milestone.title}</span>
-                        <span className="font-mono text-[9px] text-muted-foreground">
+                        <span className="num text-[10px] text-muted-foreground">
                           {milestone.tasks} tasks
                         </span>
                       </motion.li>
                     ))}
                   </ul>
                   <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-3">
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       Edit any field before saving
                     </span>
                     <button
                       type="button"
                       onClick={() => setStep("execute")}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
                     >
                       Confirm &amp; save
                       <ArrowRight className="size-3" aria-hidden="true" />
@@ -217,10 +213,10 @@ export function StudioHero() {
               {step === "execute" ? (
                 <div>
                   <div className="flex items-center justify-between">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                    <p className="eyebrow text-muted-foreground">
                       Board · saved plan
                     </p>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-chart-3/40 bg-chart-3/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-chart-3">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-chart-3/40 bg-chart-3/10 px-2 py-0.5 eyebrow text-chart-3">
                       <Check className="size-2.5" aria-hidden="true" />
                       Confirmed
                     </span>
@@ -233,7 +229,7 @@ export function StudioHero() {
                       >
                         <div className="flex items-center gap-1.5 px-0.5">
                           <span className={cn("size-1.5 rounded-full", column.tone)} />
-                          <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+                          <span className="eyebrow text-muted-foreground">
                             {column.label}
                           </span>
                         </div>
@@ -241,7 +237,7 @@ export function StudioHero() {
                           {column.cards.map((card) => (
                             <div
                               key={card}
-                              className="rounded-lg border border-border/50 bg-card px-2 py-1.5 text-[9px] leading-4"
+                              className="rounded-md border border-border/50 bg-card px-2 py-1.5 text-[10px] leading-4"
                             >
                               {card}
                             </div>
@@ -252,10 +248,10 @@ export function StudioHero() {
                   </div>
                   <div className="mt-3 rounded-xl border border-border/60 bg-card/60 p-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground">
+                      <span className="eyebrow text-muted-foreground">
                         Progress from records
                       </span>
-                      <span className="font-mono text-[9px] tabular-nums text-chart-3">
+                      <span className="num text-[10px] text-chart-3">
                         54%
                       </span>
                     </div>
@@ -264,7 +260,7 @@ export function StudioHero() {
                         initial={reduce ? false : { width: 0 }}
                         animate={{ width: "54%" }}
                         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                        className="h-full rounded-full bg-gradient-to-r from-chart-2 to-chart-3"
+                        className="h-full rounded-full bg-chart-3"
                       />
                     </div>
                   </div>
@@ -275,11 +271,11 @@ export function StudioHero() {
         </div>
 
         <div className="flex items-center justify-between border-t border-border/60 px-4 py-2.5">
-          <span className="flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="flex items-center gap-1.5 eyebrow text-muted-foreground">
             <Sparkles className="size-3 text-chart-2" aria-hidden="true" />
             Demo walkthrough · no writes
           </span>
-          <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-muted-foreground/70">
+          <span className="eyebrow text-muted-foreground/70">
             {paused ? "Paused" : "Auto-playing"}
           </span>
         </div>

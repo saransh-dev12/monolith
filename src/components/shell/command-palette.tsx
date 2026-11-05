@@ -58,7 +58,7 @@ export function CommandPalette() {
       >
         <Search className="size-3.5" aria-hidden="true" />
         <span className="hidden sm:inline">Jump to</span>
-        <kbd className="ml-1 hidden rounded border border-border/80 bg-muted/50 px-1.5 py-0.5 font-mono text-[10px] sm:inline">
+        <kbd className="ml-1 hidden rounded border border-border/80 bg-muted/50 px-1.5 py-0.5 num text-[10px] sm:inline">
           ⌘K
         </kbd>
       </button>

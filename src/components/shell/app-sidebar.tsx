@@ -55,14 +55,14 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg" tooltip="Monolith">
               <Link href="/app">
-                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-chart-4 text-[#160704] shadow-[0_8px_24px_-12px_var(--color-primary)]">
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[0_8px_24px_-12px_var(--color-primary)]">
                   <MonolithMark />
                 </span>
                 <span className="grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="font-display text-lg tracking-[-0.02em]">
+                  <span className="font-brand text-lg font-bold tracking-[-0.02em]">
                     Monolith
                   </span>
-                  <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <span className="eyebrow mt-0.5 text-muted-foreground">
                     Studio workspace
                   </span>
                 </span>
@@ -75,7 +75,7 @@ export function AppSidebar({
       <SidebarContent>
         <nav aria-label="Workspace">
           <SidebarGroup>
-            <SidebarGroupLabel className="font-mono text-[9px] uppercase tracking-[0.18em]">
+            <SidebarGroupLabel className="eyebrow">
               Workspace
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -116,7 +116,7 @@ export function AppSidebar({
           </SidebarGroup>
 
           <SidebarGroup>
-            <SidebarGroupLabel className="font-mono text-[9px] uppercase tracking-[0.18em]">
+            <SidebarGroupLabel className="eyebrow">
               Library
             </SidebarGroupLabel>
             <SidebarGroupContent>
