@@ -48,13 +48,13 @@ export function CommandDemo() {
   const { d, area } = smooth(values, 620, 180);
 
   return (
-    <div className="rounded-[1.75rem] border border-border/70 bg-card/70 p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+    <div className="rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
       <div className="flex flex-wrap items-start justify-between gap-3 px-1">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="eyebrow text-muted-foreground">
             Completion pulse · illustrative
           </p>
-          <p className="mt-1 font-display text-4xl leading-none tabular-nums">
+          <p className="mt-1 font-brand text-4xl font-bold leading-none tabular-nums tracking-[-0.02em]">
             {total}
             <span className="ml-2 align-middle font-sans text-[11px] font-normal text-muted-foreground">
               tasks done · {range} days
@@ -75,7 +75,7 @@ export function CommandDemo() {
                 onClick={() => setRange(option)}
                 aria-pressed={selected}
                 className={cn(
-                  "relative rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] transition-colors",
+                  "relative rounded-full px-2.5 py-1 eyebrow transition-colors",
                   selected ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -146,19 +146,19 @@ export function CommandDemo() {
             ["Overdue", "02", "text-primary"],
           ].map(([label, value, tone]) => (
             <div key={label} className="rounded-xl border border-border/60 bg-background/40 p-2.5">
-              <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="eyebrow text-muted-foreground">
                 {label}
               </p>
-              <p className={cn("mt-1 font-display text-2xl leading-none", tone)}>{value}</p>
+              <p className={cn("mt-1 font-brand text-xl font-bold leading-none tracking-[-0.02em]", tone)}>{value}</p>
             </div>
           ))}
         </div>
         <div className="rounded-xl border border-border/60 bg-background/40 p-2.5">
           <div className="flex items-center justify-between">
-            <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground">
+            <p className="eyebrow text-muted-foreground">
               Focus week
             </p>
-            <p className="font-mono text-[8px] text-muted-foreground/70">Mon–Sun</p>
+            <p className="num text-[10px] text-muted-foreground/70">Mon–Sun</p>
           </div>
           <div className="mt-2 flex h-12 items-end gap-1.5">
             {week.map((day, index) => (
@@ -173,7 +173,7 @@ export function CommandDemo() {
                     index === 3 ? "bg-chart-1" : "bg-chart-2/35",
                   )}
                 />
-                <span className="font-mono text-[8px] text-muted-foreground/60">{day.day}</span>
+                <span className="num text-[10px] text-muted-foreground/60">{day.day}</span>
               </div>
             ))}
           </div>

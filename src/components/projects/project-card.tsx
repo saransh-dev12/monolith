@@ -15,7 +15,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
       className="group glass-card relative flex flex-col overflow-hidden rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 hover:border-chart-2/30 hover:shadow-[0_28px_56px_-32px_rgba(0,0,0,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="flex items-start justify-between gap-3">
-        <h2 className="font-display text-2xl leading-tight tracking-[-0.01em] transition-colors group-hover:text-primary">
+        <h2 className="font-brand text-xl font-semibold leading-tight tracking-[-0.02em] transition-colors group-hover:text-primary">
           {project.name}
         </h2>
         <ProjectStatusBadge status={project.status} />
@@ -33,7 +33,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
         <Progress
           value={project.progress.percent}
           aria-label={`${project.name} progress`}
-          className="[&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-primary [&>[data-slot=progress-indicator]]:to-chart-2"
+          className="[&>[data-slot=progress-indicator]]:bg-primary"
         />
       </div>
 

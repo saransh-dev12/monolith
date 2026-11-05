@@ -94,7 +94,7 @@ export default async function ProjectDetailPage(
           ["Tasks", `${openTasks} open · ${doneTasks} done`],
         ].map(([label, value]) => (
           <div key={label} className="bg-card/80 p-4">
-            <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="eyebrow text-muted-foreground">
               {label}
             </p>
             <div className="mt-2">
@@ -118,7 +118,7 @@ export default async function ProjectDetailPage(
         <Progress
           value={percent}
           aria-label={`${project.name} progress`}
-          className="h-1.5 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-primary [&>[data-slot=progress-indicator]]:to-chart-2"
+          className="h-1.5 [&>[data-slot=progress-indicator]]:bg-primary"
         />
       </section>
 
@@ -131,10 +131,10 @@ export default async function ProjectDetailPage(
       <section className="mt-10" aria-labelledby="milestones-heading">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
-            <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="eyebrow text-muted-foreground">
               Checkpoints
             </p>
-            <h2 id="milestones-heading" className="mt-0.5 font-display text-2xl leading-none">
+            <h2 id="milestones-heading" className="mt-0.5 font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
               Milestones
             </h2>
             <p className="text-xs text-muted-foreground">

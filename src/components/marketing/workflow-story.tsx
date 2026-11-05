@@ -45,7 +45,7 @@ const story = [
 function IdeaVisual() {
   return (
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
-      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+      <p className="eyebrow text-muted-foreground">
         New project · idea
       </p>
       <p className="mt-3 text-sm leading-6">
@@ -53,10 +53,10 @@ function IdeaVisual() {
         first-run email sequence, and a clear empty state. Four weeks.
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <span className="rounded-full border border-border/70 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+        <span className="rounded-full border border-border/70 px-2.5 py-1 eyebrow text-muted-foreground">
           4 weeks
         </span>
-        <span className="rounded-full border border-border/70 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+        <span className="rounded-full border border-border/70 px-2.5 py-1 eyebrow text-muted-foreground">
           Small team
         </span>
         <span className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
@@ -78,35 +78,35 @@ function PlanVisual() {
   return (
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
       <div className="flex items-center justify-between">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5 eyebrow text-muted-foreground">
           <Sparkles className="size-3 text-primary" aria-hidden="true" />
           {reduce ? (
             "AI draft"
           ) : (
             <TextShimmer
               duration={2.2}
-              className="[--base-color:#a5a09a] [--base-gradient-color:#f4f0e8] dark:[--base-color:#a5a09a] dark:[--base-gradient-color:#f4f0e8]"
+              className="[--base-color:var(--color-muted-foreground)] [--base-gradient-color:var(--color-foreground)]"
             >
               AI draft
             </TextShimmer>
           )}
         </span>
-        <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-primary">
+        <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 eyebrow text-primary">
           Not saved
         </span>
       </div>
-      <p className="mt-3 font-display text-2xl leading-tight">Activation onboarding</p>
+      <p className="mt-3 font-brand text-xl font-semibold leading-tight tracking-[-0.02em]">Activation onboarding</p>
       <ul className="mt-3 space-y-2">
         {milestones.map(([title, tasks], index) => (
           <li
             key={title}
             className="flex items-center gap-3 rounded-xl border border-border/60 bg-card/50 px-3 py-2.5"
           >
-            <span className="grid size-5 place-items-center rounded-full border border-chart-2/40 font-mono text-[8px] text-chart-2">
+            <span className="grid size-5 place-items-center rounded-full border border-chart-2/40 num text-[10px] text-chart-2">
               {index + 1}
             </span>
             <span className="flex-1 text-xs">{title}</span>
-            <span className="font-mono text-[9px] text-muted-foreground">{tasks}</span>
+            <span className="num text-[10px] text-muted-foreground">{tasks}</span>
           </li>
         ))}
       </ul>
@@ -123,17 +123,17 @@ function TasksVisual() {
   return (
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           Tasks · saved plan
         </p>
-        <span className="font-mono text-[9px] text-muted-foreground">03</span>
+        <span className="num text-[10px] text-muted-foreground">03</span>
       </div>
       <ul className="mt-3 divide-y divide-border/60 rounded-xl border border-border/60 bg-card/40">
         {tasks.map(([title, status, priority], index) => (
           <li key={title} className="flex items-center gap-3 px-3 py-3">
             <span
               className={cn(
-                "grid size-5 shrink-0 place-items-center rounded-full border text-[8px]",
+                "grid size-5 shrink-0 place-items-center rounded-full border num text-[10px]",
                 index === 2
                   ? "border-chart-3/50 bg-chart-3/10 text-chart-3"
                   : "border-border/70 text-muted-foreground",
@@ -142,10 +142,10 @@ function TasksVisual() {
               {index + 1}
             </span>
             <span className="min-w-0 flex-1 truncate text-xs">{title}</span>
-            <span className="font-mono text-[8px] uppercase tracking-[0.08em] text-muted-foreground">
+            <span className="eyebrow text-muted-foreground">
               {priority}
             </span>
-            <span className="hidden font-mono text-[8px] uppercase tracking-[0.08em] text-primary sm:inline">
+            <span className="hidden eyebrow text-primary sm:inline">
               {status}
             </span>
           </li>
@@ -158,17 +158,17 @@ function TasksVisual() {
 function ProgressVisual() {
   return (
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
-      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+      <p className="eyebrow text-muted-foreground">
         Progress · derived
       </p>
-      <p className="mt-3 font-display text-5xl leading-none tracking-[-0.04em]">
-        54<span className="text-primary">%</span>
+      <p className="mt-3 font-brand text-5xl font-bold leading-none tracking-[-0.02em]">
+        54<span className="display-em">%</span>
       </p>
       <p className="mt-2 text-xs text-muted-foreground">
         Seven of thirteen tasks complete
       </p>
       <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className="h-full w-[54%] rounded-full bg-gradient-to-r from-[var(--chart-4)] via-primary to-chart-2" />
+        <div className="h-full w-[54%] rounded-full bg-primary" />
       </div>
       <div className="mt-4 grid grid-cols-3 gap-2">
         {[
@@ -177,10 +177,10 @@ function ProgressVisual() {
           ["Done", "07"],
         ].map(([label, value]) => (
           <div key={label} className="rounded-lg border border-border/60 bg-card/40 p-2.5">
-            <p className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+            <p className="eyebrow text-muted-foreground">
               {label}
             </p>
-            <p className="mt-1 font-display text-xl leading-none">{value}</p>
+            <p className="mt-1 font-brand text-lg font-bold leading-none">{value}</p>
           </div>
         ))}
       </div>
@@ -192,10 +192,10 @@ function ExecuteVisual() {
   return (
     <div className="rounded-2xl border border-border/70 bg-background/50 p-4">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           Board · live
         </p>
-        <span className="font-mono text-[9px] tabular-nums text-chart-3">
+        <span className="num text-[10px] text-chart-3">
           54% complete
         </span>
       </div>
@@ -216,7 +216,7 @@ function ExecuteVisual() {
           <div key={column.label} className="rounded-xl border border-border/60 bg-card/40 p-2">
             <div className="flex items-center gap-1.5 px-0.5">
               <span className={cn("size-1.5 rounded-full", column.tone)} />
-              <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+              <span className="eyebrow text-muted-foreground">
                 {column.label}
               </span>
             </div>
@@ -234,7 +234,7 @@ function ExecuteVisual() {
         ))}
       </div>
       <div className="mt-3 h-1 overflow-hidden rounded-full bg-muted">
-        <div className="h-full w-[54%] rounded-full bg-gradient-to-r from-chart-2 to-chart-3" />
+        <div className="h-full w-[54%] rounded-full bg-chart-3" />
       </div>
     </div>
   );
@@ -299,12 +299,12 @@ export function WorkflowStory() {
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-16 sm:px-6 lg:pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+            <p className="eyebrow text-primary">
               The workflow
             </p>
-            <h2 className="mt-3 max-w-2xl font-display text-5xl font-bold uppercase leading-[0.88] tracking-[-0.045em] sm:text-6xl">
+            <h2 className="mt-4 max-w-2xl display-lg">
               Idea to shipped work,{" "}
-              <span className="text-primary">without the handoff.</span>
+              <span className="display-em">without the handoff.</span>
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-6 text-muted-foreground">
@@ -336,7 +336,7 @@ export function WorkflowStory() {
                         <div className="flex items-baseline gap-3">
                           <span
                             className={cn(
-                              "font-mono text-[10px] tabular-nums transition-colors",
+                              "num text-[10px] transition-colors",
                               isActive ? "text-primary" : "text-muted-foreground/60",
                             )}
                           >
@@ -344,7 +344,7 @@ export function WorkflowStory() {
                           </span>
                           <h3
                             className={cn(
-                              "font-display text-3xl font-semibold leading-none tracking-[-0.02em] transition-colors",
+                              "font-display text-3xl leading-none transition-colors",
                               isActive ? "text-foreground" : "text-muted-foreground/50",
                             )}
                           >
@@ -385,7 +385,7 @@ export function WorkflowStory() {
                 </div>
                 <span
                   data-step-label
-                  className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground"
+                  className="eyebrow text-muted-foreground"
                 >
                   {story[active].label}
                 </span>
@@ -393,22 +393,18 @@ export function WorkflowStory() {
             </div>
 
             <div className="relative">
-              <div
-                aria-hidden="true"
-                className="absolute -inset-8 -z-10 rounded-[3rem] bg-gradient-to-br from-chart-1/10 via-transparent to-chart-2/15 blur-2xl"
-              />
               <motion.div
                 key={active}
                 initial={reduce ? false : { opacity: 0, y: 20, filter: "blur(6px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="rounded-[1.75rem] border border-border/70 bg-card/80 p-3 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+                className="rounded-3xl border border-border/70 bg-card p-3 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]"
               >
                 <div className="mb-3 flex items-center justify-between px-2 pt-1">
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                  <span className="eyebrow text-muted-foreground">
                     {story[active].label} · illustrative
                   </span>
-                  <span className="font-mono text-[9px] tabular-nums text-muted-foreground/70">
+                  <span className="num text-[10px] text-muted-foreground/70">
                     {active + 1} / {story.length}
                   </span>
                 </div>
@@ -425,11 +421,11 @@ export function WorkflowStory() {
           return (
             <article
               key={item.number}
-              className="rounded-[1.5rem] border border-border/60 bg-card/50 p-4"
+              className="rounded-2xl border border-border/60 bg-card/50 p-4"
             >
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-[10px] text-primary">{item.number}</span>
-                <h3 className="font-display text-2xl font-semibold leading-none tracking-[-0.02em]">{item.title}</h3>
+                <span className="num text-[10px] text-primary">{item.number}</span>
+                <h3 className="font-brand text-xl font-semibold leading-none tracking-[-0.02em]">{item.title}</h3>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
               <div className="mt-4">

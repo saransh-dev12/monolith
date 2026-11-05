@@ -19,10 +19,6 @@ export function EmptyState({
 }) {
   return (
     <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-border/80 bg-card/20 px-6 py-14 text-center">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 size-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-chart-2/15 blur-3xl"
-      />
       <Image
         src="/assets/3dicons/folder-color.png"
         alt=""
@@ -32,7 +28,7 @@ export function EmptyState({
         className="relative size-20 drop-shadow-[0_18px_28px_rgba(0,0,0,0.45)]"
         aria-hidden="true"
       />
-      <h2 className="relative mt-4 font-display text-2xl leading-none">{title}</h2>
+      <h2 className="relative mt-4 font-brand text-xl font-semibold leading-none tracking-[-0.02em]">{title}</h2>
       <p className="relative mt-2 max-w-md text-sm leading-6 text-muted-foreground">
         {description}
       </p>

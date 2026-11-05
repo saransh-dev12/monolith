@@ -62,11 +62,11 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
         <div>
           <h2
             id={`${groupId}-heading`}
-            className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground"
+            className="eyebrow text-muted-foreground"
           >
             Execution · last {range} days
           </h2>
-          <p className="mt-2 font-display text-5xl leading-none tabular-nums">
+          <p className="mt-2 font-brand text-4xl font-bold leading-none tabular-nums tracking-[-0.02em] sm:text-5xl">
             {completedTotal}
             <span className="ml-2 align-middle font-sans text-xs font-normal text-muted-foreground">
               done tasks updated · {createdTotal} created
@@ -90,7 +90,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
                 }}
                 aria-pressed={selected}
                 className={cn(
-                  "relative rounded-full px-3 py-1 font-mono text-[11px] transition-colors",
+                  "relative rounded-full px-3 py-1 num text-[11px] transition-colors",
                   selected
                     ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground",
@@ -189,7 +189,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
           <p
             id={tooltipId}
             role="status"
-            className="pointer-events-none absolute -top-1 rounded-md border border-border/70 bg-popover px-2 py-1 font-mono text-[10px] whitespace-nowrap text-popover-foreground shadow-lg"
+            className="pointer-events-none absolute -top-1 rounded-md border border-border/70 bg-popover px-2 py-1 num text-[10px] whitespace-nowrap text-popover-foreground shadow-lg"
             style={{
               left: `${(activePoint.x / width) * 100}%`,
               transform: "translate(-50%, -100%)",
@@ -202,10 +202,10 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
       </div>
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="font-mono text-[10px] text-muted-foreground">
+        <p className="num text-[10px] text-muted-foreground">
           Currently done tasks by last update; edits can change the date
         </p>
-        <details className="font-mono text-[10px] text-muted-foreground">
+        <details className="num text-[10px] text-muted-foreground">
           <summary className="cursor-pointer hover:text-foreground">
             Daily numbers
           </summary>
@@ -233,10 +233,10 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
       className="glass-card rounded-2xl p-6"
     >
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+        <h2 className="eyebrow text-muted-foreground">
           Focus this week
         </h2>
-        <p className="font-display text-3xl leading-none tabular-nums">
+        <p className="font-brand text-2xl font-bold leading-none tabular-nums tracking-[-0.02em] sm:text-3xl">
           {total}
           <span className="ml-1 font-sans text-[11px] font-normal text-muted-foreground">
             done tasks updated
@@ -267,14 +267,14 @@ export function WeekStrip({ series }: { series: ExecutionDay[] }) {
                     : "bg-chart-2/45",
                 )}
               />
-              <span className="font-mono text-[9px] text-muted-foreground">
+              <span className="num text-[10px] text-muted-foreground">
                 {day.label}
               </span>
             </div>
           );
         })}
       </div>
-      <p className="mt-3 font-mono text-[10px] text-muted-foreground">
+      <p className="mt-3 num text-[10px] text-muted-foreground">
         Done per day · your rows only
       </p>
     </section>

@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight, JetBrains_Mono, Syne } from "next/font/google";
+import {
+  Fraunces,
+  Inter_Tight,
+  JetBrains_Mono,
+  Syne,
+} from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 import { MotionProvider } from "@/components/motion/motion-provider";
@@ -12,6 +17,13 @@ const syne = Syne({
   variable: "--font-mol-display",
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-mol-editorial",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["opsz", "SOFT", "WONK"],
 });
 
 const interTight = Inter_Tight({
@@ -37,27 +49,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "dark light",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#efede7" },
-    { media: "(prefers-color-scheme: dark)", color: "#080808" },
-  ],
+  colorScheme: "dark",
+  themeColor: "#080808",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${interTight.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${syne.variable} ${fraunces.variable} ${interTight.variable} ${jetbrains.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
           <MotionProvider>{children}</MotionProvider>
         </ThemeProvider>
       </body>

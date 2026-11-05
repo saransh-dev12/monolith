@@ -34,15 +34,15 @@ export function Wordmark({
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <span
         className={cn(
-          "grid size-8 place-items-center rounded-[0.7rem] shadow-[0_8px_24px_-12px_var(--color-primary)]",
+          "grid size-8 place-items-center rounded-xl shadow-[0_8px_24px_-12px_var(--color-primary)]",
           inverted
             ? "bg-background text-primary"
-            : "bg-gradient-to-br from-[var(--color-chart-1)] to-[var(--color-chart-2)] text-[#160c1c]",
+            : "bg-primary text-primary-foreground",
         )}
       >
         <MonolithMark />
       </span>
-      <span className="font-display text-[1.45rem] leading-none tracking-[-0.02em]">
+      <span className="font-brand text-[1.45rem] font-bold leading-none tracking-[-0.02em]">
         Monolith
       </span>
     </span>

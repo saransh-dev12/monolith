@@ -50,12 +50,12 @@ export function AuthForm({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
     >
-    <Card className="w-full gap-5 rounded-2xl border-border/70 bg-card/90 shadow-[0_32px_80px_-48px_rgba(0,0,0,0.9)] backdrop-blur">
+    <Card className="w-full gap-5 rounded-2xl border-border/70 bg-card shadow-[0_32px_80px_-48px_rgba(0,0,0,0.9)]">
       <CardHeader>
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           {isSignup ? "New workspace" : "Workspace access"}
         </p>
-        <h1 className="mt-2 font-display text-4xl leading-none tracking-[-0.01em]">
+        <h1 className="mt-2 font-brand text-3xl font-semibold leading-none tracking-[-0.02em]">
           {isSignup ? "Create your workspace" : "Welcome back"}
         </h1>
         <CardDescription>

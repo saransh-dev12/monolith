@@ -6,7 +6,6 @@ import { Wordmark } from "@/components/brand/monolith-mark";
 import { RouteTransition } from "@/components/motion/route-transition";
 import { AppSidebar } from "@/components/shell/app-sidebar";
 import { CommandPalette } from "@/components/shell/command-palette";
-import { ThemeSwitcher } from "@/components/shell/theme-switcher";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +33,7 @@ export default async function WorkspaceLayout({
         </a>
         <AppSidebar displayName={user.displayName} email={user.email} />
         <SidebarInset id="main" className="min-w-0 bg-background">
-          <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/75 px-3 backdrop-blur-xl sm:px-5">
+          <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background px-3 sm:px-5">
             <SidebarTrigger className="-ml-1" />
             <Link href="/app" className="md:hidden" aria-label="Monolith workspace">
               <Wordmark />
@@ -45,7 +44,6 @@ export default async function WorkspaceLayout({
             />
             <CommandPalette />
             <div className="ml-auto flex items-center gap-2">
-              <ThemeSwitcher compact />
               <ProjectDialog
                 trigger={
                   <Button size="sm" aria-label="New project">

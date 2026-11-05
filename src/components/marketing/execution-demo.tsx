@@ -39,7 +39,7 @@ export function MarketingExecutionDemo() {
     <div className="glass-card rounded-2xl p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="eyebrow text-muted-foreground">
             Execution · illustrative
           </p>
           <p className="mt-2 font-heading text-4xl leading-none tabular-nums">
@@ -63,7 +63,7 @@ export function MarketingExecutionDemo() {
                 onClick={() => setRange(value)}
                 aria-pressed={selected}
                 className={cn(
-                  "relative rounded-full px-3 py-1 font-mono text-[11px] transition-colors",
+                  "relative rounded-full px-3 py-1 num text-[11px] transition-colors",
                   selected
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground",
@@ -117,7 +117,7 @@ export function MarketingExecutionDemo() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         />
       </motion.svg>
-      <p className="mt-3 font-mono text-[10px] text-muted-foreground">
+      <p className="mt-3 num text-[10px] text-muted-foreground">
         Illustrative preview · the workspace chart reads your real task rows
       </p>
     </div>

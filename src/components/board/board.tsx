@@ -63,7 +63,7 @@ function BoardCard({
       whileHover={overlay || dragging ? undefined : { y: -5 }}
       transition={springLift}
       className={cn(
-        "space-y-3 rounded-2xl border border-border/60 bg-card/90 p-4 backdrop-blur transition-[box-shadow,border-color,opacity,translate] duration-150 hover:border-chart-2/35 hover:shadow-[0_20px_44px_-28px_rgba(0,0,0,0.75)]",
+        "space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-[inset_0_1px_0_0_rgb(255_255_255/4%)] transition-[box-shadow,border-color,opacity,translate] duration-150 hover:border-chart-2/35 hover:shadow-[0_20px_44px_-28px_rgba(0,0,0,0.75)]",
         dragging && "opacity-40",
         overlay &&
           "rotate-[1deg] border-primary/50 shadow-2xl shadow-black/40",
@@ -73,7 +73,7 @@ function BoardCard({
         <div className="min-w-0 space-y-1.5">
           <Link
             href={`/app/projects/${task.project_id}`}
-            className="text-[11px] uppercase tracking-wide text-muted-foreground hover:text-foreground"
+            className="eyebrow text-muted-foreground hover:text-foreground"
           >
             {task.projectName}
           </Link>
@@ -192,12 +192,12 @@ function BoardColumn({
           />
           <h2
             id={`column-${status}`}
-            className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+            className="eyebrow text-muted-foreground"
           >
             {TASK_STATUS_LABELS[status]}
           </h2>
         </div>
-        <span className="rounded-full border border-border/70 px-2 py-0.5 font-mono text-[10px] tabular-nums text-muted-foreground">
+        <span className="rounded-full border border-border/70 px-2 py-0.5 num text-[10px] text-muted-foreground">
           {String(tasks.length).padStart(2, "0")}
         </span>
       </header>
@@ -307,7 +307,7 @@ export function Board({ tasks }: { tasks: BoardTask[] }) {
       onDragCancel={() => setActiveId(null)}
       onDragEnd={handleDragEnd}
     >
-      <p className="mb-4 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+      <p className="mb-4 flex items-center gap-2 eyebrow text-muted-foreground">
         <span className="size-1.5 rounded-full bg-chart-2" aria-hidden="true" />
         Drag the grip to move work · the status menu is the keyboard fallback
       </p>

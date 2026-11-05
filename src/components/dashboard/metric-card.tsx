@@ -20,7 +20,7 @@ export function MetricCard({
   return (
     <MetricLift>
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           {label}
         </p>
         <span
@@ -28,19 +28,19 @@ export function MetricCard({
             "grid size-9 place-items-center rounded-xl border",
             tone === "warning"
               ? "border-primary/40 bg-primary/12 text-primary"
-              : "border-chart-2/35 bg-chart-2/12 text-chart-2",
+              : "border-border bg-muted text-muted-foreground",
           )}
         >
           <Icon className="size-4" aria-hidden="true" />
         </span>
       </div>
       <p
-        className="mt-3 font-display text-5xl leading-none tracking-[-0.03em] text-foreground"
+        className="mt-3 font-brand text-4xl font-bold leading-none tracking-[-0.02em] text-foreground sm:text-5xl"
         aria-label={`${label}: ${value}`}
       >
         <NumberTicker
           value={value}
-          className="font-display text-5xl leading-none tracking-[-0.03em] text-foreground"
+          className="font-brand text-4xl font-bold leading-none tracking-[-0.02em] text-foreground sm:text-5xl"
           aria-hidden="true"
         />
       </p>

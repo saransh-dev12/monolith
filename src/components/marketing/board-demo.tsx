@@ -45,12 +45,12 @@ export function BoardDemo() {
   const done = tasks.filter((task) => task.status === "done").length;
 
   return (
-    <div className="rounded-[1.75rem] border border-border/70 bg-card/60 p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
+    <div className="rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
       <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           Board preview · illustrative
         </p>
-        <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           Click a card to advance · {done}/{tasks.length} done
         </p>
       </div>
@@ -72,11 +72,11 @@ export function BoardDemo() {
                       index === 0 ? "bg-foreground/60" : index === 1 ? "bg-primary" : "bg-chart-3",
                     )}
                   />
-                  <h3 className="font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+                  <h3 className="eyebrow text-muted-foreground">
                     {labels[status]}
                   </h3>
                 </div>
-                <span className="font-mono text-[9px] tabular-nums text-muted-foreground/70">
+                <span className="num text-[10px] text-muted-foreground/70">
                   {String(column.length).padStart(2, "0")}
                 </span>
               </header>
@@ -103,14 +103,14 @@ export function BoardDemo() {
                       </span>
                       <ArrowDownRight className="mt-0.5 size-3 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-foreground" />
                     </span>
-                    <span className="mt-1.5 flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.08em] text-muted-foreground/60">
+                    <span className="mt-1.5 flex items-center justify-between eyebrow text-muted-foreground/60">
                       {task.project}
                       <GripVertical className="size-3 opacity-40" aria-hidden="true" />
                     </span>
                   </motion.button>
                 ))}
                 {column.length === 0 ? (
-                  <p className="rounded-xl border border-dashed border-border/60 px-2 py-4 text-center font-mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground/50">
+                  <p className="rounded-xl border border-dashed border-border/60 px-2 py-4 text-center eyebrow text-muted-foreground/50">
                     Empty
                   </p>
                 ) : null}
@@ -121,7 +121,7 @@ export function BoardDemo() {
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/60 px-1 pt-3">
-        <p className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">
           Demo state stays in this preview
         </p>
         <div className="flex w-32 items-center gap-2">
@@ -132,7 +132,7 @@ export function BoardDemo() {
               transition={{ type: "spring", stiffness: 260, damping: 30 }}
             />
           </div>
-          <span className="font-mono text-[8px] tabular-nums text-chart-3">
+          <span className="num text-[10px] text-chart-3">
             {Math.round((done / tasks.length) * 100)}%
           </span>
         </div>
