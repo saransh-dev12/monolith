@@ -26,5 +26,13 @@ export async function createClient() {
         }
       },
     },
+    global: {
+      // Owner-scoped reads must never be served from a stale cache. Next's
+      // fetch layer may otherwise dedupe/cache GETs across renders, which
+      // intermittently served empty project lists right after a create on
+      // production.
+      fetch: (input, init) =>
+        fetch(input, { ...init, cache: "no-store" }),
+    },
   });
 }
