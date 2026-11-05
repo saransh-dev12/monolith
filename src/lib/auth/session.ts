@@ -12,7 +12,14 @@ export type SessionUser = {
 };
 
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = await createClient();
+  } catch {
+    // Supabase not configured (e.g. pre-launch deploy). Treat as signed out
+    // so the marketing surface renders and auth surfaces explain the state.
+    return null;
+  }
   const { data, error } = await supabase.auth.getUser();
 
   if (error || !data.user) {
