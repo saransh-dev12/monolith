@@ -22,14 +22,13 @@ async function contrast(locator: Locator): Promise<number> {
   });
 }
 
-test("primary action maintains normal text contrast in both themes and on hover", async ({ page }) => {
+// Ember Obsidian is dark-only: the light theme was removed by product
+// decision, so contrast is verified on the single production theme.
+test("primary action maintains normal text contrast in the dark theme and on hover", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   const action = page.getByRole("link", { name: "Start a project", exact: true }).first();
-  for (const theme of ["Light", "Dark"]) {
-    await page.getByRole("button", { name: theme, exact: true }).first().click();
-    await expect.poll(() => contrast(action)).toBeGreaterThanOrEqual(4.5);
-    await action.hover();
-    await expect.poll(() => contrast(action)).toBeGreaterThanOrEqual(4.5);
-  }
+  await expect.poll(() => contrast(action)).toBeGreaterThanOrEqual(4.5);
+  await action.hover();
+  await expect.poll(() => contrast(action)).toBeGreaterThanOrEqual(4.5);
 });
