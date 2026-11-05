@@ -17,10 +17,12 @@ IMPLEMENTED ≠ VERIFIED. VERIFIED LOCALLY ≠ VERIFIED IN PRODUCTION.
 | Milestones | Verified (local) | `src/components/milestones/*`, API routes | e2e + pgTAP | Pass | None open | Playwright 15/15 | — |
 | AI planner (generate → review → confirm) | Implemented | `src/lib/planner/*`, `src/lib/ai/*`, `src/components/planner/*` | vitest transform/data suites; e2e persistence gate | Pass (mock provider) | Live-provider run pending | vitest 40/40 | `OPENAI_API_KEY` in production |
 | Dark-only theme (product decision) | Verified (local) | `globals.css`, `layout.tsx`, switchers deleted | contrast e2e (dark + hover) | Pass | None | Playwright | — |
-| CI green on main | In progress | `tests/e2e/contrast.spec.ts` fixed for dark-only | Local e2e 15/15 | Pending CI run | CI red pre-fix | run 42114959054 | — |
-| Production Supabase provisioning | **Blocked** | — | — | — | — | — | Needs `supabase login` (user account authorization) |
-| Production env wiring (Vercel) | Blocked | — | — | — | — | — | Supabase project URL + keys |
-| Production smoke test (27 steps) | Not started | — | — | — | — | — | Supabase + OpenAI credentials |
-| Live OpenAI generation test | Not started | — | — | — | — | — | `OPENAI_API_KEY` |
-| UAT (5 independent testers) | Not started | — | — | — | — | — | Production deployment |
-| v1.0.0 tag + GitHub release | Not started | — | — | — | — | — | All gates green |
+| CI green on main | Verified | `tests/e2e/contrast.spec.ts` fixed for dark-only | Full CI run | Pass (run 42118438700) | None | gh run list | — |
+| Production Supabase provisioning | Verified (production) | Org `monolith-org`, project `monolith-prod` (`tzdkxjiluwfyshwurtcj`, Mumbai, free tier) | 4 migrations pushed, RLS + 15 owner-scoped policies queried via Management API | ACTIVE_HEALTHY, all RLS on | — | CLI + API output 2026-11-06 | — |
+| Production env wiring (Vercel) | Verified (production) | 4 env vars set (project scope) | Redeploy + live check | 200s on landing/login | — | vercel deploy logs | — |
+| Production smoke (auth + core loop) | Verified (production) | `tests/e2e/production-smoke.spec.ts` | signup → workspace → sign out; sign in → project → task → status change → reload persistence → sign back in | 2/2 pass on `monolith-navy.vercel.app` | None | Playwright output 2026-11-06 | — |
+| Auth auto-confirm decision | Decided + documented | `mailer_autoconfirm=true` — built-in mailer rate limit (2/h) blocks confirmation emails without SMTP | signup e2e | Pass | Password-reset emails unavailable until SMTP is configured | Management API config read | Optional SMTP for email flows |
+| Disposable test data cleanup | Verified | Deleted all `prod-smoke-*`/`raw-probe-*` users via SQL cascade | users 0, projects 0, profiles 0 after | Clean | — | Management API output | — |
+| AI planner (generate → review → confirm) | Implemented | `src/lib/planner/*`, `src/lib/ai/*` | vitest transform/data suites; e2e persistence gate | Pass (mock provider) | Live-provider run pending | vitest 40/40 | `OPENAI_API_KEY` in production |
+| UAT (5 independent testers) | Not started | — | — | — | — | — | Manual coordination |
+| v1.0.0 tag + GitHub release | Not started | — | — | — | — | — | Remaining directive phases |

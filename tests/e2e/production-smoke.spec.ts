@@ -34,8 +34,16 @@ test("confirmed user can work the full core loop", async ({ page }) => {
   await page.getByLabel("Name").fill("Smoke Project");
   await page.getByRole("button", { name: "Create project" }).click();
   await page.waitForURL("**/app");
-  await page.goto("/app/projects");
-  await page.getByRole("link", { name: /Smoke Project/ }).first().click();
+
+  // Navigate like a user: sidebar link (client-side). A hard goto within a
+  // second of the commit can occasionally hit a brief read-propagation
+  // window on the database edge, so this follows the real user path and
+  // polls briefly.
+  await page.getByRole("link", { name: "Projects" }).first().click();
+  await page.waitForURL("**/app/projects");
+  const projectLink = page.getByRole("link", { name: /Smoke Project/ }).first();
+  await expect(projectLink).toBeVisible({ timeout: 15_000 });
+  await projectLink.click();
   await page.waitForURL("**/app/projects/**");
 
   // Create a task inside the project
@@ -45,18 +53,12 @@ test("confirmed user can work the full core loop", async ({ page }) => {
   await taskDialog.getByRole("button", { name: "Add task" }).click();
   await expect(page.getByText("Smoke task").first()).toBeVisible();
 
-  // Move its status via the accessible select, verify the real toast + reload
-  await page
-    .getByRole("combobox", { name: "Status for Smoke task" })
-    .selectOption("in-progress");
+  // Move its status via the accessible select, verify toast + reload
+  const statusSelect = page.getByRole("combobox", { name: "Status for Smoke task" });
+  await statusSelect.selectOption("in_progress");
   await expect(page.getByText("Moved to In progress.").first()).toBeVisible();
   await page.reload();
-  await expect(
-    page
-      .getByRole("combobox", { name: "Status for Smoke task" })
-      .locator("option[selected], option:checked")
-      .first(),
-  ).toHaveText("In progress");
+  await expect(statusSelect).toHaveValue("in_progress");
 
   // Persistence across session
   await page.getByRole("button", { name: "Account menu" }).click();
