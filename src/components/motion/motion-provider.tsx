@@ -8,7 +8,7 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
   return (
     <MotionConfig
       reducedMotion="user"
-      transition={{ duration: motionDurations.base, ease: EASE_OUT }}
+      transition={{ duration: motionDurations.panel, ease: EASE_OUT }}
     >
       {children}
     </MotionConfig>

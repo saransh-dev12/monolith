@@ -97,6 +97,15 @@ export function CommandPalette() {
                 Archived projects
               </CommandItem>
             </CommandGroup>
+            <div className="flex items-center justify-between gap-2 border-t border-border/60 px-3 py-2 eyebrow text-muted-foreground">
+              <span>
+                <kbd className="rounded border border-border/80 bg-muted/50 px-1 py-0.5">⌘</kbd>
+                {" 1–4"} views · {" "}
+                <kbd className="rounded border border-border/80 bg-muted/50 px-1 py-0.5">esc</kbd>
+                {" close"}
+              </span>
+              <span>↵ open</span>
+            </div>
           </CommandList>
         </Command>
       </CommandDialog>

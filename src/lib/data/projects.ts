@@ -178,7 +178,7 @@ export async function getBoardData(): Promise<BoardData> {
 
 export type DashboardTask = Pick<
   Task,
-  "id" | "project_id" | "title" | "status" | "priority" | "due_date"
+  "id" | "project_id" | "title" | "status" | "priority" | "due_date" | "updated_at"
 > & { projectName: string };
 
 export type DashboardData = {
@@ -190,6 +190,16 @@ export type DashboardData = {
   };
   projects: ProjectSummary[];
   nextTasks: DashboardTask[];
+  inProgressTasks: DashboardTask[];
+  upcomingTasks: Array<DashboardTask & { overdue: boolean }>;
+  recentActivity: Array<{
+    id: string;
+    title: string;
+    status: Task["status"];
+    projectId: string;
+    projectName: string;
+    updatedAt: string;
+  }>;
 };
 
 export async function getDashboardData(): Promise<DashboardData> {
@@ -209,13 +219,16 @@ export async function getDashboardData(): Promise<DashboardData> {
       },
       projects: [],
       nextTasks: [],
+      inProgressTasks: [],
+      upcomingTasks: [],
+      recentActivity: [],
     };
   }
 
   const projectIds = projects.map((project) => project.id);
   const [tasks, milestones, totalsResult] = await Promise.all([
     fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase.from("tasks")
-      .select("id,project_id,title,status,priority,due_date", { count: "exact" }).in("project_id", ids)
+      .select("id,project_id,title,status,priority,due_date,updated_at", { count: "exact" }).in("project_id", ids)
       .order("id").range(from, to), "Could not load task metrics")),
     fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase.from("milestones")
       .select("project_id,completed_at", { count: "exact" }).in("project_id", ids)
@@ -279,6 +292,53 @@ export async function getDashboardData(): Promise<DashboardData> {
       projectName: projectNames.get(task.project_id) ?? "Project",
     }));
 
+  // "What am I working on right now?" — live in-progress tasks, most
+  // recently touched first.
+  const inProgressTasks = tasks
+    .filter((task) => task.status === "in_progress")
+    .sort((left, right) => (right.updated_at ?? "").localeCompare(left.updated_at ?? ""))
+    .slice(0, 4)
+    .map((task) => ({
+      ...task,
+      projectName: projectNames.get(task.project_id) ?? "Project",
+    }));
+
+  // "What needs my attention?" — overdue first, then deadlines inside the
+  // next 7 days.
+  const today = new Date().toISOString().slice(0, 10);
+  const horizon = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
+  const upcomingTasks = tasks
+    .filter((task) => {
+      if (task.status === "done") return false;
+      if (!task.due_date) return false;
+      return task.due_date <= horizon;
+    })
+    .sort((left, right) => {
+      const leftOverdue = (left.due_date ?? "") < today ? 0 : 1;
+      const rightOverdue = (right.due_date ?? "") < today ? 0 : 1;
+      if (leftOverdue !== rightOverdue) return leftOverdue - rightOverdue;
+      return (left.due_date ?? "").localeCompare(right.due_date ?? "");
+    })
+    .slice(0, 6)
+    .map((task) => ({
+      ...task,
+      projectName: projectNames.get(task.project_id) ?? "Project",
+      overdue: Boolean(task.due_date && task.due_date < today),
+    }));
+
+  // "What changed recently?" — the latest task touches across the workspace.
+  const recentActivity = [...tasks]
+    .sort((left, right) => (right.updated_at ?? "").localeCompare(left.updated_at ?? ""))
+    .slice(0, 6)
+    .map((task) => ({
+      id: task.id,
+      title: task.title,
+      status: task.status,
+      projectId: task.project_id,
+      projectName: projectNames.get(task.project_id) ?? "Project",
+      updatedAt: task.updated_at ?? "",
+    }));
+
   return {
     metrics: {
       activeProjects: totals.active_projects,
@@ -294,6 +354,9 @@ export async function getDashboardData(): Promise<DashboardData> {
       };
     }),
     nextTasks,
+    inProgressTasks,
+    upcomingTasks,
+    recentActivity,
   };
 }
 

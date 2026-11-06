@@ -41,11 +41,14 @@ export async function proxy(request: NextRequest) {
     },
   });
 
+  // Use getUser (server-verified identity) rather than getClaims here:
+  // a signature-valid JWT for a DELETED user would otherwise bounce
+  // forever between /login and /app.
   let isAuthenticated = false;
 
   try {
-    const { data } = await supabase.auth.getClaims();
-    isAuthenticated = Boolean(data?.claims?.sub);
+    const { data } = await supabase.auth.getUser();
+    isAuthenticated = Boolean(data?.user);
   } catch {
     isAuthenticated = false;
   }

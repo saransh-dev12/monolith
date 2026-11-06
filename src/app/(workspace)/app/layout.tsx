@@ -6,6 +6,7 @@ import { Wordmark } from "@/components/brand/monolith-mark";
 import { RouteTransition } from "@/components/motion/route-transition";
 import { AppSidebar } from "@/components/shell/app-sidebar";
 import { CommandPalette } from "@/components/shell/command-palette";
+import { WorkspaceShortcuts } from "@/components/shell/workspace-shortcuts";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ export default async function WorkspaceLayout({
           Skip to content
         </a>
         <AppSidebar displayName={user.displayName} email={user.email} />
+        <WorkspaceShortcuts />
         <SidebarInset id="main" className="min-w-0 bg-background">
           <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background px-3 sm:px-5">
             <SidebarTrigger className="-ml-1" />
