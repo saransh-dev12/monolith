@@ -24,5 +24,9 @@ IMPLEMENTED ≠ VERIFIED. VERIFIED LOCALLY ≠ VERIFIED IN PRODUCTION.
 | Auth auto-confirm decision | Decided + documented | `mailer_autoconfirm=true` — built-in mailer rate limit (2/h) blocks confirmation emails without SMTP | signup e2e | Pass | Password-reset emails unavailable until SMTP is configured | Management API config read | Optional SMTP for email flows |
 | Disposable test data cleanup | Verified | Deleted all `prod-smoke-*`/`raw-probe-*` users via SQL cascade | users 0, projects 0, profiles 0 after | Clean | — | Management API output | — |
 | AI planner (generate → review → confirm) | Implemented | `src/lib/planner/*`, `src/lib/ai/*` | vitest transform/data suites; e2e persistence gate | Pass (mock provider) | Live-provider run pending | vitest 40/40 | `OPENAI_API_KEY` in production |
-| UAT (5 independent testers) | Not started | — | — | — | — | — | Manual coordination |
-| v1.0.0 tag + GitHub release | Not started | — | — | — | — | — | Remaining directive phases |
+| Responsive QA (10 routes × 7 viewports) | Verified | fixes: header CTAs <400px, min-w-0 story cards, long eyebrows hidden <sm, decorative beam marked | `tests/e2e/responsive.spec.ts` | 6/6 pass, zero overflow | — | Playwright 2026-11-07 | — |
+| WCAG 2.2 AA axe audit | Verified | fixes: contrast sweep (/80,/70), metric sr-only, palette + account-menu label composition | `tests/e2e/accessibility.spec.ts` | 4/4 pass, 0 critical/serious | — | Playwright 2026-11-07 | — |
+| Performance / CWV | Verified | 3D mount deferred past load, font weights trimmed | Lighthouse on production | perf 98, LCP 1.3s, TBT 20ms, CLS 0 | — | /tmp/lh-2.json + docs/v1-performance-report.md | — |
+| Release documentation | Verified | feature matrix, QA report, security audit, perf report, UAT protocol, changelog, README refresh | docs/v1-*.md, CHANGELOG.md, README.md | complete | — | repo | — |
+| UAT (5 independent testers) | Not started | protocol ready in docs/user-acceptance-testing.md | — | — | — | — | Five volunteers + OpenAI key for planner task |
+| v1.0.0 tag + GitHub release | Not started | — | — | — | — | — | Live OpenAI planner verification + UAT

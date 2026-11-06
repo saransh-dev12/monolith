@@ -2,7 +2,7 @@
 
 Monolith is a project-execution workspace for students, solo developers, indie hackers, and small teams. It turns an idea into milestones and tasks, keeps the work visible on a board, and shows progress derived from stored records. AI can draft a plan, but nothing is saved until the user reviews and confirms it.
 
-**Current status:** v1 core is implemented and verified locally. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, the reviewed AI-planning workflow, the dark interface, revised typography, and the motion system are in place. Production deployment is not configured; the OpenAI key in this environment is a placeholder, so live model output has not been verified here.
+**Current status:** v1 release candidate. Authentication, owner-scoped data, project/task/milestone CRUD, drag-and-drop Kanban, dashboard metrics, the reviewed AI-planning workflow, account deletion, the dark-only Ember Obsidian v2 interface, and the full-page 3D journey are implemented, tested, and deployed to production (`monolith-navy.vercel.app`). CI is green. The live AI planner generation still needs a production `OPENAI_API_KEY`; until then the planner states honestly that it is not configured.
 
 The public repository is [github.com/saransh-dev12/monolith](https://github.com/saransh-dev12/monolith). Work is tracked in the **MVP v1.0** milestone.
 
@@ -35,7 +35,7 @@ The public repository is [github.com/saransh-dev12/monolith](https://github.com/
 | --- | --- |
 | Framework | Next.js 16.4.3 (App Router, Turbopack), React 19.3.0, TypeScript 5.9.3 |
 | Styling | Tailwind CSS 4.3.3, shadcn/ui primitives, Lucide icons |
-| Typography | Fraunces display, Plus Jakarta Sans UI, JetBrains Mono metadata |
+| Typography | Fraunces editorial display, Syne workspace display/numerals + wordmark, Inter Tight interface, JetBrains Mono metadata |
 | Motion | Motion for React 14.6.0 with shared variants and reduced-motion fallbacks |
 | Data and auth | Supabase Postgres, Supabase Auth, `@supabase/ssr` 0.12.7 |
 | Validation | Zod 4.6.7 |
@@ -111,8 +111,8 @@ Never prefix the OpenAI key with `NEXT_PUBLIC_`. With a missing key or the `plac
 
 The interface direction is documented in [`docs/design-direction.md`](docs/design-direction.md). Reused code, reference research, licenses, and attribution requirements are recorded in [`docs/design-sources.md`](docs/design-sources.md).
 
-- The final direction is a sophisticated dark workspace: deep charcoal surfaces, layered graphite panels, bone typography, and an electric cobalt accent. The marketing site and product share the same tokens and motion language.
-- Typography uses Fraunces for editorial display, Plus Jakarta Sans for interface text, and JetBrains Mono for technical metadata.
+- The final direction is **Ember Obsidian v2** (dark-only): obsidian canvas, ember accent, sentence-case editorial display on marketing surfaces, Syne workspace display, one metadata style, solid Panel surfaces, and a full-page 3D monolith journey on the landing page. The marketing site and product share the same tokens and motion language.
+- Typography uses Fraunces for editorial display, Syne for workspace display and the wordmark, Inter Tight for interface text, and JetBrains Mono for technical metadata.
 - Motion for React drives hero and section reveals, hover lift, route transitions, planner draft entrance, and board feedback. Reduced-motion users get static layouts and no hover lift.
 - Marketing structure adapts Launch UI (MIT), with an original Monolith hero, product dossier, workflow, AI section, and security section.
 - Application primitives and the app shell use shadcn/ui (MIT), including the official sidebar and command palette.
