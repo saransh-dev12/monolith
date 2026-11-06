@@ -37,7 +37,7 @@ export function AccountMenu({
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
-        aria-label="Account menu"
+        data-testid="account-menu-trigger"
         className="flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
       >
         <span className="grid size-8 shrink-0 place-items-center rounded-md bg-foreground text-xs font-semibold text-background">

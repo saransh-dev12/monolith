@@ -76,7 +76,7 @@ export function BoardDemo() {
                     {labels[status]}
                   </h3>
                 </div>
-                <span className="num text-[10px] text-muted-foreground/70">
+                <span className="num text-[10px] text-muted-foreground/80">
                   {String(column.length).padStart(2, "0")}
                 </span>
               </header>
@@ -101,16 +101,16 @@ export function BoardDemo() {
                       >
                         {task.title}
                       </span>
-                      <ArrowDownRight className="mt-0.5 size-3 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-foreground" />
+                      <ArrowDownRight className="mt-0.5 size-3 shrink-0 text-muted-foreground/80 transition-colors group-hover:text-foreground" />
                     </span>
-                    <span className="mt-1.5 flex items-center justify-between eyebrow text-muted-foreground/60">
+                    <span className="mt-1.5 flex items-center justify-between eyebrow text-muted-foreground/80">
                       {task.project}
                       <GripVertical className="size-3 opacity-40" aria-hidden="true" />
                     </span>
                   </motion.button>
                 ))}
                 {column.length === 0 ? (
-                  <p className="rounded-xl border border-dashed border-border/60 px-2 py-4 text-center eyebrow text-muted-foreground/50">
+                  <p className="rounded-xl border border-dashed border-border/60 px-2 py-4 text-center eyebrow text-muted-foreground/80">
                     Empty
                   </p>
                 ) : null}

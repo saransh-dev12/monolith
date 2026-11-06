@@ -275,7 +275,7 @@ export function StudioHero() {
             <Sparkles className="size-3 text-chart-2" aria-hidden="true" />
             Demo walkthrough · no writes
           </span>
-          <span className="eyebrow text-muted-foreground/70">
+          <span className="eyebrow text-muted-foreground/80">
             {paused ? "Paused" : "Auto-playing"}
           </span>
         </div>

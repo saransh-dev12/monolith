@@ -34,10 +34,8 @@ export function MetricCard({
           <Icon className="size-4" aria-hidden="true" />
         </span>
       </div>
-      <p
-        className="mt-3 font-brand text-4xl font-bold leading-none tracking-[-0.02em] text-foreground sm:text-5xl"
-        aria-label={`${label}: ${value}`}
-      >
+      <p className="mt-3 font-brand text-4xl font-bold leading-none tracking-[-0.02em] text-foreground sm:text-5xl">
+        <span className="sr-only">{`${label}: ${value}`}</span>
         <NumberTicker
           value={value}
           className="font-brand text-4xl font-bold leading-none tracking-[-0.02em] text-foreground sm:text-5xl"

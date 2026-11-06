@@ -133,7 +133,7 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-14 flex items-center gap-4 border-t border-border/70 pt-5 lg:mt-20">
-              <span className="eyebrow flex items-center gap-2 text-muted-foreground/70">
+              <span className="eyebrow flex items-center gap-2 text-muted-foreground/80">
                 <span
                   className="size-1.5 animate-ember-breathe rounded-full bg-primary"
                   aria-hidden="true"
@@ -141,7 +141,7 @@ export default async function HomePage() {
                 Scroll
               </span>
               <div className="h-px flex-1 bg-gradient-to-r from-border via-border/50 to-transparent" />
-              <span className="eyebrow text-muted-foreground/70">
+              <span className="hidden eyebrow text-muted-foreground/80 sm:inline-flex">
                 Idea → plan → tasks → execution → progress
               </span>
             </div>

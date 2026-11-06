@@ -13,7 +13,10 @@ const principles = [
  */
 export function PrinciplesMarquee() {
   return (
-    <div className="group overflow-hidden border-y border-border/70 bg-card/40">
+    <div
+      className="group overflow-hidden border-y border-border/70 bg-card/40"
+      data-overflow-clip
+    >
       <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
         {[0, 1].map((copy) => (
           <ul

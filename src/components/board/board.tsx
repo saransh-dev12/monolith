@@ -136,7 +136,7 @@ function DraggableCard({
       ref={setActivatorNodeRef}
       aria-label={`Drag ${task.title}`}
       disabled={disabled}
-      className="shrink-0 cursor-grab rounded p-1 text-muted-foreground/60 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing disabled:cursor-wait disabled:opacity-40"
+      className="shrink-0 cursor-grab rounded p-1 text-muted-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing disabled:cursor-wait disabled:opacity-40"
       {...attributes}
       {...listeners}
     >

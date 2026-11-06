@@ -135,7 +135,7 @@ export function ProductTour() {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              <span className="eyebrow text-muted-foreground">
+              <span className="hidden eyebrow text-muted-foreground sm:inline-flex">
                 Illustrative data
               </span>
             </div>

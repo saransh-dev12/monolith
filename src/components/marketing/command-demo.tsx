@@ -158,7 +158,7 @@ export function CommandDemo() {
             <p className="eyebrow text-muted-foreground">
               Focus week
             </p>
-            <p className="num text-[10px] text-muted-foreground/70">Mon–Sun</p>
+            <p className="num text-[10px] text-muted-foreground/80">Mon–Sun</p>
           </div>
           <div className="mt-2 flex h-12 items-end gap-1.5">
             {week.map((day, index) => (
@@ -173,7 +173,7 @@ export function CommandDemo() {
                     index === 3 ? "bg-chart-1" : "bg-chart-2/35",
                   )}
                 />
-                <span className="num text-[10px] text-muted-foreground/60">{day.day}</span>
+                <span className="num text-[10px] text-muted-foreground/80">{day.day}</span>
               </div>
             ))}
           </div>

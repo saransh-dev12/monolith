@@ -54,11 +54,14 @@ export function CommandPalette() {
         type="button"
         onClick={() => setOpen(true)}
         className="inline-flex h-8 items-center gap-2 rounded-md border border-border/80 bg-background px-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        aria-label="Open command menu"
+        aria-label="Jump to ⌘K — open the command menu"
       >
         <Search className="size-3.5" aria-hidden="true" />
         <span className="hidden sm:inline">Jump to</span>
-        <kbd className="ml-1 hidden rounded border border-border/80 bg-muted/50 px-1.5 py-0.5 num text-[10px] sm:inline">
+        <kbd
+          className="ml-1 hidden rounded border border-border/80 bg-muted/50 px-1.5 py-0.5 num text-[10px] sm:inline"
+          aria-hidden="true"
+        >
           ⌘K
         </kbd>
       </button>

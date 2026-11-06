@@ -363,7 +363,7 @@ test.describe("account and responsive layout", () => {
     await page.waitForURL("**/app");
     await expect(page.getByText("No projects yet")).toBeVisible();
 
-    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByTestId("account-menu-trigger").click();
     await page.getByRole("menuitem", { name: "Sign out" }).click();
     await page.waitForURL("**/login");
   });
@@ -386,7 +386,7 @@ test.describe("account and responsive layout", () => {
     await page.waitForURL("**/app");
 
     // Delete the account through the account menu.
-    await page.getByRole("button", { name: "Account menu" }).click();
+    await page.getByTestId("account-menu-trigger").click();
     await page.getByRole("menuitem", { name: "Delete account" }).click();
     const dialog = page.getByRole("alertdialog");
     await expect(dialog.getByText(email, { exact: false })).toBeVisible();

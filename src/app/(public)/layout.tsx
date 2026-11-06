@@ -31,20 +31,20 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
           </p>
           <ul className="mt-8 divide-y divide-border/70 border-y border-border/70 text-sm">
             <li className="flex items-center justify-between py-3">
-              <span className="eyebrow text-foreground/50">Isolation</span>
+              <span className="eyebrow text-foreground/70">Isolation</span>
               <span>Owner-scoped RLS</span>
             </li>
             <li className="flex items-center justify-between py-3">
-              <span className="eyebrow text-foreground/50">Board movement</span>
+              <span className="eyebrow text-foreground/70">Board movement</span>
               <span>Pointer and keyboard</span>
             </li>
             <li className="flex items-center justify-between py-3">
-              <span className="eyebrow text-foreground/50">Progress</span>
+              <span className="eyebrow text-foreground/70">Progress</span>
               <span>Derived from records</span>
             </li>
           </ul>
         </div>
-        <p className="eyebrow text-foreground/40">
+        <p className="eyebrow text-foreground/70">
           {process.env.NODE_ENV === "production"
             ? "Project execution for focused builders"
             : "Local seed · demo@monolith.local"}

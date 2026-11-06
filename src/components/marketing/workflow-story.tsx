@@ -337,7 +337,7 @@ export function WorkflowStory() {
                           <span
                             className={cn(
                               "num text-[10px] transition-colors",
-                              isActive ? "text-primary" : "text-muted-foreground/60",
+                              isActive ? "text-primary" : "text-muted-foreground/80",
                             )}
                           >
                             {item.number}
@@ -345,7 +345,7 @@ export function WorkflowStory() {
                           <h3
                             className={cn(
                               "font-display text-3xl leading-none transition-colors",
-                              isActive ? "text-foreground" : "text-muted-foreground/50",
+                              isActive ? "text-foreground" : "text-muted-foreground/80",
                             )}
                           >
                             {item.title}
@@ -404,7 +404,7 @@ export function WorkflowStory() {
                   <span className="eyebrow text-muted-foreground">
                     {story[active].label} · illustrative
                   </span>
-                  <span className="num text-[10px] text-muted-foreground/70">
+                  <span className="num text-[10px] text-muted-foreground/80">
                     {active + 1} / {story.length}
                   </span>
                 </div>
@@ -421,7 +421,7 @@ export function WorkflowStory() {
           return (
             <article
               key={item.number}
-              className="rounded-2xl border border-border/60 bg-card/50 p-4"
+              className="min-w-0 rounded-2xl border border-border/60 bg-card/50 p-4"
             >
               <div className="flex items-baseline gap-3">
                 <span className="num text-[10px] text-primary">{item.number}</span>

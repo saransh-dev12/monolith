@@ -16,7 +16,7 @@ test("signup lands in an empty workspace and signs out", async ({ page }) => {
   await page.getByRole("button", { name: "Create account" }).click();
   await page.waitForURL("**/app");
   await expect(page.getByText("No projects yet")).toBeVisible();
-  await page.getByRole("button", { name: "Account menu" }).click();
+  await page.getByTestId("account-menu-trigger").click();
   await page.getByRole("menuitem", { name: "Sign out" }).click();
   await page.waitForURL("**/login");
 });
@@ -36,7 +36,7 @@ test("account deletion removes the account and its data", async ({ page }) => {
   await page.getByRole("button", { name: "Create project" }).click();
   await page.waitForURL("**/app");
 
-  await page.getByRole("button", { name: "Account menu" }).click();
+  await page.getByTestId("account-menu-trigger").click();
   await page.getByRole("menuitem", { name: "Delete account" }).click();
   const dialog = page.getByRole("alertdialog");
   await expect(dialog.getByText(email, { exact: false })).toBeVisible();
@@ -92,7 +92,7 @@ test("confirmed user can work the full core loop", async ({ page }) => {
   await expect(statusSelect).toHaveValue("in_progress");
 
   // Persistence across session
-  await page.getByRole("button", { name: "Account menu" }).click();
+  await page.getByTestId("account-menu-trigger").click();
   await page.getByRole("menuitem", { name: "Sign out" }).click();
   await page.waitForURL("**/login");
   await page.goto("/login");

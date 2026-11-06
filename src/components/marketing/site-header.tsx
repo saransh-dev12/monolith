@@ -65,7 +65,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
               <Button
                 asChild
                 variant="ghost"
-                className="h-9 rounded-full px-3 text-[13px]"
+                className="hidden h-9 rounded-full px-3 text-[13px] min-[400px]:inline-flex"
               >
                 <Link href="/login">Sign in</Link>
               </Button>

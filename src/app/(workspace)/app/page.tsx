@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                     className="group grid gap-2 px-5 py-4 transition-colors hover:bg-muted/20 sm:grid-cols-[1fr_10rem_4rem] sm:items-center sm:gap-3"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="num text-[10px] text-muted-foreground/50">
+                      <span className="num text-[10px] text-muted-foreground/80">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <div className="min-w-0">
