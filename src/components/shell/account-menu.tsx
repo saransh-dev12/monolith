@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { useTransition } from "react";
+import { ChevronsUpDown, LoaderCircle, LogOut, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -10,7 +11,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOutAction } from "@/lib/auth/actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteAccountAction, signOutAction } from "@/lib/auth/actions";
 
 export function AccountMenu({
   displayName,
@@ -19,6 +31,7 @@ export function AccountMenu({
   displayName: string;
   email: string | null;
 }) {
+  const [pending, startTransition] = useTransition();
   const initial = displayName.trim().charAt(0).toUpperCase() || "M";
 
   return (
@@ -45,6 +58,55 @@ export function AccountMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>{email ?? displayName}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={(event) => event.preventDefault()}
+            >
+              <Trash2 className="size-4" aria-hidden="true" />
+              Delete account
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="font-display text-2xl">
+                Delete this account?
+              </AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="space-y-2 text-sm leading-6 text-muted-foreground">
+                  <p>
+                    This permanently removes <span className="text-foreground">{email ?? displayName}</span>{" "}
+                    and every project, task, and milestone owned by it. The
+                    deletion is immediate and cannot be undone.
+                  </p>
+                  <p>Export anything you want to keep before continuing.</p>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Keep account</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-white hover:bg-destructive/90"
+                onClick={(event) => {
+                  event.preventDefault();
+                  startTransition(() => {
+                    void deleteAccountAction();
+                  });
+                }}
+                disabled={pending}
+              >
+                {pending ? (
+                  <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Trash2 className="size-4" aria-hidden="true" />
+                )}
+                Delete forever
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <DropdownMenuSeparator />
         <form action={signOutAction}>
           <DropdownMenuItem asChild>

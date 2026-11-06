@@ -6,6 +6,7 @@ import { z } from "zod";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
 import { getSiteUrl } from "@/lib/env";
 import type { AuthState } from "@/lib/auth/state";
+import { createAdminClient } from "@/lib/supabase/admin-server";
 import { createClient } from "@/lib/supabase/server";
 
 const emailSchema = z.email("Enter a valid email address.").trim().max(254);
@@ -120,4 +121,29 @@ export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+export async function deleteAccountAction() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data.user) {
+    redirect("/login");
+  }
+
+  // Deleting the auth user cascades to profiles, projects, tasks, and
+  // milestones through the schema's on-delete-cascade foreign keys. RLS
+  // never sees the account again because the identity no longer exists.
+  try {
+    const admin = createAdminClient();
+    const { error: deleteError } = await admin.auth.admin.deleteUser(data.user.id);
+    if (deleteError) {
+      redirect("/app?accountDeleteFailed=1");
+    }
+  } catch {
+    redirect("/app?accountDeleteFailed=1");
+  }
+
+  await supabase.auth.signOut();
+  redirect("/login?deleted=1");
 }

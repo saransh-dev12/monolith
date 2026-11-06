@@ -264,7 +264,15 @@ export default async function HomePage() {
             </div>
             <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center">
               <p>© 2026 Monolith. Built with Next.js, Supabase, and OpenAI.</p>
-              <p className="eyebrow">Idea → plan → board → progress</p>
+              <div className="flex items-center gap-5">
+                <Link href="/privacy" className="hover:text-foreground">
+                  Privacy
+                </Link>
+                <Link href="/terms" className="hover:text-foreground">
+                  Terms
+                </Link>
+                <p className="eyebrow">Idea → plan → board → progress</p>
+              </div>
             </div>
           </div>
         </footer>

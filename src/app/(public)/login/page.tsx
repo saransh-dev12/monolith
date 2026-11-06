@@ -22,7 +22,9 @@ export default async function LoginPage(props: PageProps<"/login">) {
       notice={
         errorParam === "callback"
           ? "That sign-in link could not be verified. Try signing in again."
-          : undefined
+          : searchParams.deleted === "1"
+            ? "Your account and all of its data have been deleted."
+            : undefined
       }
     />
   );
