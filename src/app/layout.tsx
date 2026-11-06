@@ -15,7 +15,7 @@ import "./globals.css";
 
 const syne = Syne({
   variable: "--font-mol-display",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["600", "700", "800"],
   subsets: ["latin"],
 });
 
@@ -33,7 +33,7 @@ const interTight = Inter_Tight({
 
 const jetbrains = JetBrains_Mono({
   variable: "--font-mol-mono",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   subsets: ["latin"],
 });
 

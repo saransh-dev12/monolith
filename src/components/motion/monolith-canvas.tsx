@@ -17,22 +17,21 @@ export function MonolithCanvas() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const w = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-      cancelIdleCallback?: (handle: number) => void;
+    // Mount strictly AFTER the browser load event plus a settle period:
+    // three.js module evaluation + shader compilation are long tasks that
+    // would otherwise collide with LCP and inflate total blocking time.
+    let timer: number | undefined;
+    const start = () => {
+      timer = window.setTimeout(() => setReady(true), 2500);
     };
-    let idle: number;
-    if (typeof w.requestIdleCallback === "function") {
-      idle = w.requestIdleCallback(() => setReady(true), { timeout: 2500 });
+    if (document.readyState === "complete") {
+      start();
     } else {
-      idle = window.setTimeout(() => setReady(true), 1200);
+      window.addEventListener("load", start, { once: true });
     }
     return () => {
-      if (typeof w.cancelIdleCallback === "function" && idle) {
-        w.cancelIdleCallback(idle);
-      } else {
-        window.clearTimeout(idle);
-      }
+      window.removeEventListener("load", start);
+      if (timer) window.clearTimeout(timer);
     };
   }, []);
 
