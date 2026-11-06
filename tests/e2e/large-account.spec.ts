@@ -33,9 +33,9 @@ test("project, board, and dashboard include more than 1,000 tasks", async ({ pag
     await page.getByLabel("Password").fill("monolith-demo");
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL("**/app");
-    await expect(page.getByLabel(`Open tasks: ${baseline.data[0].open_tasks + 505}`)).toBeVisible();
-    await expect(page.getByLabel(`Completed tasks: ${baseline.data[0].completed_tasks + 500}`)).toBeVisible();
-    await expect(page.getByLabel(`Overdue tasks: ${baseline.data[0].overdue_tasks + 505}`)).toBeVisible();
+    await expect(page.getByText(`Open tasks: ${baseline.data[0].open_tasks + 505}`)).toBeVisible();
+    await expect(page.getByText(`Completed tasks: ${baseline.data[0].completed_tasks + 500}`)).toBeVisible();
+    await expect(page.getByText(`Overdue tasks: ${baseline.data[0].overdue_tasks + 505}`)).toBeVisible();
 
     await page.goto("/app/projects");
     await expect(page.locator(`a[href="/app/projects/${projectId}"]`).filter({ has: page.getByRole("heading", { name, exact: true }) }).getByText("505 open · 500 done", { exact: true })).toBeVisible();

@@ -25,7 +25,7 @@ async function measureOverflow(page: Page) {
         const style = getComputedStyle(el);
         if (style.position === "fixed" || style.position === "absolute") continue;
         if (el.closest("[data-overflow-clip]")) continue;
-        offenders.push(el.tagName + "." + el.className.slice(0, 40));
+        offenders.push(el.tagName + "." + String(el.getAttribute("class") || "").slice(0, 40));
       }
     }
     return { pageOverflow, offenders: offenders.slice(0, 5) };
