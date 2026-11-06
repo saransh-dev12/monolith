@@ -21,6 +21,37 @@ test("signup lands in an empty workspace and signs out", async ({ page }) => {
   await page.waitForURL("**/login");
 });
 
+test("account deletion removes the account and its data", async ({ page }) => {
+  const email = `prod-del-${Date.now()}@example.com`;
+
+  await page.goto("/signup");
+  await page.getByLabel("Name").fill("Prod Delete");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill("delete-password-123");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await page.waitForURL("**/app");
+
+  await page.getByRole("button", { name: "New project" }).first().click();
+  await page.getByLabel("Name").fill("Doomed project");
+  await page.getByRole("button", { name: "Create project" }).click();
+  await page.waitForURL("**/app");
+
+  await page.getByRole("button", { name: "Account menu" }).click();
+  await page.getByRole("menuitem", { name: "Delete account" }).click();
+  const dialog = page.getByRole("alertdialog");
+  await expect(dialog.getByText(email, { exact: false })).toBeVisible();
+  await dialog.getByRole("button", { name: "Delete forever" }).click();
+  await page.waitForURL("**/login?deleted=1");
+  await expect(
+    page.getByText("Your account and all of its data have been deleted."),
+  ).toBeVisible();
+
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill("delete-password-123");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page.getByText("Email or password is incorrect.")).toBeVisible();
+});
+
 test("confirmed user can work the full core loop", async ({ page }) => {
   // Sign in
   await page.goto("/login");
