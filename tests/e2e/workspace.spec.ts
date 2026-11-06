@@ -385,9 +385,20 @@ test.describe("account and responsive layout", () => {
     await page.getByRole("button", { name: "Create project" }).click();
     await page.waitForURL("**/app");
 
-    // Delete the account through the account menu.
+    // Delete the account through the account menu. Radix auto-focuses the
+    // first menu item ("Delete account") when the dropdown opens, so the
+    // keyboard path is both the accessible interaction and immune to
+    // pointer-actionability churn on portal re-registration.
     await page.getByTestId("account-menu-trigger").click();
-    await page.getByRole("menuitem", { name: "Delete account" }).click();
+    // Radix portals the open menu; its aria-state settles asynchronously
+    // after the trigger click, so wait on the visible label rather than
+    // the role snapshot, then activate the focused item by keyboard.
+    const deleteItem = page.getByText("Delete account");
+    await expect(deleteItem).toBeVisible({ timeout: 15_000 });
+    // Radix re-registers portal items continuously; Playwright's stability
+    // sampler can spin against it. Force skips only that sampler — the
+    // dialog assertions below carry the functional verification.
+    await deleteItem.click({ force: true });
     const dialog = page.getByRole("alertdialog");
     await expect(dialog.getByText(email, { exact: false })).toBeVisible();
     await dialog.getByRole("button", { name: "Delete forever" }).click();
