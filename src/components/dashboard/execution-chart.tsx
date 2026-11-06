@@ -132,7 +132,7 @@ export function ExecutionChart({ series }: { series: ExecutionDay[] }) {
           viewBox={`0 0 ${width} ${height}`}
           role="img"
           aria-label={`Currently done tasks by their last update date over the last ${range} days. Total ${completedTotal}.`}
-          className="block w-full"
+          className="block w-full min-w-0"
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.25 }}

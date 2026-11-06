@@ -174,13 +174,13 @@ export default async function DashboardPage() {
           </RevealGroup>
 
           {/* Execution + attention */}
-          <div className="grid gap-4 xl:grid-cols-[1.65fr_0.85fr]">
-            <div className="space-y-4">
+          <div className="grid min-w-0 gap-4 xl:grid-cols-[1.65fr_0.85fr]">
+            <div className="min-w-0 space-y-4">
               <ExecutionChart series={series} />
               <WeekStrip series={series} />
             </div>
 
-            <Panel className="h-fit">
+            <Panel className="h-fit min-w-0">
               <div className="border-b border-border/50 px-4 py-3">
                 <p className="eyebrow text-muted-foreground">Needs attention</p>
                 <h2 className="mt-0.5 font-display text-xl leading-none">
