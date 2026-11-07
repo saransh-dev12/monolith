@@ -190,6 +190,7 @@ export type DashboardData = {
   };
   projects: ProjectSummary[];
   nextTasks: DashboardTask[];
+  stageCounts: { todo: number; inProgress: number; done: number };
   inProgressTasks: DashboardTask[];
   upcomingTasks: Array<DashboardTask & { overdue: boolean }>;
   recentActivity: Array<{
@@ -219,6 +220,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       },
       projects: [],
       nextTasks: [],
+      stageCounts: { todo: 0, inProgress: 0, done: 0 },
       inProgressTasks: [],
       upcomingTasks: [],
       recentActivity: [],
@@ -292,6 +294,16 @@ export async function getDashboardData(): Promise<DashboardData> {
       projectName: projectNames.get(task.project_id) ?? "Project",
     }));
 
+  const stageCounts = tasks.reduce(
+    (counts, task) => {
+      if (task.status === "todo") counts.todo += 1;
+      else if (task.status === "in_progress") counts.inProgress += 1;
+      else counts.done += 1;
+      return counts;
+    },
+    { todo: 0, inProgress: 0, done: 0 },
+  );
+
   // "What am I working on right now?" — live in-progress tasks, most
   // recently touched first.
   const inProgressTasks = tasks
@@ -354,6 +366,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       };
     }),
     nextTasks,
+    stageCounts,
     inProgressTasks,
     upcomingTasks,
     recentActivity,

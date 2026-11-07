@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { Voyage } from "@/components/dashboard/voyage";
 import {
   ExecutionChart,
   WeekStrip,
@@ -41,7 +42,7 @@ const STATUS_DOT: Record<string, string> = {
 export default async function DashboardPage() {
   const user = await requireUser();
   const [
-    { metrics, projects, nextTasks, inProgressTasks, upcomingTasks, recentActivity },
+    { metrics, projects, nextTasks, stageCounts, inProgressTasks, upcomingTasks, recentActivity },
     series,
   ] = await Promise.all([getDashboardData(), getExecutionSeries(30)]);
 
@@ -74,6 +75,24 @@ export default async function DashboardPage() {
         />
       ) : (
         <div className="space-y-10">
+          {/* The voyage: aggregate completion across the workspace */}
+          <Voyage
+            percent={
+              metrics.openTasks + metrics.completedTasks > 0
+                ? Math.round(
+                    (metrics.completedTasks /
+                      (metrics.openTasks + metrics.completedTasks)) *
+                      100,
+                  )
+                : 0
+            }
+            stages={[
+              { label: "To do", count: stageCounts.todo, at: 0 },
+              { label: "In progress", count: stageCounts.inProgress, at: 0.5 },
+              { label: "Done", count: stageCounts.done, at: 1 },
+            ]}
+          />
+
           {/* What am I working on right now? */}
           <RevealGroup>
             <RevealItem className="flex items-baseline justify-between gap-4">

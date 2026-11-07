@@ -1,0 +1,12 @@
+import { chromium } from "@playwright/test";
+const browser = await chromium.launch();
+const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+const page = await context.newPage();
+await page.goto("http://localhost:3000/login");
+await page.getByLabel("Email").fill("demo@monolith.local");
+await page.getByLabel("Password").fill("monolith-demo");
+await page.getByRole("button", { name: "Sign in" }).click();
+await page.waitForURL("**/app");
+await page.waitForTimeout(4500);
+await page.screenshot({ path: "/tmp/voyage-final.png" });
+await browser.close();
