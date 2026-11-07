@@ -31,12 +31,9 @@ export function Voyage({
   const chipRef = useRef<HTMLDivElement>(null);
   const proxy = useRef({ L: 0 });
   const totalRef = useRef(0);
-  const percentRef = useRef(percent);
   const [nodes, setNodes] = useState<
     Array<{ label: string; count: number; left: number; top: number }>
   >(() => stages.map((stage) => ({ ...stage, left: 0, top: 0 })));
-
-  percentRef.current = percent;
 
   useEffect(() => {
     const path = pathRef.current;
@@ -72,10 +69,10 @@ export function Voyage({
       progress.style.strokeDasharray = `${L} ${total}`;
     };
 
-    place((totalRef.current * percentRef.current) / 100);
+    place((totalRef.current * percent) / 100);
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const target = () => (totalRef.current * percentRef.current) / 100;
+    const target = () => (totalRef.current * percent) / 100;
 
     if (reduce) {
       place(target());
@@ -84,14 +81,15 @@ export function Voyage({
       };
     }
 
-    const tween = gsap.to(proxy.current, {
+    const proxyObj = proxy.current;
+    const tween = gsap.to(proxyObj, {
       L: target(),
       duration: 1.25,
       ease: "power2.inOut",
-      onUpdate: () => place(proxy.current.L),
+      onUpdate: () => place(proxyObj.L),
     });
 
-    const onResize = () => place(proxy.current.L);
+    const onResize = () => place(proxyObj.L);
     window.addEventListener("resize", onResize);
 
     return () => {
@@ -99,7 +97,6 @@ export function Voyage({
       window.removeEventListener("resize", onResize);
     };
     // stages is server-provided per navigation; recompute nodes when it changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [percent, stages]);
 
   return (
