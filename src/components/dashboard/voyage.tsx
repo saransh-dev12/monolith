@@ -32,6 +32,9 @@ export function Voyage({
   const proxy = useRef({ L: 0 });
   const totalRef = useRef(0);
   const percentRef = useRef(percent);
+  const [nodes, setNodes] = useState<
+    Array<{ label: string; count: number; left: number; top: number }>
+  >(() => stages.map((stage) => ({ ...stage, left: 0, top: 0 })));
 
   percentRef.current = percent;
 
@@ -40,6 +43,17 @@ export function Voyage({
     const progress = progressRef.current;
     if (!path || !progress) return;
     totalRef.current = path.getTotalLength();
+
+    setNodes(
+      stages.map((stage) => {
+        const point = path.getPointAtLength(totalRef.current * stage.at);
+        return {
+          ...stage,
+          left: (point.x / 1000) * 100,
+          top: (point.y / 140) * 100,
+        };
+      }),
+    );
 
     const place = (L: number) => {
       const total = totalRef.current || 1;
@@ -84,7 +98,9 @@ export function Voyage({
       tween.kill();
       window.removeEventListener("resize", onResize);
     };
-  }, [percent]);
+    // stages is server-provided per navigation; recompute nodes when it changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [percent, stages]);
 
   return (
     <div
@@ -128,37 +144,31 @@ export function Voyage({
 
       {/* Stage nodes */}
       {/* Stage nodes on the path */}
-      {stages.map((stage) => (
+      {nodes.map((node) => (
         <div
-          key={stage.label + "-dot"}
+          key={node.label + "-dot"}
           className="absolute -translate-x-1/2 -translate-y-1/2"
-          style={{
-            left: `${stageNodeLeft(pathRef, stage.at) * 100}%`,
-            top: `${stageNodeTop(pathRef, stage.at) * 100}%`,
-          }}
+          style={{ left: `${node.left}%`, top: `${node.top}%` }}
         >
           <span className="block size-2.5 rounded-full border border-border bg-background shadow-[0_0_0_3px_var(--color-card)]" />
         </div>
       ))}
 
       {/* Stage labels: clamped so edge stages stay readable */}
-      {stages.map((stage) => {
-        const x = stageNodeLeft(pathRef, stage.at) * 100;
-        return (
-          <div
-            key={stage.label + "-label"}
-            className="absolute -translate-x-1/2 text-center"
-            style={{ left: `clamp(3rem, ${x}%, calc(100% - 3rem))`, top: "72%" }}
-          >
-            <p className="eyebrow whitespace-nowrap text-muted-foreground">
-              {stage.label}
-            </p>
-            <p className="num whitespace-nowrap text-[11px] text-foreground">
-              {stage.count}
-            </p>
-          </div>
-        );
-      })}
+      {nodes.map((node) => (
+        <div
+          key={node.label + "-label"}
+          className="absolute -translate-x-1/2 text-center"
+          style={{ left: `clamp(3rem, ${node.left}%, calc(100% - 3rem))`, top: "72%" }}
+        >
+          <p className="eyebrow whitespace-nowrap text-muted-foreground">
+            {node.label}
+          </p>
+          <p className="num whitespace-nowrap text-[11px] text-foreground">
+            {node.count}
+          </p>
+        </div>
+      ))}
 
       {/* The marker + completion chip */}
       <div
@@ -191,25 +201,3 @@ export function Voyage({
   );
 }
 
-/** Node anchors: path-length fraction → stretched viewBox → percent. */
-function stageNodeLeft(
-  pathRef: React.RefObject<SVGPathElement | null>,
-  at: number,
-): number {
-  const path = pathRef.current;
-  if (!path) return at;
-  const total = path.getTotalLength();
-  const point = path.getPointAtLength(total * at);
-  return point.x / 1000;
-}
-
-function stageNodeTop(
-  pathRef: React.RefObject<SVGPathElement | null>,
-  at: number,
-): number {
-  const path = pathRef.current;
-  if (!path) return 0.5;
-  const total = path.getTotalLength();
-  const point = path.getPointAtLength(total * at);
-  return point.y / 140;
-}
