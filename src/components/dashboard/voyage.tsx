@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { gsap } from "@/lib/gsap";
