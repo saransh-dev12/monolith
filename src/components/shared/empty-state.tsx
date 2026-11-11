@@ -26,6 +26,7 @@ export function EmptyState({
         height={400}
         sizes="80px"
         loading="lazy"
+        decoding="async"
         className="relative size-20 drop-shadow-[0_18px_28px_rgba(0,0,0,0.45)]"
         aria-hidden="true"
       />
