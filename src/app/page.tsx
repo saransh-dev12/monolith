@@ -255,6 +255,8 @@ export default async function HomePage() {
                 </Link>
                 <a
                   href="https://github.com/saransh-dev12/monolith"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm text-foreground/80 hover:text-primary"
                 >
                   <GitBranch className="size-3.5" aria-hidden="true" />
