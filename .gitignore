@@ -32,6 +32,3 @@ pnpm-debug.log*
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
-
-.vercel
-.env*
