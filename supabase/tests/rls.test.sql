@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(21);
+select plan(26);
 
 select set_config(
   'request.jwt.claims',
@@ -58,6 +58,45 @@ select is(
   0,
   'second user sees no milestones from the demo account'
 );
+
+select throws_ok(
+  $$
+    insert into public.milestones (project_id, title)
+    values ('33333333-3333-4333-8333-333333333331', 'intrusion')
+  $$,
+  '42501',
+  null,
+  'second user cannot insert a milestone into the demo project'
+);
+
+update public.milestones
+set title = 'hijacked'
+where id = '55555555-5555-4555-8555-555555555551';
+
+delete from public.milestones
+where id = '55555555-5555-4555-8555-555555555551';
+
+reset role;
+
+select is(
+  (
+    select title from public.milestones
+    where id = '55555555-5555-4555-8555-555555555551'
+  ),
+  'Content complete',
+  'second user cannot update a demo milestone'
+);
+
+select is(
+  (
+    select count(*)::int from public.milestones
+    where id = '55555555-5555-4555-8555-555555555551'
+  ),
+  1,
+  'second user cannot delete a demo milestone'
+);
+
+set local role authenticated;
 
 select throws_ok(
   $$
@@ -136,6 +175,18 @@ set local role authenticated;
 
 select throws_ok(
   $$
+    insert into public.milestones (project_id, title)
+    values ('33333333-3333-4333-8333-333333333333', 'forged milestone')
+  $$,
+  '42501',
+  null,
+  'demo user cannot insert a milestone into another owner''s project'
+);
+
+set local role authenticated;
+
+select throws_ok(
+  $$
     insert into public.projects (owner_id, name, start_date, target_date)
     values (
       '11111111-1111-4111-8111-111111111111',
@@ -172,6 +223,9 @@ values (
 insert into public.tasks (project_id, title)
 values ('99999999-9999-4999-8999-999999999999', 'child task');
 
+insert into public.milestones (project_id, title)
+values ('99999999-9999-4999-8999-999999999999', 'child milestone');
+
 delete from public.projects where id = '99999999-9999-4999-8999-999999999999';
 
 select is(
@@ -181,6 +235,15 @@ select is(
   ),
   0,
   'deleting a project cascades to its tasks'
+);
+
+select is(
+  (
+    select count(*)::int from public.milestones
+    where project_id = '99999999-9999-4999-8999-999999999999'
+  ),
+  0,
+  'deleting a project cascades to its milestones'
 );
 
 select throws_ok(

@@ -52,7 +52,7 @@ Without OpenAI keys the planner states it's unconfigured — everything else wor
 
 ```bash
 npm run lint && npm run typecheck && npm test
-supabase db reset && npm run test:db     # 36 pgTAP tests
+supabase db reset && npm run test:db     # 53 pgTAP tests
 npm run test:e2e                          # 27 Playwright tests
 ```
 
