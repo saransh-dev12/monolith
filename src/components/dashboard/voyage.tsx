@@ -73,15 +73,16 @@ export function Voyage({
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const target = () => (totalRef.current * percent) / 100;
+    // Capture the proxy node once so cleanup can't read a stale ref value.
+    const proxyObj = proxy.current;
 
     if (reduce) {
       place(target());
       return () => {
-        gsap.killTweensOf(proxy.current);
+        gsap.killTweensOf(proxyObj);
       };
     }
 
-    const proxyObj = proxy.current;
     const tween = gsap.to(proxyObj, {
       L: target(),
       duration: 1.25,
