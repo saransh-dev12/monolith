@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: { agentUpgrade: "security" },
   // The dev-tools badge floats over the sidebar footer and intercepts
   // pointer events, so Playwright cannot click the account menu in dev
   // mode. Error overlays are unaffected.
