@@ -53,7 +53,7 @@ Without OpenAI keys the planner states it's unconfigured — everything else wor
 ```bash
 npm run lint && npm run typecheck && npm test
 supabase db reset && npm run test:db     # 53 pgTAP tests
-npm run test:e2e                          # 27 Playwright tests
+npm run test:e2e                          # 29 Playwright tests
 ```
 
 Covers: auth flows, CRUD, board persistence, cross-user denial, CSRF rejection, planner quota + atomicity, 1,000+ task large accounts, responsive sweep (10 routes × 7 viewports), WCAG 2.2 AA axe audit. CI runs all of it — see [docs/v1-qa-report.md](docs/v1-qa-report.md).
