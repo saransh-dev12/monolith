@@ -12,7 +12,7 @@ test("signup lands in an empty workspace and signs out", async ({ page }) => {
   await page.goto("/signup");
   await page.getByLabel("Name").fill("Prod Smoke");
   await page.getByLabel("Email").fill(process.env.SMOKE_EMAIL!);
-  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Create account" }).click();
   await page.waitForURL("**/app");
   await expect(page.getByText("No projects yet")).toBeVisible();
@@ -27,7 +27,7 @@ test("account deletion removes the account and its data", async ({ page }) => {
   await page.goto("/signup");
   await page.getByLabel("Name").fill("Prod Delete");
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill("delete-password-123");
+  await page.getByLabel("Password", { exact: true }).fill("delete-password-123");
   await page.getByRole("button", { name: "Create account" }).click();
   await page.waitForURL("**/app");
 
@@ -47,7 +47,7 @@ test("account deletion removes the account and its data", async ({ page }) => {
   ).toBeVisible();
 
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill("delete-password-123");
+  await page.getByLabel("Password", { exact: true }).fill("delete-password-123");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByText("Email or password is incorrect.")).toBeVisible();
 });
@@ -56,7 +56,7 @@ test("confirmed user can work the full core loop", async ({ page }) => {
   // Sign in
   await page.goto("/login");
   await page.getByLabel("Email").fill(process.env.SMOKE_EMAIL!);
-  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL("**/app");
 
@@ -97,7 +97,7 @@ test("confirmed user can work the full core loop", async ({ page }) => {
   await page.waitForURL("**/login");
   await page.goto("/login");
   await page.getByLabel("Email").fill(process.env.SMOKE_EMAIL!);
-  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL("**/app");
   await expect(page.getByText("Smoke Project").first()).toBeVisible();

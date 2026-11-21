@@ -62,7 +62,7 @@ test.describe("responsive layout sweep", () => {
     // Local seed account (available in dev and CI via supabase db reset).
     await page.goto("/login");
     await page.getByLabel("Email").fill("demo@monolith.local");
-    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByLabel("Password", { exact: true }).fill("monolith-demo");
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL("**/app");
     const detailLink = page
@@ -77,7 +77,7 @@ test.describe("responsive layout sweep", () => {
 
     await page.goto("/login");
     await page.getByLabel("Email").fill("demo@monolith.local");
-    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByLabel("Password", { exact: true }).fill("monolith-demo");
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL("**/app");
 

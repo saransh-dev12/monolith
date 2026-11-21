@@ -30,7 +30,7 @@ test("project, board, and dashboard include more than 1,000 tasks", async ({ pag
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/login");
     await page.getByLabel("Email").fill("demo@monolith.local");
-    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByLabel("Password", { exact: true }).fill("monolith-demo");
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL("**/app");
     await expect(page.getByText(`Open tasks: ${baseline.data[0].open_tasks + 505}`)).toBeVisible();

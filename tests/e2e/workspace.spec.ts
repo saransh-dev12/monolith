@@ -13,7 +13,7 @@ async function signIn(
 ) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL("**/app");
 }
@@ -23,7 +23,7 @@ test.describe("public and protected routes", () => {
     const unsafeLogin = "/login?next=%2F%5Cattacker.example";
     await page.goto(unsafeLogin);
     await page.getByLabel("Email").fill("demo@monolith.local");
-    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByLabel("Password", { exact: true }).fill("monolith-demo");
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL("**/app");
     await page.goto(unsafeLogin);
@@ -358,7 +358,7 @@ test.describe("account and responsive layout", () => {
     await page.goto("/signup");
     await page.getByLabel("Name").fill("E2E New User");
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password").fill("test-password-123");
+    await page.getByLabel("Password", { exact: true }).fill("test-password-123");
     await page.getByRole("button", { name: "Create account" }).click();
     await page.waitForURL("**/app");
     await expect(page.getByText("No projects yet")).toBeVisible();
@@ -377,7 +377,7 @@ test.describe("account and responsive layout", () => {
     await page.goto("/signup");
     await page.getByLabel("Name").fill("E2E Deleting User");
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password").fill("test-password-123");
+    await page.getByLabel("Password", { exact: true }).fill("test-password-123");
     await page.getByRole("button", { name: "Create account" }).click();
     await page.waitForURL("**/app");
     await page.getByRole("button", { name: "New project" }).first().click();
@@ -407,7 +407,7 @@ test.describe("account and responsive layout", () => {
 
     // The credentials no longer work.
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password").fill("test-password-123");
+    await page.getByLabel("Password", { exact: true }).fill("test-password-123");
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page.getByText("Email or password is incorrect.")).toBeVisible();
   });

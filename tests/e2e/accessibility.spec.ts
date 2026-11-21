@@ -63,7 +63,7 @@ test.describe("accessibility (WCAG 2.2 AA)", () => {
   test("workspace pages", async ({ page }) => {
     await page.goto("/login");
     await page.getByLabel("Email").fill("demo@monolith.local");
-    await page.getByLabel("Password").fill("monolith-demo");
+    await page.getByLabel("Password", { exact: true }).fill("monolith-demo");
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL("**/app");
 
