@@ -8,37 +8,38 @@ import { CornerDownLeft, Sparkles } from "lucide-react";
 
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import { MonolithMark } from "@/components/brand/monolith-mark";
 
 const story = [
   {
     number: "01",
     label: "Idea",
     title: "Start with the work.",
-    body: "Describe the outcome in plain language and set a horizon. No template, no wizard, no fields you do not need.",
+    body: "Describe what you want to achieve and when you want to get there.",
   },
   {
     number: "02",
     label: "Plan",
-    title: "Read the plan before it exists.",
-    body: "The planner proposes milestones and tasks as structured data. Every title, date, and priority stays editable.",
+    title: "Make the plan your own.",
+    body: "Review the suggested milestones and tasks. Edit the details before saving your project.",
   },
   {
     number: "03",
     label: "Tasks",
     title: "Break the plan into moves.",
-    body: "Milestones become tasks with an owner, a due date, and a priority. The board is the same plan, not a second system.",
+    body: "Give the work a clear shape with milestones, tasks, due dates, and priorities.",
   },
   {
     number: "04",
     label: "Execution",
     title: "Work moves; progress follows.",
-    body: "Drag a card or use the status menu. The change persists first, then the board and charts update from the same records.",
+    body: "Move tasks across the board as work happens and keep the next step in view.",
   },
   {
     number: "05",
     label: "Progress",
-    title: "Only what the records prove.",
-    body: "Completion, overdue work, and project progress are derived from stored rows. No fabricated velocity and no mood-board metrics.",
+    title: "See how far you have come.",
+    body: "Track completion and overdue work across your projects as your tasks move forward.",
   },
 ] as const;
 
@@ -224,7 +225,7 @@ function ExecuteVisual() {
               {column.cards.map((card) => (
                 <div
                   key={card}
-                  className="rounded-lg border border-border/50 bg-background/70 px-2 py-1.5 text-[9px] leading-4"
+                  className="rounded-lg border border-border/50 bg-background/70 px-2 py-1.5 text-[11px] leading-4"
                 >
                   {card}
                 </div>
@@ -295,8 +296,19 @@ export function WorkflowStory() {
   const ActiveVisual = visuals[active];
 
   return (
-    <section ref={sectionRef} id="story" className="border-y border-border/60">
+    <section ref={sectionRef} id="story">
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-16 sm:px-6 lg:pt-24">
+        <div aria-hidden="true" className="mb-8 flex items-center gap-2 text-primary">
+          <MonolithMark />
+          <motion.span
+            className="block h-8 w-28 origin-left border border-primary/30 bg-card"
+            style={{ transformPerspective: 600 }}
+            initial={reduce ? { opacity: 0 } : { scaleX: 0, rotateY: 75, opacity: 0 }}
+            whileInView={reduce ? undefined : { scaleX: [0, 1, 0], rotateY: [75, 0, 75], opacity: [0, 1, 0] }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.8, times: [0, 0.55, 1], ease: "easeInOut" }}
+          />
+        </div>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow text-primary">
@@ -308,8 +320,7 @@ export function WorkflowStory() {
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-            Five states, one object. The plan you review is the board you run,
-            and the progress you read is the same data.
+            From the first thought to the final task, keep the work connected.
           </p>
         </div>
       </div>
@@ -320,7 +331,7 @@ export function WorkflowStory() {
         data-gsap-stage
         className="relative hidden h-[calc(100dvh-4rem)] items-center lg:flex"
       >
-          <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.9fr_1.1fr] gap-14 px-6">
+          <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[0.8fr_1.2fr] gap-14 px-6">
             <div className="flex flex-col justify-center">
               <ol className="space-y-1">
                 {story.map((item, index) => {

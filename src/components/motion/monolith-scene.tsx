@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import type {
   Group,
-  InstancedMesh,
   PointLight,
   Points as ThreePoints,
 } from "three";
@@ -18,8 +17,6 @@ import {
   LineBasicMaterial,
   MathUtils,
   MeshBasicMaterial,
-  MeshStandardMaterial,
-  Object3D,
   PointsMaterial,
 } from "three";
 
@@ -98,12 +95,10 @@ function Monolith({
   journeyRef,
   pointerRef,
   reduce,
-  shardSpreadRef,
 }: {
   journeyRef: JourneyRef;
   pointerRef: PointerRef;
   reduce: boolean;
-  shardSpreadRef: { current: number };
 }) {
   const group = useRef<Group>(null);
   const spin = useRef(0);
@@ -131,8 +126,6 @@ function Monolith({
     spin.current += delta * (reduce ? 0 : 0.055);
     const targetY = spin.current + pose.rotY + pointer.x * 0.12;
     const targetX = (reduce ? 0 : Math.sin(t * 0.32) * 0.02) + pointer.y * 0.06;
-
-    shardSpreadRef.current = pose.scale < 1 ? 1.25 : 1;
 
     if (reduce) {
       g.position.set(pose.x, pose.y, 0);
@@ -182,87 +175,6 @@ function Monolith({
       </mesh>
     </group>
   );
-}
-
-/** Orbiting obsidian shards. The spread breathes with the journey. */
-function Shards({
-  reduce,
-  shardSpreadRef,
-}: {
-  reduce: boolean;
-  shardSpreadRef: { current: number };
-}) {
-  const mesh = useRef<InstancedMesh>(null);
-  const COUNT = 42;
-
-  const shards = useMemo(() => {
-    const dummy = new Object3D();
-    return Array.from({ length: COUNT }, (_, i) => {
-      const rng = (seed: number) => {
-        const x = Math.sin(i * 127.1 + seed * 311.7) * 43758.5453;
-        return x - Math.floor(x);
-      };
-      const angle = rng(1) * Math.PI * 2;
-      return {
-        angle,
-        radius: 2.6 + rng(2) * 3.4,
-        y: (rng(3) - 0.5) * 5.4,
-        scale: 0.05 + rng(4) * 0.22,
-        speed: 0.04 + rng(5) * 0.1,
-        wobble: rng(6) * Math.PI * 2,
-        tilt: (rng(7) - 0.5) * 0.7,
-        dummy,
-      };
-    });
-  }, []);
-
-  const geometry = useMemo(() => new BoxGeometry(1, 1, 0.42), []);
-  const material = useMemo(
-    () =>
-      new MeshStandardMaterial({
-        color: OBSIDIAN,
-        metalness: 0.5,
-        roughness: 0.4,
-      }),
-    [],
-  );
-
-  useEffect(() => {
-    return () => {
-      geometry.dispose();
-      material.dispose();
-    };
-  }, [geometry, material]);
-
-  useFrame((state) => {
-    const m = mesh.current;
-    if (!m) return;
-    const spread = shardSpreadRef.current;
-    const t = state.clock.elapsedTime;
-
-    for (let i = 0; i < shards.length; i++) {
-      const s = shards[i];
-      const drift = reduce ? 0 : t * s.speed;
-      const a = s.angle + drift;
-      const radius = s.radius * spread;
-      s.dummy.position.set(
-        Math.cos(a) * radius,
-        s.y + (reduce ? 0 : Math.sin(t * 0.5 + s.wobble) * 0.16),
-        Math.sin(a) * radius * 0.6 - 1.2,
-      );
-      s.dummy.rotation.set(
-        a * 1.4 + s.tilt,
-        a * 0.9,
-        reduce ? s.tilt : t * s.speed * 1.6,
-      );
-      s.dummy.scale.setScalar(s.scale);
-      s.dummy.updateMatrix();
-      m.setMatrixAt(i, s.dummy.matrix);
-    }
-    m.instanceMatrix.needsUpdate = true;
-  });
-
-  return <instancedMesh ref={mesh} args={[geometry, material, COUNT]} />;
 }
 
 /** Deterministic pseudo-random so the field is stable across renders. */
@@ -330,7 +242,6 @@ function SceneContent({
   reduce: boolean;
 }) {
   const emberKey = useRef<PointLight>(null);
-  const shardSpreadRef = useRef(1);
 
   useFrame((state, delta) => {
     // The key light breathes — the structure is never fully still.
@@ -377,9 +288,7 @@ function SceneContent({
         journeyRef={journeyRef}
         pointerRef={pointerRef}
         reduce={reduce}
-        shardSpreadRef={shardSpreadRef}
       />
-      <Shards reduce={reduce} shardSpreadRef={shardSpreadRef} />
       <Dust reduce={reduce} />
     </>
   );

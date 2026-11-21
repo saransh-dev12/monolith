@@ -53,14 +53,16 @@ export async function signInAction(
     return { error: password.error.issues[0]?.message };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.data,
-    password: password.data,
-  });
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.data,
+      password: password.data,
+    });
 
-  if (error) {
-    return { error: authErrorMessage(error.message) };
+    if (error) return { error: authErrorMessage(error.message) };
+  } catch {
+    return { error: "Sign in is temporarily unavailable. Please try again later." };
   }
 
   const destination = safeNextPath(formData.get("next"));
@@ -93,25 +95,25 @@ export async function signUpAction(
     return { error: password.error.issues[0]?.message };
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email: email.data,
-    password: password.data,
-    options: {
-      data: { display_name: displayName.data },
-      emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/app`,
-    },
-  });
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.signUp({
+      email: email.data,
+      password: password.data,
+      options: {
+        data: { display_name: displayName.data },
+        emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/app`,
+      },
+    });
 
-  if (error) {
-    return { error: authErrorMessage(error.message) };
-  }
-
-  if (!data.session) {
-    return {
-      message:
-        "Check your inbox to confirm your email, then sign in to open the workspace.",
-    };
+    if (error) return { error: authErrorMessage(error.message) };
+    if (!data.session) {
+      return {
+        message: "Check your inbox to confirm your email, then sign in to open the workspace.",
+      };
+    }
+  } catch {
+    return { error: "Account creation is temporarily unavailable. Please try again later." };
   }
 
   redirect("/app");

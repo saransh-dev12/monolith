@@ -2,12 +2,11 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  Check,
   GitBranch,
-  ShieldCheck,
 } from "lucide-react";
 
 import { Wordmark } from "@/components/brand/monolith-mark";
+import { AuthDialog } from "@/components/auth/auth-dialog";
 import { PrinciplesMarquee } from "@/components/marketing/principles-marquee";
 import { ProductTour } from "@/components/marketing/product-tour";
 import { SiteHeader } from "@/components/marketing/site-header";
@@ -21,11 +20,7 @@ import { SplitHeading } from "@/components/motion/split-heading";
 import { ClickSpark } from "@/components/reactbits/click-spark";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
-import { ShineBorder } from "@/components/ui/shine-border";
-import { Spotlight } from "@/components/ui/spotlight";
 import { getSessionUser } from "@/lib/auth/session";
-
-const trust = ["Auth covered", "RLS enforced", "CSRF guarded"];
 
 export default async function HomePage() {
   const user = await getSessionUser();
@@ -35,8 +30,8 @@ export default async function HomePage() {
   const secondaryLabel = user ? "Open the planner" : "Sign in to explore";
 
   return (
-    <SmoothScroll lerp={0.08}>
-      <div className="ember-field min-h-dvh overflow-x-clip">
+    <AuthDialog><SmoothScroll lerp={0.08}>
+      <div className="marketing-page ember-field min-h-dvh overflow-x-clip">
         <MonolithCanvas />
         <div className="grain-overlay" aria-hidden="true" />
         <a
@@ -49,26 +44,11 @@ export default async function HomePage() {
 
         <main id="main" className="relative z-10">
           <section className="relative mx-auto w-full max-w-[1240px] px-4 pb-16 pt-12 sm:px-6 lg:pb-24 lg:pt-24">
-            <Spotlight
-              className="-top-56 left-0 opacity-60 sm:-top-40 md:left-1/4"
-              fill="#ff5429"
-            />
-
-            <div className="grid gap-14 lg:grid-cols-[0.98fr_1.02fr] lg:items-center lg:gap-12">
+            <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-12">
               <div className="relative z-10 min-w-0">
-                <div className="inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-card px-3 py-1.5">
-                  <span
-                    className="size-1.5 animate-ember-breathe rounded-full bg-primary"
-                    aria-hidden="true"
-                  />
-                  <span className="eyebrow text-muted-foreground">
-                    Project execution system
-                  </span>
-                </div>
-
                 <SplitHeading
                   label="Ideas don't ship. Execution does."
-                  className="mt-7 display-xl"
+                  className="display-xl lg:text-[clamp(3.25rem,4.5vw,4.4rem)]"
                 >
                   Ideas don&apos;t ship.
                   <br />
@@ -76,9 +56,8 @@ export default async function HomePage() {
                 </SplitHeading>
 
                 <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground">
-                  Monolith turns a rough idea into a reviewed plan, a working
-                  board, and progress you can defend. One system from the first
-                  sentence to the last shipped task.
+                  Turn an idea into a plan you can review, a project you can
+                  run, and work you can finish.
                 </p>
 
                 <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -104,31 +83,10 @@ export default async function HomePage() {
                   </Button>
                 </div>
 
-                <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2">
-                  {trust.map((item) => (
-                    <li
-                      key={item}
-                      className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
-                    >
-                      <Check
-                        className="size-3.5 text-primary"
-                        aria-hidden="true"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               <Reveal delay={0.08} className="relative z-10 min-w-0">
-                <div className="relative rounded-3xl">
-                  <ShineBorder
-                    borderWidth={1}
-                    duration={18}
-                    shineColor={["#ff5429", "#a92316", "#ff9c76"]}
-                  />
-                  <StudioHero />
-                </div>
+                <StudioHero />
               </Reveal>
             </div>
 
@@ -142,37 +100,36 @@ export default async function HomePage() {
               </span>
               <div className="h-px flex-1 bg-gradient-to-r from-border via-border/50 to-transparent" />
               <span className="hidden eyebrow text-muted-foreground/80 sm:inline-flex">
-                Idea → plan → tasks → execution → progress
+                From first idea to finished work
               </span>
             </div>
           </section>
 
-          <PrinciplesMarquee />
+          <div className="relative z-10"><PrinciplesMarquee /></div>
 
-          <WorkflowStory />
+          <div className="relative z-10"><WorkflowStory /></div>
 
-          <ProductTour />
+          <div className="relative z-10"><ProductTour /></div>
 
           <section
             id="start"
-            className="mx-auto w-full max-w-[1240px] px-4 py-20 sm:px-6 lg:py-28"
+            className="mx-auto w-full max-w-[1240px] px-4 py-16 sm:px-6 lg:py-20"
           >
             <Reveal>
               <Panel className="overflow-hidden p-8 sm:p-12 lg:p-16">
-                <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-                  <div>
+                <div className="relative flex flex-col items-center gap-8 text-center">
+                  <div className="flex flex-col items-center">
                     <p className="eyebrow text-primary">Start now</p>
                     <h2 className="mt-4 max-w-2xl display-lg">
                       Start with the work you{" "}
                       <span className="display-em">actually have.</span>
                     </h2>
                     <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground">
-                      One project is enough to test the fit. Add a real
-                      milestone, move one task, and read progress from stored
-                      records.
+                      Give your next idea a plan, then make progress one task
+                      at a time.
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap justify-center gap-3">
                     <Magnetic strength={7}>
                       <ClickSpark color="var(--color-chart-2)">
                         <Button
@@ -211,16 +168,8 @@ export default async function HomePage() {
               <div>
                 <Wordmark />
                 <p className="mt-4 max-w-xs text-xs leading-5 text-muted-foreground">
-                  A project execution workspace for focused builders. Plans,
-                  boards, and progress without invented metrics.
+                  A workspace for turning ideas into completed work.
                 </p>
-                <div className="mt-4 inline-flex items-center gap-2 eyebrow text-muted-foreground">
-                  <ShieldCheck
-                    className="size-3.5 text-primary"
-                    aria-hidden="true"
-                  />
-                  RLS on every owner-scoped row
-                </div>
               </div>
               <div className="flex flex-col gap-2.5">
                 <h3 className="eyebrow text-muted-foreground">Product</h3>
@@ -279,6 +228,6 @@ export default async function HomePage() {
           </div>
         </footer>
       </div>
-    </SmoothScroll>
+    </SmoothScroll></AuthDialog>
   );
 }

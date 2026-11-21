@@ -48,7 +48,7 @@ export function CommandDemo() {
   const { d, area } = smooth(values, 620, 180);
 
   return (
-    <div className="rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
+    <div className="h-full rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
       <div className="flex flex-wrap items-start justify-between gap-3 px-1">
         <div>
           <p className="eyebrow text-muted-foreground">

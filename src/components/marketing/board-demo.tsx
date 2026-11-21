@@ -45,7 +45,7 @@ export function BoardDemo() {
   const done = tasks.filter((task) => task.status === "done").length;
 
   return (
-    <div className="rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
+    <div className="flex h-full flex-col rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
       <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-3">
         <p className="eyebrow text-muted-foreground">
           Board preview · illustrative
@@ -55,7 +55,7 @@ export function BoardDemo() {
         </p>
       </div>
 
-      <div className="grid gap-2 md:grid-cols-3">
+      <div className="grid flex-1 gap-2 md:grid-cols-3">
         {order.map((status, index) => {
           const column = tasks.filter((task) => task.status === status);
           return (
@@ -80,7 +80,7 @@ export function BoardDemo() {
                   {String(column.length).padStart(2, "0")}
                 </span>
               </header>
-              <div className="flex min-h-40 flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 md:min-h-40">
                 {column.map((task) => (
                   <motion.button
                     key={task.id}

@@ -271,6 +271,15 @@
   letter-spacing: 0.14em;
 }
 
+/* Marketing previews use the interface voice rather than compressed metadata. */
+.marketing-page .eyebrow {
+  font-family: var(--font-mol-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 @utility num {
   font-family: var(--font-mol-mono);
   font-variant-numeric: tabular-nums;
@@ -392,7 +401,7 @@
 
   @keyframes marquee {
     to {
-      transform: translateX(-50%);
+      transform: translateX(-100%);
     }
   }
 

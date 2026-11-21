@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import {AnimatePresence, motion} from "motion/react";
 import { useReducedMotion } from "@/components/motion/use-reduced-motion";
-import { ArrowRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
+import { ArrowRight, Check, CornerDownLeft } from "lucide-react";
 
-import { SpotlightSurface } from "@/components/reactbits/spotlight-surface";
 import { cn } from "@/lib/utils";
 
 const steps = [
@@ -44,15 +43,16 @@ export function StudioHero() {
   const reduce = useReducedMotion();
   const [step, setStep] = useState<StepId>("idea");
   const [paused, setPaused] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
 
   useEffect(() => {
-    if (reduce || paused) return;
+    if (reduce || paused || userPaused) return;
     const index = steps.findIndex((item) => item.id === step);
     const timer = window.setTimeout(() => {
       setStep(steps[(index + 1) % steps.length].id);
     }, 4600);
     return () => window.clearTimeout(timer);
-  }, [step, paused, reduce]);
+  }, [step, paused, userPaused, reduce]);
 
   return (
     <div
@@ -62,10 +62,11 @@ export function StudioHero() {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <SpotlightSurface className="rounded-3xl" color="var(--color-chart-2)">
       <motion.div
         initial={reduce ? false : { y: 28, opacity: 0, rotate: 1.5 }}
         animate={{ y: 0, opacity: 1, rotate: 0 }}
+        whileHover={reduce ? undefined : { rotateX: 1.5, rotateY: -2 }}
+        style={{ transformPerspective: 1200 }}
         transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.15 }}
         className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-[0_48px_120px_-56px_rgba(0,0,0,0.9)]"
       >
@@ -77,7 +78,7 @@ export function StudioHero() {
               <span className="size-1.5 rounded-full bg-chart-3" />
             </span>
             <span className="eyebrow text-muted-foreground">
-              Monolith studio
+              Project preview
             </span>
           </div>
           <span className="rounded-full border border-border/70 px-2 py-0.5 eyebrow text-muted-foreground">
@@ -136,10 +137,10 @@ export function StudioHero() {
                       <span className="rounded-full bg-muted px-2.5 py-1 eyebrow text-muted-foreground">
                         Horizon · 4 weeks
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground">
-                        Draft a plan
+                      <button type="button" onClick={() => setStep("plan")} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                        Review plan
                         <CornerDownLeft className="size-3" aria-hidden="true" />
-                      </span>
+                      </button>
                     </div>
                   </div>
                   <div className="mt-3 grid grid-cols-3 gap-2">
@@ -203,7 +204,7 @@ export function StudioHero() {
                       onClick={() => setStep("execute")}
                       className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
                     >
-                      Confirm &amp; save
+                      See the board
                       <ArrowRight className="size-3" aria-hidden="true" />
                     </button>
                   </div>
@@ -252,13 +253,13 @@ export function StudioHero() {
                         Progress from records
                       </span>
                       <span className="num text-[10px] text-chart-3">
-                        54%
+                        40%
                       </span>
                     </div>
                     <div className="mt-2 h-1 overflow-hidden rounded-full bg-muted">
                       <motion.div
                         initial={reduce ? false : { width: 0 }}
-                        animate={{ width: "54%" }}
+                        animate={{ width: "40%" }}
                         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                         className="h-full rounded-full bg-chart-3"
                       />
@@ -272,15 +273,20 @@ export function StudioHero() {
 
         <div className="flex items-center justify-between border-t border-border/60 px-4 py-2.5">
           <span className="flex items-center gap-1.5 eyebrow text-muted-foreground">
-            <Sparkles className="size-3 text-chart-2" aria-hidden="true" />
-            Demo walkthrough · no writes
+            Interactive preview
           </span>
-          <span className="eyebrow text-muted-foreground/80">
-            {paused ? "Paused" : "Auto-playing"}
-          </span>
+          {!reduce ? (
+            <button
+              type="button"
+              onClick={() => setUserPaused((value) => !value)}
+              aria-pressed={userPaused}
+              className="min-h-8 px-2 eyebrow text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              {userPaused ? "Resume demo" : "Pause demo"}
+            </button>
+          ) : <span className="eyebrow text-muted-foreground/80">Manual preview</span>}
         </div>
       </motion.div>
-      </SpotlightSurface>
     </div>
   );
 }

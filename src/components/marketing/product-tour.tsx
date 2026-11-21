@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { ArrowRight } from "lucide-react";
 
 import { BoardDemo } from "@/components/marketing/board-demo";
 import { CommandDemo } from "@/components/marketing/command-demo";
@@ -17,10 +17,9 @@ const tabs = [
 
 function PlannerPreview() {
   return (
-    <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
+    <div className="flex h-full flex-col rounded-3xl border border-border/70 bg-card p-4 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
         <div className="flex items-center gap-2">
-          <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
           <p className="eyebrow text-muted-foreground">
             Draft · Community run club
           </p>
@@ -76,9 +75,9 @@ function PlannerPreview() {
           ))}
         </ul>
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
         <span className="eyebrow text-muted-foreground">
-          Generation never writes
+          Review before saving
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground">
           Confirm and save
@@ -92,26 +91,46 @@ function PlannerPreview() {
 export function ProductTour() {
   const [tab, setTab] = useState<(typeof tabs)[number]["value"]>("command");
   const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const lastScrollStep = useRef(-1);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    if (reduce) return;
+    const step = Math.min(tabs.length - 1, Math.floor(progress * tabs.length));
+    if (step !== lastScrollStep.current) {
+      lastScrollStep.current = step;
+      setTab(tabs[step].value);
+    }
+  });
 
   return (
-    <section id="product" className="mx-auto w-full max-w-[1240px] px-4 py-16 sm:px-6 lg:py-24">
-      <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-12">
-        <div>
+    <section ref={sectionRef} id="product" className="mx-auto w-full max-w-[1240px] px-4 py-16 sm:px-6 lg:py-24 motion-safe:min-h-[190svh] motion-safe:lg:py-0">
+      <div className="grid gap-10 lg:grid-cols-[0.65fr_1.35fr] lg:items-center lg:gap-14 motion-safe:max-lg:min-h-[175svh] motion-safe:max-lg:grid-rows-[auto_1fr] motion-safe:lg:sticky motion-safe:lg:top-16 motion-safe:lg:min-h-[calc(100svh-4rem)]">
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.5 }}
+        >
           <p className="eyebrow text-primary">
             The workspace
           </p>
           <h2 className="mt-4 max-w-md display-lg">
-            One plan. Three honest views.
+            One plan. Three ways to move.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
-            The command center, board, and planner read the same records. Switch
-            the view; the work does not fork into a second system.
+            Review the plan, move tasks on the board, and see progress in the
+            command center. Your work stays connected.
           </p>
           <ul className="mt-7 space-y-3 text-sm">
             {[
-              "Metrics derived from your task rows",
-              "Drag and keyboard status changes",
-              "Draft only until you confirm the save",
+              "See what needs attention",
+              "Move tasks as work progresses",
+              "Review a plan before saving it",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5">
                 <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
@@ -119,9 +138,9 @@ export function ProductTour() {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
 
-        <div className="min-w-0">
+        <div className="min-w-0 motion-safe:max-lg:sticky motion-safe:max-lg:top-20 motion-safe:max-lg:self-start">
           <Tabs value={tab} onValueChange={(value) => setTab(value as typeof tab)}>
             <div className="mb-3 flex items-center justify-between gap-3">
               <TabsList className="rounded-full border border-border/70 bg-card p-1">
@@ -139,42 +158,25 @@ export function ProductTour() {
                 Illustrative data
               </span>
             </div>
-            <TabsContent value="command">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key="command"
-                  initial={reduce ? false : { opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduce ? undefined : { opacity: 0, y: -8 }}
-                  transition={{ duration: 0.24 }}
-                  role="tabpanel"
+            <div className="grid [&>*]:col-start-1 [&>*]:row-start-1">
+              {tabs.map((item) => (
+                <TabsContent
+                  key={item.value}
+                  value={item.value}
+                  forceMount
+                  className="data-[state=inactive]:invisible"
                 >
-                  <CommandDemo />
-                </motion.div>
-              </AnimatePresence>
-            </TabsContent>
-            <TabsContent value="board">
-              <motion.div
-                key="board"
-                initial={reduce ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.24 }}
-                role="tabpanel"
-              >
-                <BoardDemo />
-              </motion.div>
-            </TabsContent>
-            <TabsContent value="planner">
-              <motion.div
-                key="planner"
-                initial={reduce ? false : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.24 }}
-                role="tabpanel"
-              >
-                <PlannerPreview />
-              </motion.div>
-            </TabsContent>
+                  <motion.div
+                    className="h-full"
+                    initial={false}
+                    animate={{ opacity: tab === item.value ? 1 : 0, y: tab === item.value || reduce ? 0 : 8 }}
+                    transition={{ duration: reduce ? 0 : 0.24 }}
+                  >
+                    {item.value === "command" ? <CommandDemo /> : item.value === "board" ? <BoardDemo /> : <PlannerPreview />}
+                  </motion.div>
+                </TabsContent>
+              ))}
+            </div>
           </Tabs>
         </div>
       </div>
