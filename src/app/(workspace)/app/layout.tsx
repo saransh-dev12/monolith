@@ -35,7 +35,7 @@ export default async function WorkspaceLayout({
         <AppSidebar displayName={user.displayName} email={user.email} />
         <WorkspaceShortcuts />
         <SidebarInset id="main" className="min-w-0 bg-background">
-          <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background px-3 sm:px-5">
+          <header className="workspace-chrome sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 px-3 sm:px-5">
             <SidebarTrigger className="-ml-1" />
             <Link href="/app" className="md:hidden" aria-label="Monolith workspace">
               <Wordmark />

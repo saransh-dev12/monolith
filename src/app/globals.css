@@ -280,6 +280,34 @@
   letter-spacing: 0;
 }
 
+/* Translucency is confined to the command surface and sticky workspace chrome. */
+.command-glass {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+.command-glass--focus {
+  border-top: 2px solid var(--primary);
+}
+
+.workspace-chrome {
+  background: var(--background);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  @media not (prefers-reduced-transparency: reduce) {
+    .command-glass {
+      background: color-mix(in srgb, var(--card) 88%, transparent);
+      backdrop-filter: blur(16px);
+    }
+    .workspace-chrome {
+      background: color-mix(in srgb, var(--background) 88%, transparent);
+      backdrop-filter: blur(16px);
+    }
+  }
+}
+
 @utility num {
   font-family: var(--font-mol-mono);
   font-variant-numeric: tabular-nums;

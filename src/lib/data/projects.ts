@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import { fetchAll, fetchByProjectBatches } from "@/lib/data/pagination";
+import { rankFocusTasks } from "@/lib/data/dashboard-model";
 import type { Milestone, Project, Task } from "@/types/database";
 import type {
   ProjectCreateInput,
@@ -189,6 +190,8 @@ export type DashboardData = {
     overdueTasks: number;
   };
   projects: ProjectSummary[];
+  milestones: Array<Pick<Milestone, "id" | "project_id" | "title" | "target_date" | "completed_at"> & { projectName: string }>;
+  focusTasks: DashboardTask[];
   nextTasks: DashboardTask[];
   stageCounts: { todo: number; inProgress: number; done: number };
   inProgressTasks: DashboardTask[];
@@ -219,6 +222,8 @@ export async function getDashboardData(): Promise<DashboardData> {
         overdueTasks: 0,
       },
       projects: [],
+      milestones: [],
+      focusTasks: [],
       nextTasks: [],
       stageCounts: { todo: 0, inProgress: 0, done: 0 },
       inProgressTasks: [],
@@ -233,7 +238,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       .select("id,project_id,title,status,priority,due_date,updated_at", { count: "exact" }).in("project_id", ids)
       .order("id").range(from, to), "Could not load task metrics")),
     fetchByProjectBatches(projectIds, (ids) => fetchAll((from, to) => supabase.from("milestones")
-      .select("project_id,completed_at", { count: "exact" }).in("project_id", ids)
+      .select("id,project_id,title,target_date,completed_at", { count: "exact" }).in("project_id", ids)
       .order("id").range(from, to), "Could not load milestone metrics")),
     supabase.rpc("dashboard_totals"),
   ]);
@@ -277,6 +282,9 @@ export async function getDashboardData(): Promise<DashboardData> {
   const projectNames = new Map(
     projects.map((project) => [project.id, project.name]),
   );
+  const activeProjectIds = new Set(projects.filter((project) => project.status === "active").map((project) => project.id));
+  const focusTasks = rankFocusTasks(tasks.filter((task) => activeProjectIds.has(task.project_id)), new Date().toISOString().slice(0, 10))
+    .slice(0, 4).map((task) => ({ ...task, projectName: projectNames.get(task.project_id) ?? "Project" }));
 
   const nextTasks = tasks
     .filter((task) => task.status !== "done")
@@ -365,6 +373,8 @@ export async function getDashboardData(): Promise<DashboardData> {
         progress: { ...progress, percent: computePercent(progress) },
       };
     }),
+    milestones: milestones.map((milestone) => ({ ...milestone, projectName: projectNames.get(milestone.project_id) ?? "Project" })),
+    focusTasks,
     nextTasks,
     stageCounts,
     inProgressTasks,

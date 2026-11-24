@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const TEST_ORIGIN = new URL(process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000").origin;
+
 const DEMO_PROJECT_ID = "33333333-3333-4333-8333-333333333331";
 
 function unique(label: string): string {
@@ -39,13 +41,24 @@ test.describe("public and protected routes", () => {
 
     const response = await page.request.post("/api/projects", {
       data: { name: "Unauthenticated" },
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect(response.status()).toBe(401);
   });
 });
 
 test.describe("core workspace flow", () => {
+  test("command center connects next work, project progress and milestones", async ({ page }) => {
+    await signIn(page);
+    await expect(page.getByRole("heading", { name: "Project in focus" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Next action" })).toBeVisible();
+    await expect(page.getByRole("progressbar", { name: "Portfolio relaunch execution progress" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Execution timeline" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Project landscape" })).toBeVisible();
+    await page.getByRole("link", { name: "Open project", exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/app/projects/${DEMO_PROJECT_ID}$`));
+  });
+
   test("creates and edits a project, task, milestone, board state, and removes it", async ({
     page,
   }) => {
@@ -57,8 +70,8 @@ test.describe("core workspace flow", () => {
     const milestoneName = unique("E2E milestone");
 
     await signIn(page);
-    await expect(page.getByText("Currently done tasks by last update; edits can change the date")).toBeVisible();
-    await expect(page.getByRole("img", { name: /Currently done tasks by their last update date/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Execution timeline" })).toBeVisible();
+    await expect(page.getByText("Latest task changes, not a complete history")).toBeVisible();
     await page.goto("/app/projects");
 
     await page.getByRole("button", { name: "New project" }).click();
@@ -138,7 +151,7 @@ test.describe("core workspace flow", () => {
     expect(errors).toEqual([]);
 
     const cleanup = await page.request.delete(`/api/projects/${projectId}`, {
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect([200, 404]).toContain(cleanup.status());
   });
@@ -157,13 +170,13 @@ test.describe("authorization", () => {
 
     const update = await page.request.patch(`/api/projects/${DEMO_PROJECT_ID}`, {
       data: { name: "hijacked" },
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect(update.status()).toBe(404);
 
     const insert = await page.request.post("/api/tasks", {
       data: { projectId: DEMO_PROJECT_ID, title: "intrusion" },
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect([400, 404]).toContain(insert.status());
 
@@ -198,7 +211,7 @@ test.describe("planner", () => {
         idea: "A community running club site with routes and schedules.",
         durationWeeks: 4,
       },
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect([200, 503]).toContain(unconfigured.status());
 
@@ -208,7 +221,7 @@ test.describe("planner", () => {
         milestones: [],
         tasks: [],
       },
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect(blocked.status()).toBe(422);
 
@@ -236,7 +249,7 @@ test.describe("planner", () => {
 
     const confirm = await page.request.post("/api/planner/confirm", {
       data: plan,
-      headers: { Origin: "http://localhost:3000" },
+      headers: { Origin: TEST_ORIGIN },
     });
     expect(confirm.status()).toBe(201);
     const body = (await confirm.json()) as { projectId: string };
@@ -249,7 +262,7 @@ test.describe("planner", () => {
 
     const cleanup = await page.request.delete(
       `/api/projects/${body.projectId}`,
-      { headers: { Origin: "http://localhost:3000" } },
+      { headers: { Origin: TEST_ORIGIN } },
     );
     expect(cleanup.status()).toBe(200);
   });
