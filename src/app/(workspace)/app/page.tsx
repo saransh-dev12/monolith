@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
+import { MilestonePath } from "@/components/dashboard/milestone-path";
+import { CommandMotion } from "@/components/dashboard/command-motion";
+import { ProgressValue } from "@/components/dashboard/progress-value";
+import { ActionArrow } from "@/components/dashboard/action-arrow";
 import { ProjectDialog } from "@/components/projects/project-dialog";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth/session";
@@ -22,7 +26,8 @@ const statusLabel = {
   done: "Done",
 } as const;
 
-export default async function DashboardPage() {
+export default async function DashboardPage(props: PageProps<"/app">) {
+  const searchParams = await props.searchParams;
   const user = await requireUser();
   const {
     metrics,
@@ -39,7 +44,14 @@ export default async function DashboardPage() {
     (project) => project.status === "active",
   );
   const activeProjectIds = new Set(activeProjects.map((project) => project.id));
-  const featured = activeProjects.find((project) => project.id === focusTasks[0]?.project_id) ?? activeProjects[0];
+  const requestedProject =
+    typeof searchParams.project === "string" ? searchParams.project : undefined;
+  const featured =
+    activeProjects.find((project) => project.id === requestedProject) ??
+    activeProjects.find(
+      (project) => project.id === focusTasks[0]?.project_id,
+    ) ??
+    activeProjects[0];
   const featuredMilestones = milestones
     .filter(
       (milestone) =>
@@ -51,8 +63,6 @@ export default async function DashboardPage() {
           b.target_date ?? "9999-12-31",
         ) || a.title.localeCompare(b.title),
     );
-  const nextMilestone = featuredMilestones[0];
-  const followingMilestone = featuredMilestones[1];
   const focus = focusTasks[0];
   const date = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -117,286 +127,258 @@ export default async function DashboardPage() {
   );
 
   return (
-    <div className="space-y-8 pb-8">
-      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-border/60 pb-7">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {date} <span aria-hidden="true">·</span> {user.displayName}&apos;s
-            workspace
-          </p>
-          <h1 className="mt-3 font-display text-4xl leading-none tracking-[-0.025em] sm:text-5xl lg:text-6xl">
-            Command Center
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {metrics.overdueTasks > 0
-              ? `${metrics.overdueTasks} ${metrics.overdueTasks === 1 ? "task needs" : "tasks need"} attention · `
-              : ""}
-            {metrics.activeProjects} active{" "}
-            {metrics.activeProjects === 1 ? "project" : "projects"} ·{" "}
-            {metrics.openTasks} open{" "}
-            {metrics.openTasks === 1 ? "task" : "tasks"}
-          </p>
-        </div>
-        <ProjectDialog trigger={<Button className="h-10"><Plus className="size-4" aria-hidden="true" />Create project</Button>} />
-      </header>
+    <CommandMotion>
+      <div className="space-y-7 pb-10 sm:space-y-8">
+        <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-border/60 pb-6">
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {date} <span aria-hidden="true">·</span> {user.displayName}&apos;s
+              workspace
+            </p>
+            <h1 className="mt-2 font-display text-3xl leading-[1.08] tracking-[-0.025em] sm:text-4xl">
+              Command Center
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {metrics.overdueTasks > 0
+                ? `${metrics.overdueTasks} ${metrics.overdueTasks === 1 ? "task needs" : "tasks need"} attention · `
+                : ""}
+              {metrics.activeProjects} active{" "}
+              {metrics.activeProjects === 1 ? "project" : "projects"} ·{" "}
+              {metrics.openTasks} open{" "}
+              {metrics.openTasks === 1 ? "task" : "tasks"}
+            </p>
+          </div>
+          <ProjectDialog
+            trigger={
+              <Button className="h-10">
+                <Plus className="size-4" aria-hidden="true" />
+                Create project
+              </Button>
+            }
+          />
+        </header>
 
-      {projects.length === 0 ? (
-        <EmptyState
-          title="No projects yet"
-          description="Create your first project to start tracking tasks, milestones, and progress."
-          onAction={
-            <ProjectDialog
-              trigger={
-                <Button>
-                  <Plus className="size-4" aria-hidden="true" />
-                  Create a project
-                </Button>
-              }
-            />
-          }
-        />
-      ) : (
-        <>
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(300px,0.7fr)]">
-            <section
-              aria-labelledby="focus-heading"
-              className="order-1 min-w-0 border-l-2 border-primary pl-5 py-1 sm:pl-6 xl:order-2"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <h2 id="focus-heading" className="text-sm font-medium">
-                  Next action
-                </h2>
-                <ArrowDownRight
-                  className="size-4 text-primary"
-                  aria-hidden="true"
-                />
-              </div>
-              {focus ? (
-                <>
-                  <p className="mt-7 text-xs text-muted-foreground">
-                    {focus.projectName}
-                  </p>
-                  <h3 className="mt-2 font-brand text-xl font-semibold leading-snug">
-                    <Link
-                      href={`/app/projects/${focus.project_id}`}
-                      className="transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    >
-                      {focus.title}
-                    </Link>
-                  </h3>
-                  <p className="mt-4 text-sm text-muted-foreground">
-                    {statusLabel[focus.status]}{" "}
-                    <span aria-hidden="true">·</span>{" "}
-                    {focus.priority.charAt(0).toUpperCase() +
-                      focus.priority.slice(1)}{" "}
-                    priority
-                  </p>
-                  <p
-                    className={`mt-1 text-sm ${isOverdue(focus.due_date, focus.status, today) ? "text-primary" : "text-muted-foreground"}`}
-                  >
-                    {isOverdue(focus.due_date, focus.status, today)
-                      ? "Overdue · "
-                      : ""}
-                    {focus.due_date
-                      ? `Due ${formatShortDate(focus.due_date)}`
-                      : "No due date"}
-                  </p>
-                  <Link
-                    href={`/app/projects/${focus.project_id}`}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                  >
-                    Continue work{" "}
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                  <p className="mt-6 border-t border-border/60 pt-4 text-xs leading-5 text-muted-foreground">
-                    Ordered by overdue work, then work in progress, then due
-                    date and priority.
-                  </p>
-                </>
-              ) : (
-                <div className="py-8">
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    No open tasks in active projects.
-                  </p>
-                  <Link
-                    href="/app/projects"
-                    className="mt-4 inline-flex items-center gap-2 text-sm text-foreground hover:text-primary"
-                  >
-                    Open projects{" "}
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                </div>
-              )}
-            </section>
-
-            <section
-              aria-labelledby="featured-heading"
-              className="order-2 min-w-0 overflow-hidden xl:order-1"
-            >
-              <div className="flex items-center justify-between gap-4 border-b border-border/60 pb-3">
-                <h2 id="featured-heading" className="text-sm font-medium">
+        {projects.length === 0 ? (
+          <EmptyState
+            title="No projects yet"
+            description="Create your first project to start tracking tasks, milestones, and progress."
+            onAction={
+              <ProjectDialog
+                trigger={
+                  <Button>
+                    <Plus className="size-4" aria-hidden="true" />
+                    Create a project
+                  </Button>
+                }
+              />
+            }
+          />
+        ) : (
+          <>
+            <section aria-labelledby="featured-heading" className="relative">
+              <div className="flex items-center justify-between gap-4 border-b border-border/70 pb-4">
+                <h2
+                  id="featured-heading"
+                  className="font-brand text-sm font-semibold"
+                >
                   Project in focus
                 </h2>
                 <span className="text-xs text-muted-foreground">
                   {featured
-                    ? (featured.id === focus?.project_id ? "Project linked to next action" : "Most recently updated active project")
+                    ? featured.id === focus?.project_id
+                      ? "Linked to your next action"
+                      : requestedProject === featured.id
+                        ? "Selected project"
+                        : "Most recently updated active project"
                     : "No active project"}
                 </span>
               </div>
               {featured ? (
-                <div className="relative overflow-hidden pt-6 sm:pt-7">
-                  <div className="grid gap-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+                <>
+                  <div className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1.45fr)_minmax(18rem,0.7fr)] lg:gap-12 lg:py-10">
                     <div className="min-w-0">
-                      <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <p className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span
-                          className="size-1.5 rounded-full bg-primary"
+                          className="size-2 rounded-full bg-primary"
                           aria-hidden="true"
-                        />{" "}
+                        />
                         Active project
                       </p>
-                      <h3 className="mt-3 font-brand text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
+                      <h3 className="mt-4 max-w-3xl font-display text-4xl leading-[1.04] tracking-[-0.035em] sm:text-5xl xl:text-6xl">
                         <Link
                           href={`/app/projects/${featured.id}`}
-                          className="rounded-sm transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                          className="transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                         >
                           {featured.name}
                         </Link>
                       </h3>
-                      <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
+                      <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
                         {featured.description ||
-                          "Add a description to give this project a clear objective."}
+                          "Add an objective to give this project a clear direction."}
                       </p>
-                    </div>
-                    <div
-                      className="relative flex size-32 shrink-0 items-center justify-center sm:size-36"
-                      aria-hidden="true"
-                    >
-                      <svg
-                        viewBox="0 0 120 120"
-                        className="absolute inset-0 size-full -rotate-90"
-                        fill="none"
+                      <Link
+                        href={`/app/projects/${featured.id}`}
+                        className="group mt-6 inline-flex min-h-11 items-center gap-4 rounded-lg border border-foreground/20 px-4 text-sm font-medium transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                       >
-                        <circle
-                          cx="60"
-                          cy="60"
-                          r="52"
-                          stroke="var(--border)"
-                          strokeWidth="3"
-                        />
-                        <circle
-                          cx="60"
-                          cy="60"
-                          r="52"
-                          pathLength="100"
-                          stroke="var(--primary)"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeDasharray={`${featured.progress.percent} 100`}
-                        />
-                      </svg>
-                      <div className="text-center">
-                        <span className="font-brand text-3xl font-semibold tabular-nums tracking-[-0.04em]">
-                          {featured.progress.percent}%
-                        </span>
-                        <span className="mt-1 block text-xs text-muted-foreground">
-                          complete
-                        </span>
+                        Open project <ActionArrow />
+                      </Link>
+                      <div className="mt-8 flex flex-wrap items-end gap-x-9 gap-y-5 border-t border-border/60 pt-5">
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            Execution progress
+                          </p>
+                          <p className="mt-1 font-brand text-2xl tabular-nums">
+                            <ProgressValue value={featured.progress.percent} />
+                          </p>
+                          <div
+                            role="progressbar"
+                            aria-label={`${featured.name} execution progress`}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-valuenow={featured.progress.percent}
+                            className="mt-2 h-1 w-28 bg-muted"
+                          >
+                            <div
+                              data-command-progress
+                              className="h-full bg-primary"
+                              style={{ width: `${featured.progress.percent}%` }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            Outstanding
+                          </p>
+                          <p className="mt-1 text-sm font-medium">
+                            {featured.progress.openTasks} open tasks
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {featured.progress.completedMilestones}/
+                            {featured.progress.totalMilestones} milestones
+                            complete
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            Project target
+                          </p>
+                          <p className="mt-1 text-sm font-medium">
+                            {formatDate(featured.target_date) ?? "Not set"}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="mt-7">
-                    <div
-                      role="progressbar"
-                      aria-label={`${featured.name} execution progress`}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-valuenow={featured.progress.percent}
-                      className="sr-only"
-                    ></div>
-                    <div className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-muted-foreground">
-                      <span>
-                        {featured.progress.doneTasks} of{" "}
-                        {featured.progress.totalTasks} tasks done
-                      </span>
-                      <span>
-                        {featured.progress.completedMilestones} of{" "}
-                        {featured.progress.totalMilestones} milestones complete
-                      </span>
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Tasks and milestones count equally toward progress.
-                    </p>
-                  </div>
-                  <div className="relative ml-1 mt-7 grid gap-5 border-t border-border/50 pt-5 sm:grid-cols-2">
-                    <div
-                      className={
-                        nextMilestone
-                          ? "relative border-l border-border pl-4"
-                          : "min-w-0"
-                      }
+                    <section
+                      aria-labelledby="focus-heading"
+                      className="relative flex min-w-0 flex-col justify-between border-t border-border/70 pt-6 lg:border-t-0 lg:border-l lg:pl-7 lg:pt-0"
                     >
-                      {nextMilestone ? (
-                        <span
-                          aria-hidden="true"
-                          className="absolute -left-[4.5px] top-1 size-2 rounded-full border border-primary bg-card"
-                        />
-                      ) : null}
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <h2
+                            id="focus-heading"
+                            className="font-brand text-base font-semibold"
+                          >
+                            Next action
+                          </h2>
+                          <span
+                            className="size-2 rounded-full bg-primary"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                          Overdue first, then work in progress, due date and
+                          priority
+                        </p>
+                        {focus ? (
+                          <div className="mt-7">
+                            <p className="text-xs text-muted-foreground">
+                              {focus.projectName}
+                            </p>
+                            <h3 className="mt-3 font-brand text-xl font-semibold leading-snug">
+                              <Link
+                                href={`/app/projects/${focus.project_id}`}
+                                className="transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                              >
+                                {focus.title}
+                              </Link>
+                            </h3>
+                            <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                              {statusLabel[focus.status]} ·{" "}
+                              {focus.priority.charAt(0).toUpperCase() +
+                                focus.priority.slice(1)}{" "}
+                              priority ·{" "}
+                              <span
+                                className={
+                                  isOverdue(focus.due_date, focus.status, today)
+                                    ? "text-primary"
+                                    : ""
+                                }
+                              >
+                                {isOverdue(focus.due_date, focus.status, today)
+                                  ? "Overdue · "
+                                  : ""}
+                                {focus.due_date
+                                  ? `Due ${formatShortDate(focus.due_date)}`
+                                  : "No due date"}
+                              </span>
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="mt-7 text-sm text-muted-foreground">
+                            No open tasks in active projects.
+                          </p>
+                        )}
+                      </div>
+                      <Link
+                        href={
+                          focus
+                            ? `/app/projects/${focus.project_id}`
+                            : "/app/planner"
+                        }
+                        className="group mt-6 inline-flex min-h-11 w-fit items-center gap-3 text-sm font-medium transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                      >
+                        {focus ? "Continue work" : "Open planner"}
+                        <ActionArrow />
+                      </Link>
+                    </section>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-card/50 px-5 py-6 sm:px-6">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h4 className="font-brand text-base font-semibold">
+                        The path ahead
+                      </h4>
                       <p className="text-xs text-muted-foreground">
-                        Next milestone
-                      </p>
-                      <p className="mt-2 text-sm font-medium">
-                        {nextMilestone?.title ?? "No upcoming milestone"}
-                      </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {nextMilestone
-                          ? (formatShortDate(nextMilestone.target_date) ??
-                            "No target date")
-                          : "Add one in the project"}
+                        Upcoming milestones
                       </p>
                     </div>
-                    <div
-                      className={
-                        followingMilestone
-                          ? "relative border-l border-border pl-4"
-                          : "min-w-0"
-                      }
-                    >
-                      {followingMilestone ? (
-                        <span
-                          aria-hidden="true"
-                          className="absolute -left-[4.5px] top-1 size-2 rounded-full border border-muted-foreground bg-card"
-                        />
-                      ) : null}
-                      <p className="text-xs text-muted-foreground">
-                        Following milestone
+                    {featuredMilestones.length ? (
+                      <MilestonePath
+                        projectId={featured.id}
+                        milestones={featuredMilestones
+                          .slice(0, 3)
+                          .map((milestone) => ({
+                            id: milestone.id,
+                            title: milestone.title,
+                            date:
+                              formatShortDate(milestone.target_date) ??
+                              "No target date",
+                          }))}
+                      />
+                    ) : (
+                      <p className="mt-5 text-sm text-muted-foreground">
+                        No upcoming milestone.{" "}
+                        <Link
+                          href={`/app/projects/${featured.id}`}
+                          className="text-foreground underline underline-offset-4"
+                        >
+                          Add a milestone
+                        </Link>
                       </p>
-                      <p className="mt-2 text-sm font-medium">
-                        {followingMilestone?.title ?? "—"}
-                      </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {followingMilestone
-                          ? (formatShortDate(followingMilestone.target_date) ??
-                            "No target date")
-                          : `${featured.progress.openTasks} open ${featured.progress.openTasks === 1 ? "task" : "tasks"}`}
-                      </p>
-                    </div>
+                    )}
                   </div>
-                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-                    <span>
-                      Project target:{" "}
-                      {formatDate(featured.target_date) ?? "Not set"}
-                    </span>
-                    <Link
-                      href={`/app/projects/${featured.id}`}
-                      className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    >
-                      Open project{" "}
-                      <ArrowRight className="size-4" aria-hidden="true" />
-                    </Link>
-                  </div>
-                </div>
+                </>
               ) : (
-                <div className="py-8 text-sm text-muted-foreground">
+                <p className="py-8 text-sm text-muted-foreground">
                   No active projects.{" "}
                   <Link
                     href="/app/projects"
@@ -404,210 +386,186 @@ export default async function DashboardPage() {
                   >
                     View your projects
                   </Link>
-                </div>
+                </p>
               )}
             </section>
-          </div>
 
-          <section aria-labelledby="projects-heading">
-            <div className="flex items-end justify-between gap-4 border-b border-border/60 pb-3">
-              <div>
-                <h2
-                  id="projects-heading"
-                  className="font-brand text-lg font-semibold"
-                >
-                  Project landscape
-                </h2>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Active projects and their execution progress
-                </p>
-              </div>
-              <Link
-                href="/app/projects"
-                className="shrink-0 text-sm text-muted-foreground hover:text-foreground"
-              >
-                View all <span aria-hidden="true">↗</span>
-              </Link>
-            </div>
-            {activeProjects.length ? (
-              <ul className="divide-y divide-border/40">
-                {activeProjects.slice(0, 5).map((project) => (
-                  <li key={project.id}>
-                    <Link
-                      href={`/app/projects/${project.id}`}
-                      className="grid gap-3 py-4 transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:grid-cols-[minmax(0,1fr)_minmax(100px,180px)_5rem] sm:items-center sm:gap-6"
-                    >
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm font-medium">
-                          {project.name}
-                        </span>
-                        <span className="mt-1 block text-xs text-muted-foreground">
-                          {project.progress.openTasks} open ·{" "}
-                          {project.progress.completedMilestones}/
-                          {project.progress.totalMilestones} milestones
-                        </span>
-                      </span>
-                      <span
-                        className="h-1 overflow-hidden bg-muted"
-                        aria-hidden="true"
-                      >
-                        <span
-                          className="block h-full bg-primary"
-                          style={{ width: `${project.progress.percent}%` }}
-                        />
-                      </span>
-                      <span className="text-sm tabular-nums text-muted-foreground sm:text-right">
-                        {project.progress.percent}%
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="py-6 text-sm text-muted-foreground">
-                No active projects right now.
-              </p>
-            )}
-          </section>
-
-          <section
-            aria-label="Execution summary"
-            className="grid grid-cols-2 gap-x-6 gap-y-5 border-y border-border/60 py-5 sm:grid-cols-4"
-          >
-            {[
-              ["Active projects", metrics.activeProjects],
-              ["Open tasks", metrics.openTasks],
-              ["Completed tasks", metrics.completedTasks],
-              ["Overdue tasks", metrics.overdueTasks],
-            ].map(([label, value]) => (
-              <div key={label} className="min-w-0">
-                <p className="text-xs text-muted-foreground">{label}</p>
-                <p className="mt-1 font-brand text-2xl font-semibold tabular-nums">
-                  <span className="sr-only">{label}: </span>
-                  {value}
-                </p>
-              </div>
-            ))}
-          </section>
-
-          <div className="grid gap-9 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)] xl:gap-10">
-            <section aria-labelledby="timeline-heading" className="min-w-0">
-              <div className="flex items-end justify-between gap-4 border-b border-border/60 pb-3">
+            <section
+              aria-labelledby="projects-heading"
+              className="border-t border-border/60 pt-6"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2
-                    id="timeline-heading"
+                    id="projects-heading"
                     className="font-brand text-lg font-semibold"
                   >
-                    Execution timeline
+                    Project landscape
                   </h2>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Task updates, deadlines and milestone targets
+                    Choose a project to inspect its execution.
                   </p>
                 </div>
                 <Link
-                  href="/app/board"
-                  className="shrink-0 text-sm text-muted-foreground hover:text-foreground"
+                  href="/app/projects"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  Open board <span aria-hidden="true">↗</span>
+                  All projects ↗
                 </Link>
               </div>
-              {timeline.length ? (
-                <ol className="relative ml-1 border-l border-border/70">
-                  {timeline.map((event) => (
-                    <li key={event.id} className="relative pl-5">
-                      <span
-                        className={`absolute -left-[4.5px] top-6 size-2 rounded-full ${event.overdue ? "bg-primary" : "bg-muted-foreground"}`}
-                        aria-hidden="true"
-                      />
-                      <Link
-                        href={`/app/projects/${event.projectId}`}
-                        className="grid gap-1 border-b border-border/40 py-4 transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:items-center sm:gap-4"
-                      >
-                        <span
-                          className={`text-xs tabular-nums ${event.overdue ? "text-primary" : "text-muted-foreground"}`}
-                        >
-                          {formatShortDate(event.date)}
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block truncate text-sm font-medium">
-                            {event.title}
-                          </span>
-                          <span className="mt-1 block truncate text-xs text-muted-foreground">
-                            {event.projectName}
-                          </span>
-                        </span>
-                        <span
-                          className={`text-xs ${event.overdue ? "text-primary" : "text-muted-foreground"}`}
-                        >
-                          {event.overdue && event.kind === "Milestone target"
-                            ? "Past target · milestone"
-                            : event.kind}
-                        </span>
-                      </Link>
-                    </li>
+              {activeProjects.length ? (
+                <nav
+                  aria-label="Choose an active project"
+                  className="mt-4 flex gap-2 overflow-x-auto pb-2"
+                >
+                  {activeProjects.map((project) => (
+                    <Link
+                      key={project.id}
+                      href={`/app?project=${encodeURIComponent(project.id)}`}
+                      aria-current={
+                        project.id === featured?.id ? "page" : undefined
+                      }
+                      className={`group flex min-h-12 min-w-40 shrink-0 items-center justify-between gap-4 rounded-lg border px-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${project.id === featured?.id ? "border-primary/60 bg-primary/10 text-foreground" : "border-border/70 bg-card/40 text-muted-foreground hover:border-foreground/30 hover:text-foreground"}`}
+                    >
+                      <span>{project.name}</span>
+                      <span className="font-brand tabular-nums">
+                        {project.progress.percent}%
+                      </span>
+                    </Link>
                   ))}
-                </ol>
+                </nav>
               ) : (
-                <p className="py-6 text-sm text-muted-foreground">
-                  No upcoming task deadlines or milestone targets.
+                <p className="py-5 text-sm text-muted-foreground">
+                  No active projects right now.
                 </p>
               )}
-              <div className="flex flex-wrap gap-x-5 gap-y-2 pt-4 text-xs text-muted-foreground">
-                <span>{stageCounts.inProgress} in progress</span>
-                <span>{stageCounts.done} tasks done</span>
-                <span>{stageCounts.todo} to do</span>
-              </div>
             </section>
 
-            <section aria-labelledby="activity-heading" className="min-w-0">
-              <div className="border-b border-border/60 pb-3">
-                <h2
-                  id="activity-heading"
-                  className="font-brand text-lg font-semibold"
-                >
-                  Recent updates
-                </h2>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Latest task changes, not a complete history
-                </p>
-              </div>
-              {recentActivity.length ? (
-                <ol className="divide-y divide-border/40">
-                  {recentActivity.slice(0, 4).map((event) => (
-                    <li key={event.id}>
-                      <Link
-                        href={`/app/projects/${event.projectId}`}
-                        className="flex items-start gap-3 py-4 transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                      >
+            <section aria-label="Execution summary" className="flex flex-wrap gap-x-6 gap-y-2 border-y border-border/60 py-4 text-sm text-muted-foreground">
+              <span>Active projects: {metrics.activeProjects}</span>
+              <span>Open tasks: {metrics.openTasks}</span>
+              <span>Completed tasks: {metrics.completedTasks}</span>
+              <span>Overdue tasks: {metrics.overdueTasks}</span>
+            </section>
+
+            <div className="grid gap-9 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)] xl:gap-10">
+              <section aria-labelledby="timeline-heading" className="min-w-0">
+                <div className="flex items-end justify-between gap-4 border-b border-border/60 pb-3">
+                  <div>
+                    <h2
+                      id="timeline-heading"
+                      className="font-brand text-lg font-semibold"
+                    >
+                      Execution timeline
+                    </h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Task updates, deadlines and milestone targets
+                    </p>
+                  </div>
+                  <Link
+                    href="/app/board"
+                    className="shrink-0 text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Open board <span aria-hidden="true">↗</span>
+                  </Link>
+                </div>
+                {timeline.length ? (
+                  <ol className="relative ml-1 border-l border-border/70">
+                    {timeline.map((event) => (
+                      <li key={event.id} className="relative pl-5">
                         <span
-                          className="mt-1.5 size-1.5 shrink-0 rounded-full bg-muted-foreground"
+                          className={`absolute -left-[4.5px] top-6 size-2 rounded-full ${event.overdue ? "bg-primary" : "bg-muted-foreground"}`}
                           aria-hidden="true"
                         />
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm">
-                            {event.title}
+                        <Link
+                          href={`/app/projects/${event.projectId}`}
+                          className="grid gap-1 border-b border-border/40 py-4 transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:items-center sm:gap-4"
+                        >
+                          <span
+                            className={`text-xs tabular-nums ${event.overdue ? "text-primary" : "text-muted-foreground"}`}
+                          >
+                            {formatShortDate(event.date)}
                           </span>
-                          <span className="mt-1 block truncate text-xs text-muted-foreground">
-                            {event.projectName} · {statusLabel[event.status]}
+                          <span className="min-w-0">
+                            <span className="block truncate text-sm font-medium">
+                              {event.title}
+                            </span>
+                            <span className="mt-1 block truncate text-xs text-muted-foreground">
+                              {event.projectName}
+                            </span>
                           </span>
-                        </span>
-                        <span className="shrink-0 text-xs text-muted-foreground">
-                          {relativeTime(event.updatedAt)}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <p className="py-6 text-sm text-muted-foreground">
-                  Task updates will appear here as work progresses.
-                </p>
-              )}
-            </section>
-          </div>
+                          <span
+                            className={`text-xs ${event.overdue ? "text-primary" : "text-muted-foreground"}`}
+                          >
+                            {event.overdue && event.kind === "Milestone target"
+                              ? "Past target · milestone"
+                              : event.kind}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="py-6 text-sm text-muted-foreground">
+                    No upcoming task deadlines or milestone targets.
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-x-5 gap-y-2 pt-4 text-xs text-muted-foreground">
+                  <span>{stageCounts.inProgress} in progress</span>
+                  <span>{stageCounts.done} tasks done</span>
+                  <span>{stageCounts.todo} to do</span>
+                </div>
+              </section>
 
-        </>
-      )}
-    </div>
+              <section aria-labelledby="activity-heading" className="min-w-0">
+                <div className="border-b border-border/60 pb-3">
+                  <h2
+                    id="activity-heading"
+                    className="font-brand text-lg font-semibold"
+                  >
+                    Recent updates
+                  </h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Latest task changes, not a complete history
+                  </p>
+                </div>
+                {recentActivity.length ? (
+                  <ol className="divide-y divide-border/40">
+                    {recentActivity.slice(0, 4).map((event) => (
+                      <li key={event.id}>
+                        <Link
+                          href={`/app/projects/${event.projectId}`}
+                          className="flex items-start gap-3 py-4 transition-colors duration-200 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        >
+                          <span
+                            className="mt-1.5 size-1.5 shrink-0 rounded-full bg-muted-foreground"
+                            aria-hidden="true"
+                          />
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm">
+                              {event.title}
+                            </span>
+                            <span className="mt-1 block truncate text-xs text-muted-foreground">
+                              {event.projectName} · {statusLabel[event.status]}
+                            </span>
+                          </span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {relativeTime(event.updatedAt)}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="py-6 text-sm text-muted-foreground">
+                    Task updates will appear here as work progresses.
+                  </p>
+                )}
+              </section>
+            </div>
+          </>
+        )}
+      </div>
+    </CommandMotion>
   );
 }
