@@ -1,3 +1,5 @@
+> **Current execution update — 2026-11-27:** Release is NOT YET ASSESSED for the current uncommitted tree. Board reconciliation and keyed planner retry recovery have local regression coverage; legacy unkeyed requests remain non-idempotent. The opt-in smoke harness passed locally but has not been run on production. The health endpoint checks Auth and reports database status as unverified. Live AI, production data isolation, backups and final design approval remain unverified. No production migrations, settings changes or data writes are authorized without explicit user approval. See [current backlog](V1_ENGINEERING_BACKLOG.md) and [evidence register](V1_EVIDENCE_REGISTER.md). Older evidence below applies only to the named commits.
+
 # v1.0 release readiness
 
 This document records the release gates still to be verified. It does not assert that a production deployment exists or that v1.0 is released.
@@ -25,3 +27,7 @@ This document records the release gates still to be verified. It does not assert
 ## Deferred ideas
 
 Team collaboration and roles, billing, notifications, recurring tasks, calendar integration, native apps, autonomous agents, planner history or streaming, advanced analytics, social login, and intra-column reordering are outside the frozen v1.0 scope unless already implemented and stable.
+
+### Candidate rollout dependency — planner confirmation
+
+The current uncommitted candidate calls `create_project_plan_idempotent` for keyed planner confirmations. The reviewed migration `20261127000000_idempotent_plan_confirmation.sql` must be applied and verified before deploying application code that calls it. Keep the legacy RPC available while older clients may be active, and plan rollback accordingly. Legacy unkeyed requests remain non-idempotent; keyed retry recovery is scoped to the same browser tab and its session storage, including reloads. No migration or candidate deployment has been applied to production as part of this work. Review monitoring before deploying the `/api/health` response change: its database field now says `unverified`, because the probe only checks Auth.

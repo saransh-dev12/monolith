@@ -1,4 +1,24 @@
-# Monolith architecture proposal
+# Monolith architecture
+
+> The material below the current-system overview is a historical architecture proposal, not release evidence. Some proposed design and tooling details have changed. See the [ship checklist](v1-ship-checklist.md) and [evidence register](V1_EVIDENCE_REGISTER.md) for current verification status.
+
+## Current system overview
+
+```mermaid
+flowchart LR
+  Browser[Browser] --> Next[Next.js App Router]
+  Next --> Auth[Supabase Auth]
+  Next --> DB[Supabase Postgres with RLS]
+  Next --> AI[OpenAI provider]
+  Next --> Quota[Server-only quota client]
+  Quota --> DB
+```
+
+The workspace renders user-scoped data on the server; interactive components call validated route handlers. Authenticated requests use a cookie-aware Supabase client and database RLS. Project ownership controls access to related tasks and milestones; deleting a project cascades to its children. Privileged quota and account operations use server-only credentials. These are architectural boundaries, not a substitute for production configuration verification.
+
+Planner generation reserves quota and requests a structured draft from the configured provider. The draft is validated and presented for human editing; generation itself does not create project records. On confirmation, the server validates the reviewed draft and invokes a transactional database function. The current working tree adds keyed confirmation for retry protection; the legacy unkeyed route remains compatible and is not idempotent. The submitted draft and confirmation key can be recovered after reload in the same browser tab using user-scoped session storage; closing the tab, clearing storage or changing devices can lose this recovery information. The new migration must be applied before the new application code. Provider availability, production rollout and cross-request behavior still require release-specific verification.
+
+## Historical proposal
 
 **Status:** implemented for the v1 scope, verified locally. Scaffold, auth, schema/RLS, project/task/milestone CRUD, dark sidebar shell, command palette, motion system, board, dashboard, and the reviewed AI planner are in place. Production deployment and live AI-provider verification remain outstanding. Reviewed against current official documentation on 2026-10-24.
 

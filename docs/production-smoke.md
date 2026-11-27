@@ -1,0 +1,13 @@
+# Production smoke safeguards
+
+The smoke suite is opt-in and may create and delete data. Use only dedicated disposable accounts in the intended environment; never provide a real user's account. Obtain approval for destructive production operations and confirm backups and account ownership before running.
+
+The operator must explicitly set `MONOLITH_SMOKE=1`, `PLAYWRIGHT_BASE_URL` and `SMOKE_ALLOWED_ORIGIN` to the same exact origin, `SMOKE_DISPOSABLE_ACCOUNT=yes`, and `SMOKE_EMAIL` / `SMOKE_PASSWORD` for a dedicated, pre-confirmed disposable account. Provide secrets through a secure environment, never in shell history, committed files, logs, or screenshots. HTTPS is mandatory except for loopback. The suite disables traces and screenshots because they may capture credentials.
+
+The core test uses a UUID in names, captures only its own created project ID and attempts deletion in `finally` (project deletion cascades to its test task). If the browser or network terminates before the create response is captured, or cleanup reports a failure, inspect the disposable account and remove the named `Smoke <UUID>` project manually. Review and clean the account after each run.
+
+Account deletion is skipped unless `SMOKE_DELETE_CONFIRM=delete-disposable-account` and a **different**, pre-confirmed dedicated account is supplied in `SMOKE_DELETE_EMAIL` / `SMOKE_DELETE_PASSWORD`. This permanently deletes that account and all of its data. Supplying the flag is not a substitute for any required approval.
+
+Signup is skipped unless `SMOKE_SIGNUP_CONFIRM=delete-new-account`, `SMOKE_SIGNUP_AUTO_CONFIRMED=yes`, and a domain controlled for disposable testing is provided in `SMOKE_SIGNUP_EMAIL_DOMAIN`. This test generates a unique account and password, verifies signup and later sign-in, then deletes the account. Confirm that auto-confirm is actually enabled first. If signup or cleanup fails, the printed disposable email identifies the account for manual cleanup. An incorrect auto-confirm assumption can leave an unconfirmed account behind.
+
+The automated suite does **not** test email delivery or confirmation-required signup, planner generation, milestones, or cross-user isolation. In environments requiring email confirmation, pre-confirm the disposable accounts through the normal supported flow before running; leave the automated signup opt-in off and verify signup and confirmation separately with an approved mailbox and a documented cleanup plan. Separately verify the planner and isolation with approved disposable accounts; record evidence and cleanup. A passing smoke suite is not full production sign-off.

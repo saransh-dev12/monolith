@@ -189,7 +189,6 @@
   --ember-glow-2: #a9231622;
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -344,7 +343,9 @@
   font-family: var(--font-mol-editorial);
   font-style: italic;
   font-weight: 520;
-  font-variation-settings: "WONK" 1, "SOFT" 40;
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 40;
   color: var(--color-primary);
 }
 
@@ -371,8 +372,16 @@
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(58rem 30rem at 10% -10%, var(--ember-glow), transparent 62%),
-    radial-gradient(44rem 26rem at 88% 2%, var(--ember-glow-2), transparent 60%),
+    radial-gradient(
+      58rem 30rem at 10% -10%,
+      var(--ember-glow),
+      transparent 62%
+    ),
+    radial-gradient(
+      44rem 26rem at 88% 2%,
+      var(--ember-glow-2),
+      transparent 60%
+    ),
     var(--color-background);
 }
 
@@ -394,7 +403,11 @@
     opacity: var(--spot-opacity, 0);
     background: radial-gradient(
       18rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
-      color-mix(in oklab, var(--spot-color, var(--color-chart-1)) 20%, transparent),
+      color-mix(
+        in oklab,
+        var(--spot-color, var(--color-chart-1)) 20%,
+        transparent
+      ),
       transparent 68%
     );
     mix-blend-mode: screen;
@@ -408,7 +421,123 @@
 }
 
 @utility text-glow {
-  text-shadow: 0 0 32px color-mix(in oklab, var(--color-primary) 38%, transparent);
+  text-shadow: 0 0 32px
+    color-mix(in oklab, var(--color-primary) 38%, transparent);
+}
+
+/* Atmospheric artwork is decorative; project state is always rendered from data. */
+.execution-scene {
+  background-color: var(--background);
+  background-image: linear-gradient(90deg, rgb(8 8 8 / 25%), rgb(8 8 8 / 35%)), url("/images/execution-canvas.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+/* The project environment frames real project data without obscuring it. */
+.execution-stage {
+  background: var(--card);
+  isolation: isolate;
+}
+.execution-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(90deg, rgb(8 8 8 / 96%) 0%, rgb(8 8 8 / 82%) 54%, rgb(8 8 8 / 45%) 100%), url("/images/execution-canvas.jpg") center / cover;
+  pointer-events: none;
+}
+@media (max-width: 767px) {
+  .execution-stage::before {
+    background-position: center, 62% center;
+  }
+}
+
+/* Skiper40's horizontal fill, adapted as a translucent hover and focus
+   layer. Zero-specificity positioning preserves control-specific layouts. */
+@layer utilities {
+  :where(
+    [data-workspace] :is(button, a[data-slot="button"]):not(:disabled):not([aria-disabled="true"]),
+    body:has([data-workspace]) :is(
+      [data-slot="dialog-content"],
+      [data-slot="alert-dialog-content"],
+      [data-slot="dropdown-menu-content"],
+      [data-slot="popover-content"],
+      [data-slot="sheet-content"]
+    ) :is(button, a[data-slot="button"]):not(:disabled):not([aria-disabled="true"])
+  ) {
+    position: relative;
+  }
+  :where(
+      [data-workspace],
+      body:has([data-workspace])
+        :is(
+          [data-slot="dialog-content"],
+          [data-slot="alert-dialog-content"],
+          [data-slot="dropdown-menu-content"],
+          [data-slot="popover-content"],
+          [data-slot="sheet-content"]
+        )
+    )
+    :is(button, a[data-slot="button"]):not(:disabled):not([aria-disabled="true"])::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: currentColor;
+    opacity: 0.08;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @media (hover: hover) {
+    :where(
+        [data-workspace],
+        body:has([data-workspace])
+          :is(
+            [data-slot="dialog-content"],
+            [data-slot="alert-dialog-content"],
+            [data-slot="dropdown-menu-content"],
+            [data-slot="popover-content"],
+            [data-slot="sheet-content"]
+          )
+      )
+      :is(button, a[data-slot="button"]):not(:disabled):not([aria-disabled="true"]):hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+  :where(
+      [data-workspace],
+      body:has([data-workspace])
+        :is(
+          [data-slot="dialog-content"],
+          [data-slot="alert-dialog-content"],
+          [data-slot="dropdown-menu-content"],
+          [data-slot="popover-content"],
+          [data-slot="sheet-content"]
+        )
+    )
+    :is(button, a[data-slot="button"]):not(:disabled):not([aria-disabled="true"]):focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(
+        [data-workspace],
+        body:has([data-workspace])
+          :is(
+            [data-slot="dialog-content"],
+            [data-slot="alert-dialog-content"],
+            [data-slot="dropdown-menu-content"],
+            [data-slot="popover-content"],
+            [data-slot="sheet-content"]
+          )
+      )
+      :is(button, a[data-slot="button"])::after {
+      transition: none;
+    }
+  }
 }
 
 @theme inline {
@@ -444,4 +573,60 @@
       transform: scale(0.82);
     }
   }
+}
+
+/* The execution field carries real project state; the surrounding panels stay usable without blur. */
+.command-reference-shell { padding-bottom: 3rem; }
+.command-reference-header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; }
+.command-reference-layout { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: 1rem; align-items: start; }
+.command-reference-canvas { position: relative; isolation: isolate; display: flex; min-width: 0; min-height: 41rem; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: 1rem; background: var(--card); padding: clamp(1rem, 2.5vw, 2rem); }
+.command-reference-canvas::before { position: absolute; z-index: -1; inset: 0; content: ""; background: linear-gradient(90deg, rgb(8 8 8 / 94%), rgb(8 8 8 / 53%)), url("/images/execution-canvas.jpg") center / cover; }
+.command-canvas-heading { position: relative; z-index: 1; }
+.command-canvas-milestones { width: min(100%, 38rem); margin-top: auto; padding-top: 4rem; }
+.command-canvas-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.5rem; }
+.command-reference-panel, .command-reference-rail { background: var(--card); border: 1px solid var(--border); border-radius: .8rem; }
+.command-reference-panel { min-width: 0; padding: 1rem; }
+.command-reference-rail { min-width: 0; overflow: hidden; }
+.command-rail-focus, .command-rail-section { padding: 1.25rem; }
+.command-rail-focus { border-top: 2px solid var(--primary); }
+.command-rail-section { border-top: 1px solid var(--border); }
+.command-reference-projects, .command-reference-timeline { min-width: 0; border-top: 1px solid var(--border); padding-top: 1.25rem; }
+.command-reference-projects { grid-column: 1; }
+.command-reference-timeline { grid-column: 1; }
+.command-empty-stage { min-height: 24rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--card); padding: clamp(1.5rem, 5vw, 4rem); }
+@supports (backdrop-filter: blur(1px)) {
+  @media not (prefers-reduced-transparency: reduce) {
+    .command-reference-panel, .command-reference-rail { background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(16px); }
+  }
+}
+@media (max-width: 1023px) {
+  .command-reference-layout { grid-template-columns: minmax(0, 1fr); }
+  .command-reference-canvas { min-height: 30rem; }
+  .command-reference-projects, .command-reference-timeline { grid-column: auto; }
+}
+@media (max-width: 639px) {
+  .command-reference-canvas { min-height: 0; padding: 1rem; }
+  .command-canvas-milestones { padding-top: 1.5rem; }
+  .command-canvas-bottom { grid-template-columns: 1fr 1fr; }
+  .command-reference-panel { padding: .75rem; }
+}
+@media (min-width: 1024px) {
+  .command-reference-rail { grid-column: 2; grid-row: 1 / span 3; }
+}
+@media (max-width: 639px) {
+  .command-reference-layout { grid-template-areas: "heading" "focus" "milestones" "bottom" "overview" "activity" "projects" "timeline"; }
+  .command-reference-canvas, .command-reference-rail { display: contents; }
+  .command-reference-canvas::before { display: none; }
+  .command-canvas-heading { grid-area: heading; border-radius: .8rem; padding: 1rem; background: var(--card); }
+  .command-canvas-milestones { grid-area: milestones; margin: 0; padding: 1rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--card); }
+  .command-canvas-bottom { grid-area: bottom; margin: 0; }
+  .command-rail-focus { grid-area: focus; border: 1px solid var(--border); border-top: 2px solid var(--primary); border-radius: .8rem; background: var(--card); }
+  .command-rail-section[aria-labelledby="overview-heading"] { grid-area: overview; }
+  .command-rail-section[aria-labelledby="activity-heading"] { grid-area: activity; }
+  .command-rail-section { border: 1px solid var(--border); border-radius: .8rem; background: var(--card); }
+  .command-reference-projects { grid-area: projects; }
+  .command-reference-timeline { grid-area: timeline; }
+}
+@media (max-width: 430px) {
+  .command-canvas-bottom { grid-template-columns: minmax(0, 1fr); }
 }

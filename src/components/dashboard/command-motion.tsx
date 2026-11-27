@@ -11,7 +11,9 @@ export function CommandMotion({ children }: { children: React.ReactNode }) {
     () => {
       const media = gsap.matchMedia();
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.from("[data-command-progress]", {
+        const progressBars = scope.current?.querySelectorAll("[data-command-progress]");
+        if (!progressBars?.length) return;
+        gsap.from(progressBars, {
           scaleX: 0,
           transformOrigin: "left center",
           duration: 0.65,

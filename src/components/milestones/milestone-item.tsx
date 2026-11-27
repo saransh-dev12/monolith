@@ -113,7 +113,7 @@ export function MilestoneItem({
             ? `Mark ${milestone.title} incomplete`
             : `Mark ${milestone.title} complete`
         }
-        className="mt-0.5 shrink-0 rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+        className="-ml-2 -mt-2 inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
       >
         {pending ? (
           <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
@@ -138,14 +138,13 @@ export function MilestoneItem({
             {milestone.description}
           </p>
         ) : null}
+        {targetDate ? (
+          <span className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <CalendarDays className="size-3.5" aria-hidden="true" />
+            {targetDate}
+          </span>
+        ) : null}
       </div>
-
-      {targetDate ? (
-        <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
-          <CalendarDays className="size-3.5" aria-hidden="true" />
-          {targetDate}
-        </span>
-      ) : null}
 
       <div className="flex shrink-0 items-center gap-1">
         <MilestoneDialog
@@ -157,7 +156,7 @@ export function MilestoneItem({
               variant="ghost"
               size="icon"
               aria-label={`Edit ${milestone.title}`}
-              className="size-8 text-muted-foreground"
+              className="size-10 text-muted-foreground"
             >
               <Pencil className="size-3.5" aria-hidden="true" />
             </Button>
@@ -170,7 +169,7 @@ export function MilestoneItem({
               variant="ghost"
               size="icon"
               aria-label={`Delete ${milestone.title}`}
-              className="size-8 text-muted-foreground hover:text-destructive"
+              className="size-10 text-muted-foreground hover:text-destructive"
               disabled={deleting}
             >
               <Trash2 className="size-3.5" aria-hidden="true" />

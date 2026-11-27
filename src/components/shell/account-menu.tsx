@@ -26,9 +26,11 @@ import { deleteAccountAction, signOutAction } from "@/lib/auth/actions";
 export function AccountMenu({
   displayName,
   email,
+  compact = false,
 }: {
   displayName: string;
   email: string | null;
+  compact?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -39,23 +41,34 @@ export function AccountMenu({
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           data-testid="account-menu-trigger"
-          className="flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
+          className={
+            compact
+              ? "flex size-10 items-center justify-center rounded-xl border border-border/70 bg-card/75 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              : "flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
+          }
+          aria-label={compact ? `Account menu for ${displayName}` : undefined}
         >
           <span className="grid size-8 shrink-0 place-items-center rounded-md bg-foreground text-xs font-semibold text-background">
             {initial}
           </span>
-          <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-            <span className="block truncate text-sm font-medium">{displayName}</span>
-            {email ? (
-              <span className="block truncate text-xs text-muted-foreground">
-                {email}
+          {!compact && (
+            <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+              <span className="block truncate text-sm font-medium">
+                {displayName}
               </span>
-            ) : null}
-          </span>
-          <ChevronsUpDown
-            className="size-3.5 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden"
-            aria-hidden="true"
-          />
+              {email ? (
+                <span className="block truncate text-xs text-muted-foreground">
+                  {email}
+                </span>
+              ) : null}
+            </span>
+          )}
+          {!compact && (
+            <ChevronsUpDown
+              className="size-3.5 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden"
+              aria-hidden="true"
+            />
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>{email ?? displayName}</DropdownMenuLabel>
@@ -92,9 +105,11 @@ export function AccountMenu({
               <div className="space-y-2 text-sm leading-6 text-muted-foreground">
                 <p>
                   This permanently removes{" "}
-                  <span className="text-foreground">{email ?? displayName}</span> and
-                  every project, task, and milestone owned by it. The deletion is
-                  immediate and cannot be undone.
+                  <span className="text-foreground">
+                    {email ?? displayName}
+                  </span>{" "}
+                  and every project, task, and milestone owned by it. The
+                  deletion is immediate and cannot be undone.
                 </p>
                 <p>Export anything you want to keep before continuing.</p>
               </div>
@@ -113,7 +128,10 @@ export function AccountMenu({
               disabled={pending}
             >
               {pending ? (
-                <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+                <LoaderCircle
+                  className="size-4 animate-spin"
+                  aria-hidden="true"
+                />
               ) : (
                 <Trash2 className="size-4" aria-hidden="true" />
               )}

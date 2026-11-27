@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:31336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [webkit] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages (12.6s)
+
+  1 passed (14.2s)

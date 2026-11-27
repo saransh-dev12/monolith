@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:14897) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/board-status-consistency.spec.ts:84:5 › status selection after dragging updates the visible column and survives reload (2.5s)
+  ✓  2 [chromium] › tests/e2e/board-status-consistency.spec.ts:104:5 › both status controls are disabled while a drag update is pending (2.0s)
+  ✓  3 [chromium] › tests/e2e/board-status-consistency.spec.ts:130:5 › a failed status change restores the last successful position (2.1s)
+  ✓  4 [chromium] › tests/e2e/board-status-consistency.spec.ts:157:5 › failed move does not mask a later server update (1.4s)
+
+  4 passed (8.7s)

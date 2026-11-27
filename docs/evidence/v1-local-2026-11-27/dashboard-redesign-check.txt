@@ -1,0 +1,21 @@
+
+Running 14 tests using 1 worker
+
+(node:54153) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/accessibility.spec.ts:32:7 › accessibility (WCAG 2.2 AA) › landing page (3.7s)
+  ✓   2 [chromium] › tests/e2e/accessibility.spec.ts:41:7 › accessibility (WCAG 2.2 AA) › auth pages (2.7s)
+  ✓   3 [chromium] › tests/e2e/accessibility.spec.ts:52:7 › accessibility (WCAG 2.2 AA) › legal pages (2.6s)
+  ✓   4 [chromium] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages (8.6s)
+  ✓   5 [chromium] › tests/e2e/dashboard.spec.ts:4:5 › workspace navigation remains usable with reduced motion (3.1s)
+  ✓   6 [chromium] › tests/e2e/dashboard.spec.ts:32:5 › a new active project without milestones remains useful (1.3s)
+  ✓   7 [chromium] › tests/e2e/dashboard.spec.ts:88:5 › milestone selection shows the selected project milestone (1.6s)
+  ✓   8 [chromium] › tests/e2e/dashboard.spec.ts:178:5 › workspace buttons show Skiper feedback and respect reduced motion (2.3s)
+  ✓   9 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route / has no horizontal overflow (6.6s)
+  ✓  10 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /login has no horizontal overflow (5.9s)
+  ✓  11 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /signup has no horizontal overflow (5.9s)
+  ✓  12 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /privacy has no horizontal overflow (5.7s)
+  ✓  13 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /terms has no horizontal overflow (5.8s)
+  ✓  14 [chromium] › tests/e2e/responsive.spec.ts:58:7 › responsive layout sweep › workspace routes have no horizontal overflow (32.8s)
+
+  14 passed (1.5m)

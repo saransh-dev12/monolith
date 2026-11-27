@@ -1,0 +1,139 @@
+
+Running 16 tests using 1 worker
+
+(node:9303) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/accessibility.spec.ts:32:7 › accessibility (WCAG 2.2 AA) › landing page (3.5s)
+  ✓   2 [chromium] › tests/e2e/accessibility.spec.ts:41:7 › accessibility (WCAG 2.2 AA) › auth pages (2.7s)
+  ✓   3 [chromium] › tests/e2e/accessibility.spec.ts:52:7 › accessibility (WCAG 2.2 AA) › legal pages (2.6s)
+  ✓   4 [chromium] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages (8.5s)
+  ✓   5 [chromium] › tests/e2e/dashboard.spec.ts:4:5 › workspace navigation remains usable with reduced motion (3.1s)
+  ✘   6 [chromium] › tests/e2e/dashboard.spec.ts:32:5 › a new active project without milestones remains useful (1.5s)
+(node:9724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [chromium] › tests/e2e/dashboard.spec.ts:88:5 › milestone selection shows the selected project milestone (2.0s)
+  ✓   8 [chromium] › tests/e2e/dashboard.spec.ts:178:5 › workspace buttons show Skiper feedback and respect reduced motion (2.2s)
+  ✘   9 [chromium] › tests/e2e/execution-canvas.spec.ts:25:5 › execution canvas follows the selected project's real milestones and progress (1.3s)
+(node:9822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [chromium] › tests/e2e/execution-canvas.spec.ts:78:5 › a new account has an honest empty workspace and a project creation action (45.6s)
+
+
+  1) [chromium] › tests/e2e/dashboard.spec.ts:32:5 › a new active project without milestones remains useful
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Project in focus' }).getByRole('link', { name: 'Dashboard fixture 1795808351681' })
+    Expected: visible
+    Error: strict mode violation: getByRole('region', { name: 'Project in focus' }).getByRole('link', { name: 'Dashboard fixture 1795808351681' }) resolved to 4 elements:
+        1) <a href="/app/projects/8bc7cedb-37ec-492a-960e-d7525b20cc45" class="transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">Dashboard fixture 1795808351681</a> aka getByRole('link', { name: 'Dashboard fixture 1795808351681', exact: true })
+        2) <a href="/app/projects/8bc7cedb-37ec-492a-960e-d7525b20cc45" class="flex min-h-12 items-start gap-3 py-3 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">…</a> aka getByRole('link', { name: 'Dashboard fixture overdue task Dashboard fixture 1795808351681 · To do just now' })
+        3) <a aria-current="page" href="/app?project=8bc7cedb-37ec-492a-960e-d7525b20cc45" class="min-w-[13rem] shrink-0 rounded-lg border p-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary border-primary/60 bg-primary/10">…</a> aka getByRole('link', { name: 'Dashboard fixture 1795808351681 0% 1 open task' })
+        4) <a href="/app/projects/8bc7cedb-37ec-492a-960e-d7525b20cc45" class="grid gap-1 py-3 text-sm hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:items-center">…</a> aka getByRole('link', { name: 'Jan 1 Dashboard fixture' })
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Project in focus' }).getByRole('link', { name: 'Dashboard fixture 1795808351681' }) with timeout 10000ms
+      - waiting for getByRole('region', { name: 'Project in focus' }).getByRole('link', { name: 'Dashboard fixture 1795808351681' })
+
+
+      66 |     await page.waitForURL("**/app");
+      67 |     const section = page.getByRole("region", { name: "Project in focus" });
+    > 68 |     await expect(section.getByRole("link", { name })).toBeVisible();
+         |                                                       ^
+      69 |     const focusTitle = page.getByRole("heading", { name: "Dashboard fixture overdue task" });
+      70 |     await expect(focusTitle).toBeVisible();
+      71 |     const focusBounds = await focusTitle.boundingBox();
+        at /Users/saranshpandey/.t3/projects/monolith/monolith-app/tests/e2e/dashboard.spec.ts:68:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-test/dashboard-a-new-active-pro-8e946-t-milestones-remains-useful-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../../tmp/monolith-reference-test/dashboard-a-new-active-pro-8e946-t-milestones-remains-useful-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-test/dashboard-a-new-active-pro-8e946-t-milestones-remains-useful-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../../tmp/monolith-reference-test/dashboard-a-new-active-pro-8e946-t-milestones-remains-useful-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/execution-canvas.spec.ts:25:5 › execution canvas follows the selected project's real milestones and progress
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Project execution canvas' }).getByText('Canvas milestone aab8a4d7-7dbd-4c34-b0c5-9a26b65e0111', { exact: true })
+    Expected: visible
+    Error: strict mode violation: getByRole('region', { name: 'Project execution canvas' }).getByText('Canvas milestone aab8a4d7-7dbd-4c34-b0c5-9a26b65e0111', { exact: true }) resolved to 2 elements:
+        1) <span class="mt-2 block break-words text-sm font-medium leading-5 text-foreground">Canvas milestone aab8a4d7-7dbd-4c34-b0c5-9a26b65e…</span> aka getByRole('button', { name: 'Jan 1 Canvas milestone' })
+        2) <span class="text-foreground">Canvas milestone aab8a4d7-7dbd-4c34-b0c5-9a26b65e…</span> aka getByText('Canvas milestone aab8a4d7-').nth(1)
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Project execution canvas' }).getByText('Canvas milestone aab8a4d7-7dbd-4c34-b0c5-9a26b65e0111', { exact: true }) with timeout 10000ms
+      - waiting for getByRole('region', { name: 'Project execution canvas' }).getByText('Canvas milestone aab8a4d7-7dbd-4c34-b0c5-9a26b65e0111', { exact: true })
+
+
+      57 |     await expect(canvas).toBeVisible();
+      58 |     await expect(canvas.getByText(firstName, { exact: true })).toBeVisible();
+    > 59 |     await expect(canvas.getByText(milestoneName, { exact: true })).toBeVisible();
+         |                                                                    ^
+      60 |     // One completed task and one completed milestone out of four total items.
+      61 |     await expect(canvas.getByText("50%", { exact: true }).first()).toBeVisible();
+      62 |     const projectNav = page.getByRole("navigation", { name: "Choose an active project" });
+        at /Users/saranshpandey/.t3/projects/monolith/monolith-app/tests/e2e/execution-canvas.spec.ts:59:68
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-test/execution-canvas-execution-561a8-eal-milestones-and-progress-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../../tmp/monolith-reference-test/execution-canvas-execution-561a8-eal-milestones-and-progress-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-test/execution-canvas-execution-561a8-eal-milestones-and-progress-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../../tmp/monolith-reference-test/execution-canvas-execution-561a8-eal-milestones-and-progress-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/e2e/execution-canvas.spec.ts:78:5 › a new account has an honest empty workspace and a project creation action
+
+    Test was interrupted.
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/login?deleted=1" until "load"
+      navigated to "http://localhost:3107/app?accountDeleteFailed=1"
+    ============================================================
+
+      100 |       await expect(dialog.getByText(email, { exact: false })).toBeVisible();
+      101 |       await dialog.getByRole("button", { name: "Delete forever" }).click();
+    > 102 |       await page.waitForURL("**/login?deleted=1");
+          |                  ^
+      103 |     }
+      104 |   }
+      105 | });
+        at /Users/saranshpandey/.t3/projects/monolith/monolith-app/tests/e2e/execution-canvas.spec.ts:102:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-test/execution-canvas-a-new-acc-1103d-d-a-project-creation-action-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../../tmp/monolith-reference-test/execution-canvas-a-new-acc-1103d-d-a-project-creation-action-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-test/execution-canvas-a-new-acc-1103d-d-a-project-creation-action-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../../tmp/monolith-reference-test/execution-canvas-a-new-acc-1103d-d-a-project-creation-action-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/e2e/dashboard.spec.ts:32:5 › a new active project without milestones remains useful
+    [chromium] › tests/e2e/execution-canvas.spec.ts:25:5 › execution canvas follows the selected project's real milestones and progress
+  1 interrupted
+    [chromium] › tests/e2e/execution-canvas.spec.ts:78:5 › a new account has an honest empty workspace and a project creation action
+  6 did not run
+  7 passed (1.2m)

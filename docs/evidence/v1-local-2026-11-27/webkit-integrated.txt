@@ -1,0 +1,14 @@
+
+Running 7 tests using 1 worker
+
+(node:41982) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [webkit] › tests/e2e/accessibility.spec.ts:32:7 › accessibility (WCAG 2.2 AA) › landing page (2.6s)
+  ✓  2 [webkit] › tests/e2e/accessibility.spec.ts:41:7 › accessibility (WCAG 2.2 AA) › auth pages (3.1s)
+  ✓  3 [webkit] › tests/e2e/accessibility.spec.ts:52:7 › accessibility (WCAG 2.2 AA) › legal pages (3.0s)
+  ✓  4 [webkit] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages (9.0s)
+  ✓  5 [webkit] › tests/e2e/auth-dialog.spec.ts:4:5 › landing authentication dialog supports switching, keyboard and focus return (2.2s)
+  ✓  6 [webkit] › tests/e2e/auth-dialog.spec.ts:25:5 › sign-in dialog fits a mobile screen and retains direct auth routes (1.0s)
+  ✓  7 [webkit] › tests/e2e/keyboard-accessibility.spec.ts:13:5 › keyboard sign-in and workspace navigation show visible focus (2.1s)
+
+  7 passed (24.2s)

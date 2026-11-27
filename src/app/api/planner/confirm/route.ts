@@ -8,7 +8,7 @@ import {
 } from "@/lib/api/http";
 import { requireApiUser } from "@/lib/auth/session";
 import { saveReviewedPlan } from "@/lib/data/planner";
-import { plannerPreviewSchema } from "@/lib/validation/schemas";
+import { plannerConfirmationSchema } from "@/lib/validation/schemas";
 
 export async function POST(request: NextRequest) {
   if (!hasValidOrigin(request)) {
@@ -25,14 +25,29 @@ export async function POST(request: NextRequest) {
     return jsonError(400, "Send a valid JSON body.");
   }
 
-  const parsed = plannerPreviewSchema.safeParse(body);
+  const parsed = plannerConfirmationSchema.safeParse(body);
   if (!parsed.success) {
     return validationError(parsed.error);
   }
 
-  const { data, error } = await saveReviewedPlan(parsed.data);
+  const { data, error } = await saveReviewedPlan(
+    parsed.data,
+    parsed.data.confirmationId,
+  );
 
   if (error) {
+    if (error.code === "P0003") {
+      return jsonError(
+        409,
+        "This confirmation was already used for a different plan.",
+      );
+    }
+    if (error.code === "P0002") {
+      return jsonError(
+        410,
+        "The project created by this confirmation was deleted.",
+      );
+    }
     if (
       error.code === "P0001" ||
       error.code === "22023" ||

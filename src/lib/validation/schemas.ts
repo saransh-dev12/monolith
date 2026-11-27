@@ -5,7 +5,9 @@ const isoDate = z
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Use a YYYY-MM-DD date.")
   .refine((value) => {
     const date = new Date(`${value}T00:00:00Z`);
-    return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value);
+    return (
+      !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value)
+    );
   }, "Enter a valid calendar date.");
 
 const nullableDate = z.preprocess(
@@ -34,7 +36,9 @@ export const projectCreateSchema = z
   })
   .refine(
     (value) =>
-      !value.startDate || !value.targetDate || value.targetDate >= value.startDate,
+      !value.startDate ||
+      !value.targetDate ||
+      value.targetDate >= value.startDate,
     {
       message: "Target date must be on or after the start date.",
       path: ["targetDate"],
@@ -51,7 +55,9 @@ export const projectUpdateSchema = z
   })
   .refine(
     (value) =>
-      !value.startDate || !value.targetDate || value.targetDate >= value.startDate,
+      !value.startDate ||
+      !value.targetDate ||
+      value.targetDate >= value.startDate,
     {
       message: "Target date must be on or after the start date.",
       path: ["targetDate"],
@@ -94,7 +100,12 @@ export const milestoneCreateSchema = z.object({
 });
 
 export const milestoneUpdateSchema = z.object({
-  title: z.string().trim().min(1, "Enter a milestone title.").max(160).optional(),
+  title: z
+    .string()
+    .trim()
+    .min(1, "Enter a milestone title.")
+    .max(160)
+    .optional(),
   description: nullableText(2000).optional(),
   targetDate: nullableDate.optional(),
   completed: z.boolean().optional(),
@@ -142,6 +153,11 @@ export const plannerPreviewSchema = z.object({
     .array(plannerTaskSchema)
     .min(1, "Add at least one task before saving.")
     .max(40),
+});
+
+// Older clients may still submit the original unkeyed preview during rollout.
+export const plannerConfirmationSchema = plannerPreviewSchema.extend({
+  confirmationId: z.uuid().optional(),
 });
 
 export type PlannerInput = z.infer<typeof plannerInputSchema>;

@@ -12,17 +12,17 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
   return (
     <Link
       href={`/app/projects/${project.id}`}
-      className="group glass-card relative flex flex-col overflow-hidden rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 hover:border-chart-2/30 hover:shadow-[0_28px_56px_-32px_rgba(0,0,0,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group command-glass relative flex flex-col overflow-hidden rounded-2xl p-5 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/40 motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="flex items-start justify-between gap-3">
-        <h2 className="font-brand text-xl font-semibold leading-tight tracking-[-0.02em] transition-colors group-hover:text-primary">
+        <h2 className="font-brand text-lg font-semibold leading-tight tracking-[-0.02em] transition-colors group-hover:text-primary">
           {project.name}
         </h2>
         <ProjectStatusBadge status={project.status} />
       </div>
 
       <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-5 text-muted-foreground">
-        {project.description ?? "No description yet."}
+        {project.description ?? "Add an objective for this project."}
       </p>
 
       <div className="mt-5 space-y-2">
@@ -33,7 +33,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
         <Progress
           value={project.progress.percent}
           aria-label={`${project.name} progress`}
-          className="[&>[data-slot=progress-indicator]]:bg-primary"
+          className="h-1.5 [&>[data-slot=progress-indicator]]:bg-primary"
         />
       </div>
 
