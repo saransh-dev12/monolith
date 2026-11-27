@@ -4,6 +4,8 @@
 
 **Live:** [monolith-navy.vercel.app](https://monolith-navy.vercel.app) · **Status:** V1 verification in progress. The live site may run an earlier commit; the current working tree has not been released or production-verified.
 
+> **AI planner status:** the planner is built and tested, but it is **not enabled on the live deployment** (no model API key is configured there), so the live site shows it as unconfigured. Everything else runs.
+
 ## Features
 
 - **Auth** — email/password, cookie sessions, protected routes, account deletion with full data cascade
