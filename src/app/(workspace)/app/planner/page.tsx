@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function PlannerPage() {
-  await requireUser();
+  const user = await requireUser();
   const quota = await getPlannerUsage();
   const configured = isPlannerConfigured();
 
@@ -19,7 +19,7 @@ export default async function PlannerPage() {
         title="Planner"
         description="Start with an idea. Review the draft, edit it, and confirm only when the plan is worth keeping."
       />
-      <PlannerWorkspace configured={configured} initialQuota={quota} />
+      <PlannerWorkspace key={user.id} configured={configured} initialQuota={quota} userId={user.id} />
     </>
   );
 }

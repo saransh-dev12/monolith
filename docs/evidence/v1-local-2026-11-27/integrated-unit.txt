@@ -1,0 +1,12 @@
+
+> monolith@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/saranshpandey/.t3/projects/monolith/monolith-app
+
+
+ Test Files  11 passed (11)
+      Tests  52 passed (52)
+   Start at  21:41:25
+   Duration  448ms (import 69%, tests 16%, transform 11%, worker 4%)

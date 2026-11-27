@@ -1,3 +1,5 @@
+> **Current V1 execution baseline — 2026-11-27:** The tables below are historical, not verification of the current uncommitted tree or a release candidate. Current status: IN PROGRESS / release NOT YET ASSESSED. See [current backlog](V1_ENGINEERING_BACKLOG.md), [evidence register](V1_EVIDENCE_REGISTER.md), and [release blockers](v1-release-readiness.md). Historical claims below must be revalidated before sign-off.
+
 # v1.0 execution progress
 
 Living tracker for the v1.0 release directive. Status vocabulary:

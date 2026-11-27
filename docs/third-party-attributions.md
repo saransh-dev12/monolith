@@ -37,3 +37,13 @@ SOFTWARE.
 ## Skiper UI animated arrow
 
 The dashboard project action adapts the ArrowIcon from [Skiper99](https://skiper-ui.com/registry/skiper99.json), by Skiper UI. Skiper UI's free components require attribution; see its [license and usage notes](https://www.skiper-ui.com/docs/quick-start).
+
+Workspace buttons adapt the horizontal fill from [Skiper40](https://skiper-ui.com/registry/skiper40.json), by Skiper UI. The interaction has been adjusted for keyboard focus, disabled controls, dialogs, and reduced motion.
+
+## Glassmorphism Admin Panel UI
+
+The workspace's top navigation and layered glass surfaces were visually informed by [nesdesignco/Glassmorphism-Admin-Panel-UI](https://github.com/nesdesignco/Glassmorphism-Admin-Panel-UI). No source code or sample data from that repository was copied.
+
+## Execution canvas artwork
+
+The workspace background `public/images/execution-canvas.jpg` is AI-generated atmospheric artwork. It is decorative and does not represent a project, map, or stored project data.

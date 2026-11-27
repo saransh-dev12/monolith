@@ -1,0 +1,18 @@
+
+> monolith@0.1.0 test:db
+> supabase test db
+
+Connecting to local database...
+psql:/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/dashboard.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/dashboard.test.sql ............ ok
+psql:/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/planner.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/planner.test.sql .............. ok
+psql:/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/planner_idempotency.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/planner_idempotency.test.sql .. ok
+psql:/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/rls.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/Users/saranshpandey/.t3/projects/monolith/monolith-app/supabase/tests/rls.test.sql .................. ok
+All tests successful.
+Files=4, Tests=63,  0 wallclock secs ( 0.03 usr  0.01 sys +  0.03 cusr  0.02 csys =  0.09 CPU)
+Result: PASS
+A new version of Supabase CLI is available: v3.4.0 (currently installed v2.121.0)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli

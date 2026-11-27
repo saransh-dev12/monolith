@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import {
@@ -35,6 +35,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/client/api";
 import { addDaysIso, todayIsoDate } from "@/lib/format";
+import { plannerConfirmationSchema } from "@/lib/validation/schemas";
 import type {
   PlannerMilestone,
   PlannerPreview,
@@ -75,23 +76,57 @@ function newTask(): PlannerTask {
 export function PlannerWorkspace({
   configured,
   initialQuota,
+  userId,
 }: {
   configured: boolean;
   initialQuota: Quota;
+  userId: string;
 }) {
   const [plan, setPlan] = useState<PlannerPreview | null>(null);
   const reduce = useReducedMotion();
   const [quota, setQuota] = useState<Quota>(initialQuota);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const saveInFlight = useRef(false);
+  const mounted = useRef(false);
+  const confirmation = useRef<{ payload: string; id: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [recovered, setRecovered] = useState(false);
   const router = useRouter();
+  const storageKey = `monolith:planner-confirmation:${userId}`;
 
-  const generationDisabled =
-    !configured || quota.remaining < 1 || generating;
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+
+  // Only explicitly submitted drafts are kept, scoped to this user and tab.
+  // They can be retried after a lost response or reload without another project.
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem(storageKey);
+      if (!stored) return;
+      const parsed = plannerConfirmationSchema.safeParse(JSON.parse(stored));
+      if (!parsed.success || !parsed.data.confirmationId) {
+        sessionStorage.removeItem(storageKey);
+        return;
+      }
+      const { confirmationId, ...draft } = parsed.data;
+      confirmation.current = { payload: JSON.stringify(draft), id: confirmationId };
+      // This client-only restore occurs after hydration; no request is sent.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPlan(draft);
+      setRecovered(true);
+    } catch {
+      // Unavailable or invalid browser storage must not block reading the page.
+    }
+  }, [storageKey]);
+
+  const generationDisabled = !configured || quota.remaining < 1 || generating || saving || recovered;
 
   async function handleGenerate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (generationDisabled || confirmation.current) return;
     const formData = new FormData(event.currentTarget);
     const body = {
       idea: String(formData.get("idea") ?? ""),
@@ -122,26 +157,56 @@ export function PlannerWorkspace({
   }
 
   async function handleSave() {
-    if (!plan) {
+    if (!plan || generating || saveInFlight.current) {
       return;
     }
 
+    const payload = JSON.stringify(plan);
+    if (confirmation.current && confirmation.current.payload !== payload) {
+      setError("An earlier confirmation may have saved. Restore the submitted draft and retry it before saving changes.");
+      return;
+    }
+    if (!confirmation.current) {
+      confirmation.current = { payload, id: crypto.randomUUID() };
+    }
+    const submittedId = confirmation.current.id;
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify({ ...plan, confirmationId: submittedId }));
+    } catch {
+      setError("This browser could not keep retry information. Enable session storage to save the plan safely.");
+      return;
+    }
+    saveInFlight.current = true;
+    setRecovered(true);
     setError(null);
     setSaving(true);
 
     const result = await apiRequest<{ projectId: string }>(
       "/api/planner/confirm",
       "POST",
-      plan,
+      { ...plan, confirmationId: submittedId },
     );
 
+    saveInFlight.current = false;
+    // A successful response or a definite validation failure can be retired even
+    // if the user navigated away while the request was in flight. Ambiguous
+    // failures keep the stored request so that a later retry uses the same key.
+    const definiteValidationFailure = !result.ok && (result.status === 400 || result.status === 422);
+    if (result.ok || definiteValidationFailure) {
+      try {
+        const stored = sessionStorage.getItem(storageKey);
+        const record = stored ? JSON.parse(stored) as { confirmationId?: unknown } : null;
+        if (record?.confirmationId === submittedId) sessionStorage.removeItem(storageKey);
+      } catch { /* Storage can be disabled. */ }
+      if (confirmation.current?.id === submittedId) confirmation.current = null;
+    }
+    if (!mounted.current) return;
     setSaving(false);
-
     if (!result.ok) {
+      if (definiteValidationFailure) setRecovered(false);
       setError(result.message);
       return;
     }
-
     toast.success("Plan saved as a project.");
     router.push(`/app/projects/${result.data.projectId}`);
   }
@@ -169,16 +234,19 @@ export function PlannerWorkspace({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       {!configured ? (
         <div
           role="status"
-          className="flex gap-3 rounded-2xl border border-primary/30 bg-primary/8 p-4 text-sm"
+          className="flex gap-3 rounded-2xl border border-primary/25 bg-card/80 p-4 text-sm"
         >
-          <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <AlertTriangle
+            className="mt-0.5 size-4 shrink-0"
+            aria-hidden="true"
+          />
           <div className="space-y-1">
             <p className="font-medium">AI planning is not configured</p>
-            <p className="text-primary/80">
+            <p className="text-primary">
               Add <code className="font-mono text-xs">OPENAI_API_KEY</code> and{" "}
               <code className="font-mono text-xs">OPENAI_MODEL</code> on the
               server to enable generation. The rest of Monolith works without
@@ -188,7 +256,7 @@ export function PlannerWorkspace({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card/40 px-4 py-3 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card/70 px-5 py-3.5 text-sm">
         <p className="text-muted-foreground">
           {quota.remaining > 0 ? (
             <>
@@ -209,14 +277,16 @@ export function PlannerWorkspace({
       {!plan ? (
         <form
           onSubmit={handleGenerate}
-          className="space-y-6 rounded-2xl border border-border/60 bg-card/40 p-5 sm:p-6"
+          className="space-y-6 rounded-[1.25rem] border border-border/70 bg-card/80 p-5 sm:p-7"
         >
           <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-primary/30 bg-primary/12 text-primary">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-border/70 bg-background/60 text-primary">
               <WandSparkles className="size-4" aria-hidden="true" />
             </span>
             <div>
-              <h2 className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">Describe the idea</h2>
+              <h2 className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
+                Describe the idea
+              </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 A little context produces a more useful draft. You will review
                 every item before it can become a project.
@@ -293,7 +363,9 @@ export function PlannerWorkspace({
               type="submit"
               disabled={generationDisabled}
               title={
-                !configured
+                recovered
+                  ? "Resolve or discard the submitted draft first."
+                  : !configured
                   ? "Configure the OpenAI environment variables first."
                   : quota.remaining < 1
                     ? "Daily limit reached."
@@ -336,19 +408,25 @@ export function PlannerWorkspace({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-primary/25 bg-primary/8 px-4 py-3">
+          <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-border/70 bg-card/80 px-5 py-4">
             <div>
-              <p className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">Draft plan · not saved</p>
+              <p className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
+                {recovered ? "Submitted draft · save status unknown" : "Draft plan · not saved"}
+              </p>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Edit anything below. Only the final confirmation writes to the
-                database.
+                {recovered ? "Retry the original confirmation to find out whether it was saved." : "Edit anything below. Only the final confirmation writes to the database."}
               </p>
             </div>
             <Button
               type="button"
               variant="ghost"
               size="sm"
+              disabled={saving}
               onClick={() => {
+                if (confirmation.current && !window.confirm("This confirmation may have created a project. Check your projects before starting over to avoid duplicates. Discard this retry?")) return;
+                try { sessionStorage.removeItem(storageKey); } catch { /* Ignore unavailable storage. */ }
+                confirmation.current = null;
+                setRecovered(false);
                 setPlan(null);
                 setError(null);
               }}
@@ -357,11 +435,32 @@ export function PlannerWorkspace({
             </Button>
           </div>
 
-          <section aria-labelledby="draft-project-heading" className="space-y-4">
-            <h2 id="draft-project-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
+          {recovered && (
+            <Button type="button" variant="outline" onClick={() => {
+              try {
+                const stored = sessionStorage.getItem(storageKey);
+                const parsed = plannerConfirmationSchema.safeParse(stored ? JSON.parse(stored) : null);
+                if (parsed.success && parsed.data.confirmationId) {
+                  const { confirmationId: _id, ...draft } = parsed.data;
+                  void _id;
+                  setPlan(draft);
+                  setRecovered(true);
+                  setError(null);
+                }
+              } catch { setError("Could not restore the submitted draft from this tab."); }
+            }}>Restore submitted draft</Button>
+          )}
+          <section
+            aria-labelledby="draft-project-heading"
+            className="space-y-4"
+          >
+            <h2
+              id="draft-project-heading"
+              className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl"
+            >
               Project
             </h2>
-            <div className="grid gap-4 rounded-2xl border border-border/60 bg-card/30 p-5 sm:grid-cols-2">
+            <div className="grid gap-4 rounded-2xl border border-border/70 bg-card/70 p-5 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="draft-name">Name</Label>
                 <Input
@@ -397,10 +496,16 @@ export function PlannerWorkspace({
             </div>
           </section>
 
-          <section aria-labelledby="draft-milestones-heading" className="space-y-3">
+          <section
+            aria-labelledby="draft-milestones-heading"
+            className="space-y-3"
+          >
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="draft-milestones-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
+                <h2
+                  id="draft-milestones-heading"
+                  className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl"
+                >
                   Milestones
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -432,7 +537,7 @@ export function PlannerWorkspace({
                 {plan.milestones.map((milestone, index) => (
                   <li
                     key={index}
-                    className="rounded-xl border border-border/60 bg-card/30 p-4"
+                    className="rounded-xl border border-border/70 bg-card/70 p-4"
                   >
                     <div className="grid gap-3 sm:grid-cols-[1fr_10rem]">
                       <div className="space-y-2">
@@ -444,12 +549,16 @@ export function PlannerWorkspace({
                           value={milestone.title}
                           maxLength={160}
                           onChange={(event) =>
-                            updateMilestone(index, { title: event.target.value })
+                            updateMilestone(index, {
+                              title: event.target.value,
+                            })
                           }
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor={`milestone-date-${index}`}>Target</Label>
+                        <Label htmlFor={`milestone-date-${index}`}>
+                          Target
+                        </Label>
                         <Input
                           id={`milestone-date-${index}`}
                           type="date"
@@ -504,7 +613,10 @@ export function PlannerWorkspace({
           <section aria-labelledby="draft-tasks-heading" className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="draft-tasks-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
+                <h2
+                  id="draft-tasks-heading"
+                  className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl"
+                >
                   Tasks
                 </h2>
                 <p className="text-xs text-muted-foreground">
@@ -531,7 +643,7 @@ export function PlannerWorkspace({
               {plan.tasks.map((task, index) => (
                 <li
                   key={index}
-                  className="rounded-xl border border-border/60 bg-card/30 p-4"
+                  className="rounded-xl border border-border/70 bg-card/70 p-4"
                 >
                   <div className="grid gap-3 sm:grid-cols-[1fr_8rem_10rem]">
                     <div className="space-y-2">
@@ -554,7 +666,8 @@ export function PlannerWorkspace({
                         value={task.priority}
                         onChange={(event) =>
                           updateTask(index, {
-                            priority: event.target.value as PlannerTask["priority"],
+                            priority: event.target
+                              .value as PlannerTask["priority"],
                           })
                         }
                         className={selectClasses}
@@ -631,9 +744,11 @@ export function PlannerWorkspace({
             </div>
           ) : null}
 
-          <div className="flex flex-col gap-3 rounded-2xl border border-chart-3/25 bg-chart-3/10 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-card/80 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">Ready to save?</p>
+              <p className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
+                Ready to save?
+              </p>
               <p className="text-xs text-muted-foreground">
                 {plan.milestones.length} milestones · {plan.tasks.length} tasks
                 · saved in one transaction
@@ -641,7 +756,11 @@ export function PlannerWorkspace({
             </div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button type="button" disabled={saving} className="rounded-full">
+                <Button
+                  type="button"
+                  disabled={saving || generating}
+                  className="rounded-full"
+                >
                   {saving ? (
                     <LoaderCircle
                       className="size-4 animate-spin"
@@ -655,21 +774,26 @@ export function PlannerWorkspace({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="font-sans text-lg font-semibold">Create this project now?</AlertDialogTitle>
+                  <AlertDialogTitle className="font-sans text-lg font-semibold">
+                    Create this project now?
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
-                    This writes the project, {plan.milestones.length} milestones,
-                    and {plan.tasks.length} tasks to your workspace. If any
-                    insert fails, nothing is saved.
+                    This writes the project, {plan.milestones.length}{" "}
+                    milestones, and {plan.tasks.length} tasks to your workspace.
+                    If any insert fails, nothing is saved.
                   </AlertDialogDescription>
+                  {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel disabled={saving}>Keep editing</AlertDialogCancel>
+                  <AlertDialogCancel disabled={saving}>
+                    Keep editing
+                  </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={(event) => {
                       event.preventDefault();
                       void handleSave();
                     }}
-                    disabled={saving}
+                    disabled={saving || generating}
                   >
                     {saving ? (
                       <LoaderCircle

@@ -44,9 +44,9 @@ export async function getPlannerUsage(): Promise<PlannerUsage> {
   };
 }
 
-export async function reservePlannerGeneration(userId: string): Promise<
-  PlannerUsage & { allowed: boolean; reservationDate: string }
-> {
+export async function reservePlannerGeneration(
+  userId: string,
+): Promise<PlannerUsage & { allowed: boolean; reservationDate: string }> {
   const supabase = createQuotaClient();
   const limit = getPlannerDailyLimit();
 
@@ -74,9 +74,15 @@ export async function reservePlannerGeneration(userId: string): Promise<
   };
 }
 
-export async function releasePlannerGeneration(userId: string, reservationDate: string): Promise<void> {
+export async function releasePlannerGeneration(
+  userId: string,
+  reservationDate: string,
+): Promise<void> {
   const supabase = createQuotaClient();
-  const { error } = await supabase.rpc("release_planner_generation", { p_user_id: userId, p_reservation_date: reservationDate });
+  const { error } = await supabase.rpc("release_planner_generation", {
+    p_user_id: userId,
+    p_reservation_date: reservationDate,
+  });
 
   if (error) {
     console.error("Could not release planner quota", {
@@ -86,10 +92,13 @@ export async function releasePlannerGeneration(userId: string, reservationDate: 
   }
 }
 
-export async function saveReviewedPlan(plan: PlannerPreview) {
+export async function saveReviewedPlan(
+  plan: PlannerPreview,
+  confirmationId?: string,
+) {
   const supabase = await createClient();
 
-  return supabase.rpc("create_project_plan", {
+  const args = {
     p_name: plan.project.name,
     p_description: plan.project.description,
     p_milestones: plan.milestones.map((milestone) => ({
@@ -104,5 +113,11 @@ export async function saveReviewedPlan(plan: PlannerPreview) {
       priority: task.priority,
       due_date: task.dueDate,
     })),
-  });
+  };
+  return confirmationId
+    ? supabase.rpc("create_project_plan_idempotent", {
+        ...args,
+        p_confirmation_id: confirmationId,
+      })
+    : supabase.rpc("create_project_plan", args);
 }

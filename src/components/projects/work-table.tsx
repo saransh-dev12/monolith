@@ -69,7 +69,7 @@ export function WorkTable({
 
   return (
     <section aria-labelledby="work-table-heading" className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="command-glass grid grid-cols-2 gap-px overflow-hidden rounded-2xl lg:grid-cols-4">
         {[
           ["Total tasks", String(stats.total)],
           ["Open", String(stats.open)],
@@ -78,23 +78,23 @@ export function WorkTable({
         ].map(([label, value]) => (
           <div
             key={label}
-            className="glass-card rounded-2xl px-4 py-3"
+            className="border-b border-border/50 px-4 py-4 lg:border-b-0 lg:border-r lg:last:border-r-0"
           >
             <p className="eyebrow text-muted-foreground">
               {label}
             </p>
-            <p className="mt-1 font-brand text-2xl font-bold leading-none tabular-nums tracking-[-0.02em]">
+            <p className="mt-1 font-brand text-2xl font-semibold leading-none tabular-nums tracking-[-0.02em]">
               {value}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="glass-card overflow-hidden rounded-2xl">
+      <div className="command-glass overflow-hidden rounded-2xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
           <h2 id="work-table-heading" className="font-brand text-xl font-semibold leading-none tracking-[-0.02em] sm:text-2xl">
             Work items
-            <span className="ml-2 num text-[10px] text-muted-foreground">
+            <span className="ml-2 text-xs tabular-nums text-muted-foreground">
               {visible.length} of {tasks.length}
             </span>
           </h2>
@@ -114,7 +114,7 @@ export function WorkTable({
                   className={cn(
                     "relative rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors",
                     selected
-                      ? "text-primary-foreground"
+                      ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
@@ -126,7 +126,7 @@ export function WorkTable({
                         stiffness: 500,
                         damping: 36,
                       }}
-                      className="absolute inset-0 rounded-full bg-primary shadow-sm"
+                      className="absolute inset-0 rounded-full bg-primary"
                       aria-hidden="true"
                     />
                   ) : null}
@@ -137,7 +137,7 @@ export function WorkTable({
           </div>
         </div>
 
-        <div className="hidden grid-cols-[1fr_8rem_10rem_9rem_7rem] gap-3 border-b border-border/60 px-4 py-2 eyebrow text-muted-foreground lg:grid">
+        <div className="hidden grid-cols-[1fr_8rem_10rem_9rem_7rem] gap-3 border-b border-border/60 px-4 py-2 text-xs text-muted-foreground lg:grid">
           <span>Task</span>
           <span>Priority</span>
           <span>Due proximity</span>
@@ -183,7 +183,7 @@ export function WorkTable({
                     >
                       {task.title}
                     </p>
-                    <p className="mt-0.5 flex items-center gap-1 num text-[10px] text-muted-foreground">
+                    <p className="mt-0.5 flex items-center gap-1 text-xs tabular-nums text-muted-foreground">
                       <CalendarDays className="size-3" aria-hidden="true" />
                       {due ?? "No date"}
                       {overdue ? (

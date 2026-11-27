@@ -1,0 +1,53 @@
+
+> monolith@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 47ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1346ms
+  Running TypeScript ...
+  Finished TypeScript in 2.8s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/22) ...
+  Generating static pages using 9 workers (5/22)
+  Generating static pages using 9 workers (10/22)
+  Generating static pages using 9 workers (16/22)
+✓ Generating static pages using 9 workers (22/22) in 258ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/health
+├ ƒ /api/milestones
+├ ƒ /api/milestones/[milestoneId]
+├ ƒ /api/planner/confirm
+├ ƒ /api/planner/generate
+├ ƒ /api/projects
+├ ƒ /api/projects/[projectId]
+├ ƒ /api/projects/[projectId]/archive
+├ ƒ /api/tasks
+├ ƒ /api/tasks/[taskId]
+├ ƒ /api/tasks/[taskId]/status
+├ ƒ /app
+├ ƒ /app/board
+├ ƒ /app/planner
+├ ƒ /app/projects
+├ ƒ /app/projects/[projectId]
+├ ƒ /auth/callback
+├ ○ /concepts
+├ ○ /concepts/atelier
+├ ○ /concepts/brutalism
+├ ○ /concepts/editorial
+├ ƒ /login
+├ ○ /privacy
+├ ○ /signup
+└ ○ /terms
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:11029) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/production-smoke.spec.ts:90:5 › new disposable account can sign up and be removed when auto-confirm is enabled (2.9s)
+  ✓  2 [chromium] › tests/e2e/production-smoke.spec.ts:149:5 › confirmed disposable account signs in and out (1.6s)
+  ✓  3 [chromium] › tests/e2e/production-smoke.spec.ts:159:5 › project and task persist across sessions and are cleaned up (5.0s)
+  ✓  4 [chromium] › tests/e2e/production-smoke.spec.ts:231:5 › separately approved disposable account can be deleted (1.9s)
+
+  4 passed (12.0s)

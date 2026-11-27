@@ -1,0 +1,46 @@
+
+Running 2 tests using 1 worker
+
+(node:17225) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [webkit] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages (1.0m)
+(node:18248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [webkit] › tests/e2e/keyboard-accessibility.spec.ts:13:5 › keyboard sign-in and workspace navigation show visible focus (2.7s)
+
+
+  1) [webkit] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages
+
+    Test timeout of 60000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 60000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/app" until "load"
+    ============================================================
+
+      66 |     await page.getByLabel("Password", { exact: true }).fill("monolith-demo");
+      67 |     await page.getByRole("button", { name: "Sign in" }).click();
+    > 68 |     await page.waitForURL("**/app");
+         |                ^
+      69 |
+      70 |     const detailLink = page
+      71 |       .getByRole("link", { name: /Portfolio relaunch|Local market/ })
+        at /Users/saranshpandey/.t3/projects/monolith/monolith-app/tests/e2e/accessibility.spec.ts:68:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-webkit/accessibility-accessibility-WCAG-2-2-AA-workspace-pages-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../../tmp/monolith-reference-webkit/accessibility-accessibility-WCAG-2-2-AA-workspace-pages-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-reference-webkit/accessibility-accessibility-WCAG-2-2-AA-workspace-pages-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../../tmp/monolith-reference-webkit/accessibility-accessibility-WCAG-2-2-AA-workspace-pages-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages
+  1 passed (1.1m)

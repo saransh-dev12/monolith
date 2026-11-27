@@ -1,5 +1,7 @@
 # v1.0 feature matrix
 
+> Historical assessment: the statuses and counts below describe earlier verification, not the current working tree or a release candidate. Reassess against the [ship checklist](v1-ship-checklist.md) and [evidence register](V1_EVIDENCE_REGISTER.md) before sign-off. Password recovery currently has no request/reset UI; SMTP configuration alone does not implement it. The live AI provider and current production configuration remain unverified.
+
 Statuses: PASS (implemented and verified) · FAIL · BLOCKED (needs external
 credentials/access) · NOT STARTED · DEFERRED (intentionally excluded).
 
@@ -12,7 +14,7 @@ Vitest 40/40, pgTAP 36/36, axe WCAG 2.2 AA audit (4/4 suites), Lighthouse
 | Marketing landing — Ember Obsidian v2 + 3D monolith journey | PASS | e2e + visual review at 7 viewports |
 | Sign-up / sign-in / sign-out / session refresh | PASS | e2e + production smoke |
 | Protected `/app` routes, session cookies (httpOnly, chunked) | PASS | e2e + proxy tests |
-| Password recovery / reset | BLOCKED | Requires SMTP (built-in mailer rate-limited 2/h); auto-confirm is ON, so accounts don't need it to sign in |
+| Password recovery / reset | NOT IMPLEMENTED | No recovery request/reset UI; launch scope and email configuration require a product decision and end-to-end verification |
 | Project create / edit / archive / restore / delete | PASS | e2e + pgTAP |
 | Task CRUD, priorities, due dates, overdue derivation | PASS | e2e + pgTAP |
 | Kanban drag-and-drop + accessible status fallback | PASS | e2e drag + status-select tests |

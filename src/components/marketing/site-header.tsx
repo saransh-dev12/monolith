@@ -50,21 +50,23 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
       )}
     >
       <div className="mx-auto flex h-16 w-full max-w-[1240px] items-center gap-6 px-4 sm:px-6">
-        <Link href="/" aria-label="Monolith home" className="relative shrink-0">
-          <motion.span
-            aria-hidden="true"
-            className="pointer-events-none absolute left-0 top-0 size-8 rounded-full border border-primary"
-            initial={reduce ? false : { opacity: 0.7, scale: 2.2 }}
-            animate={{ opacity: 0, scale: 0.7 }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          />
+        <span className="relative shrink-0">
+          <Link href="/" aria-label="Monolith home" className="relative">
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-0 top-0 size-8 rounded-full border border-primary"
+              initial={reduce ? false : { opacity: 0.7, scale: 2.2 }}
+              animate={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            />
+            <Wordmark />
+          </Link>
           {!reduce && introCount < 100 ? (
             <span aria-hidden="true" className="pointer-events-none absolute left-1 top-9 text-[10px] tabular-nums text-primary">
               {introCount}
             </span>
           ) : null}
-          <Wordmark />
-        </Link>
+        </span>
 
         <nav
           aria-label="Product sections"

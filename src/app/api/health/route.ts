@@ -6,8 +6,8 @@ export const dynamic = "force-dynamic";
 
 /**
  * Unauthenticated health probe. Reports whether the app can reach the
- * Supabase auth service (the same dependency every database-backed page
- * relies on). Returns 503 when it cannot, so uptime checks can alert.
+ * Supabase auth service. This does not probe the database: callers must not
+ * treat a successful response as evidence of database readiness.
  */
 export async function GET() {
   try {
@@ -22,20 +22,21 @@ export async function GET() {
 
     if (!response.ok) {
       return NextResponse.json(
-        { status: "degraded", database: "unreachable", timestamp: new Date().toISOString() },
+        { status: "degraded", auth: "unreachable", database: "unverified", timestamp: new Date().toISOString() },
         { status: 503 },
       );
     }
 
     return NextResponse.json({
       status: "ok",
-      database: body.name ? "reachable" : "reachable",
+      auth: "reachable",
+      database: "unverified",
       service: body.name ?? "supabase-auth",
       timestamp: new Date().toISOString(),
     });
   } catch {
     return NextResponse.json(
-      { status: "degraded", database: "unreachable", timestamp: new Date().toISOString() },
+      { status: "degraded", auth: "unreachable", database: "unverified", timestamp: new Date().toISOString() },
       { status: 503 },
     );
   }

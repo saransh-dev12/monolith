@@ -160,7 +160,12 @@ export type Database = {
     Functions: {
       dashboard_totals: {
         Args: Record<string, never>;
-        Returns: { active_projects: number; open_tasks: number; completed_tasks: number; overdue_tasks: number }[];
+        Returns: {
+          active_projects: number;
+          open_tasks: number;
+          completed_tasks: number;
+          overdue_tasks: number;
+        }[];
       };
       dashboard_execution_series: {
         Args: { p_days: number };
@@ -179,6 +184,16 @@ export type Database = {
       release_planner_generation: {
         Args: { p_user_id: string; p_reservation_date: string };
         Returns: number;
+      };
+      create_project_plan_idempotent: {
+        Args: {
+          p_confirmation_id: string;
+          p_name: string;
+          p_description: string | null;
+          p_milestones: unknown;
+          p_tasks: unknown;
+        };
+        Returns: string;
       };
       create_project_plan: {
         Args: {

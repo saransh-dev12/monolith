@@ -12,10 +12,14 @@ export function TaskStatusSelect({
   taskId,
   status,
   taskTitle,
+  disabled = false,
+  onStatusChange,
 }: {
   taskId: string;
   status: TaskStatus;
   taskTitle: string;
+  disabled?: boolean;
+  onStatusChange?: (status: TaskStatus) => void;
 }) {
   const [value, setValue] = useState<TaskStatus>(status);
   const [pending, setPending] = useState(false);
@@ -23,6 +27,10 @@ export function TaskStatusSelect({
 
   async function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const nextStatus = event.target.value as TaskStatus;
+    if (onStatusChange) {
+      if (!disabled && nextStatus !== status) onStatusChange(nextStatus);
+      return;
+    }
     const previousStatus = value;
 
     if (nextStatus === previousStatus) {
@@ -53,9 +61,9 @@ export function TaskStatusSelect({
   return (
     <select
       aria-label={`Status for ${taskTitle}`}
-      value={value}
+      value={onStatusChange ? status : value}
       onChange={handleChange}
-      disabled={pending}
+      disabled={disabled || pending}
       className="h-8 rounded-md border border-input bg-transparent px-2 text-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
     >
       {TASK_STATUS_ORDER.map((option) => (

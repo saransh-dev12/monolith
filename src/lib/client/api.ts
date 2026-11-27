@@ -7,7 +7,7 @@ type ApiEnvelope = {
 
 export type ApiResult<T> =
   | { ok: true; data: T }
-  | { ok: false; message: string; fields?: ApiFieldError[] };
+  | { ok: false; message: string; fields?: ApiFieldError[]; status?: number };
 
 export async function apiRequest<T>(
   url: string,
@@ -39,6 +39,7 @@ export async function apiRequest<T>(
       ok: false,
       message: payload?.error ?? "The request could not be completed.",
       fields: payload?.fields,
+      status: response.status,
     };
   }
 

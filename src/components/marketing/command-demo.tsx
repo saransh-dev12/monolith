@@ -76,7 +76,7 @@ export function CommandDemo() {
                 aria-pressed={selected}
                 className={cn(
                   "relative rounded-full px-2.5 py-1 eyebrow transition-colors",
-                  selected ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+                  selected ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {selected ? (

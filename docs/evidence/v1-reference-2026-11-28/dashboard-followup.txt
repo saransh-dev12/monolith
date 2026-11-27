@@ -1,0 +1,13 @@
+
+Running 6 tests using 1 worker
+
+(node:16754) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/dashboard.spec.ts:4:5 › workspace navigation remains usable with reduced motion (3.4s)
+  ✓  2 [chromium] › tests/e2e/dashboard.spec.ts:32:5 › a new active project without milestones remains useful (1.0s)
+  ✓  3 [chromium] › tests/e2e/dashboard.spec.ts:88:5 › milestone selection shows the selected project milestone (1.7s)
+  ✓  4 [chromium] › tests/e2e/dashboard.spec.ts:178:5 › workspace buttons show Skiper feedback and respect reduced motion (2.2s)
+  ✓  5 [chromium] › tests/e2e/execution-canvas.spec.ts:25:5 › execution canvas follows the selected project's real milestones and progress (1.2s)
+  ✓  6 [chromium] › tests/e2e/execution-canvas.spec.ts:78:5 › a new account has an honest empty workspace and a project creation action (1.5s)
+
+  6 passed (11.5s)

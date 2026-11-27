@@ -2,7 +2,7 @@
 
 **A project execution workspace.** Describe an idea, get an AI-drafted plan you review and edit, run the work on a Kanban board, and read progress derived from your own records — never fabricated.
 
-**Live:** [monolith-navy.vercel.app](https://monolith-navy.vercel.app) · **Status:** v1.0 release candidate — CI green, production smoke-tested.
+**Live:** [monolith-navy.vercel.app](https://monolith-navy.vercel.app) · **Status:** V1 verification in progress. The live site may run an earlier commit; the current working tree has not been released or production-verified.
 
 ## Features
 
@@ -11,9 +11,9 @@
 - **Tasks** — CRUD, priorities, due dates, overdue tracking; Kanban drag-and-drop with keyboard fallback and optimistic updates
 - **Milestones** — full lifecycle, rolled into project progress
 - **AI planner** — idea → structured draft (milestones + tasks) → edit → confirm; atomic save in one Postgres transaction; per-user daily quota; never writes before you confirm
-- **Command Center** — the Voyage (GSAP path-follow completion signature), live metrics, execution chart, overdue/deadline attention panel, recent activity
+- **Command Center** — project execution, upcoming work and activity derived from the account’s records
 - **Security** — Row Level Security on every table, owner-scoped at the database level; Zod validation at every boundary; server-only secrets
-- **Craft** — dark-only Ember Obsidian design, full-page 3D monolith journey, ⌘K command palette, ⌘1–4 navigation, WCAG 2.2 AA automated pass, reduced-motion support
+- **Craft** — Ember Obsidian styling, command palette, keyboard navigation and reduced-motion support
 
 ## Stack
 
@@ -52,24 +52,24 @@ Without OpenAI keys the planner states it's unconfigured — everything else wor
 
 ```bash
 npm run lint && npm run typecheck && npm test
-supabase db reset && npm run test:db     # 53 pgTAP tests
-npm run test:e2e                          # 29 Playwright tests
+supabase db reset && npm run test:db     # resets local database; never run against production
+npm run test:e2e
 ```
 
-Covers: auth flows, CRUD, board persistence, cross-user denial, CSRF rejection, planner quota + atomicity, 1,000+ task large accounts, responsive sweep (10 routes × 7 viewports), WCAG 2.2 AA axe audit. CI runs all of it — see [docs/v1-qa-report.md](docs/v1-qa-report.md).
+The suites cover auth, CRUD, board persistence, user isolation, planner quota and atomicity, responsive behavior and automated accessibility checks. Coverage and historical reports do not establish release readiness: see the [evidence register](docs/V1_EVIDENCE_REGISTER.md) for results tied to a specific candidate and the [ship checklist](docs/v1-ship-checklist.md) for outstanding checks.
 
 ## Security model
 
 - RLS on every table; `anon` has zero application-table access; ownership can't be transferred (update policies check both existing and resulting rows)
 - Server actions derive identity from verified Supabase claims — client-supplied owner IDs are never trusted
 - Planner quota reserved atomically in Postgres; failed provider calls release it; model output validated against Zod before use
-- No secrets in client bundles; service-role and OpenAI keys are server-only
+- Service-role and OpenAI keys are intended for server-only use; verify the release bundle and deployment configuration before release
 
 Known limitation: overdue checks compare date-only values against UTC — timezone-aware rules are out of v1 scope.
 
 ## Deployment
 
-Full runbook: [docs/deployment.md](docs/deployment.md). Short version: create a Supabase project → `supabase db push` (never run the seed on production) → set the env vars in Vercel → deploy. Live instance runs on Vercel (free tier) + Supabase (free tier).
+Full runbook: [docs/deployment.md](docs/deployment.md). Short version: create a Supabase project → `supabase db push` (never run the seed on production) → set the env vars in Vercel → deploy. Production configuration and the deployed commit must be verified separately for each release.
 
 ## Docs
 

@@ -1,0 +1,103 @@
+
+> monolith@0.1.0 test:e2e
+> playwright test --output /tmp/monolith-v1-integrated-now --reporter=list
+
+
+Running 49 tests using 1 worker
+
+(node:32965) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/accessibility.spec.ts:32:7 › accessibility (WCAG 2.2 AA) › landing page (4.4s)
+  ✓   2 [chromium] › tests/e2e/accessibility.spec.ts:41:7 › accessibility (WCAG 2.2 AA) › auth pages (3.1s)
+  ✓   3 [chromium] › tests/e2e/accessibility.spec.ts:52:7 › accessibility (WCAG 2.2 AA) › legal pages (3.1s)
+  ✓   4 [chromium] › tests/e2e/accessibility.spec.ts:63:7 › accessibility (WCAG 2.2 AA) › workspace pages (9.2s)
+  ✓   5 [chromium] › tests/e2e/auth-dialog.spec.ts:4:5 › landing authentication dialog supports switching, keyboard and focus return (8.5s)
+  ✓   6 [chromium] › tests/e2e/auth-dialog.spec.ts:25:5 › sign-in dialog fits a mobile screen and retains direct auth routes (1.2s)
+  ✓   7 [chromium] › tests/e2e/board-status-consistency.spec.ts:84:5 › status selection after dragging updates the visible column and survives reload (2.6s)
+  ✓   8 [chromium] › tests/e2e/board-status-consistency.spec.ts:104:5 › both status controls are disabled while a drag update is pending (2.3s)
+  ✓   9 [chromium] › tests/e2e/board-status-consistency.spec.ts:130:5 › a failed status change restores the last successful position (2.5s)
+  ✓  10 [chromium] › tests/e2e/board-status-consistency.spec.ts:157:5 › failed move does not mask a later server update (2.1s)
+  ✓  11 [chromium] › tests/e2e/contrast.spec.ts:27:5 › primary action maintains normal text contrast in the dark theme and on hover (865ms)
+  ✓  12 [chromium] › tests/e2e/dashboard.spec.ts:4:5 › workspace navigation remains usable with reduced motion (3.2s)
+  ✓  13 [chromium] › tests/e2e/dashboard.spec.ts:32:5 › a new active project without milestones remains useful (1.0s)
+  ✓  14 [chromium] › tests/e2e/dashboard.spec.ts:88:5 › milestone selection shows the selected project milestone (1.9s)
+  ✓  15 [chromium] › tests/e2e/dashboard.spec.ts:178:5 › workspace buttons show Skiper feedback and respect reduced motion (2.2s)
+  ✓  16 [chromium] › tests/e2e/keyboard-accessibility.spec.ts:13:5 › keyboard sign-in and workspace navigation show visible focus (1.5s)
+  ✓  17 [chromium] › tests/e2e/large-account.spec.ts:7:5 › project, board, and dashboard include more than 1,000 tasks (3.6s)
+  ✓  18 [chromium] › tests/e2e/motion.spec.ts:4:7 › motion toolkit › product tour advances and reverses with scrolling (4.7s)
+  ✓  19 [chromium] › tests/e2e/motion.spec.ts:41:7 › motion toolkit › product tour remains manually selectable with reduced motion (952ms)
+  ✓  20 [chromium] › tests/e2e/motion.spec.ts:48:7 › motion toolkit › the stream follows scrolling with reduced motion enabled (875ms)
+  ✓  21 [chromium] › tests/e2e/motion.spec.ts:71:7 › motion toolkit › the stream spans the viewport on laptop and monitor (1.7s)
+  ✓  22 [chromium] › tests/e2e/motion.spec.ts:99:7 › motion toolkit › marketing uses one smooth-scroll loop and a pinned workflow (16.9s)
+  ✓  23 [chromium] › tests/e2e/motion.spec.ts:171:7 › motion toolkit › concepts demonstrate motion and stay static when reduced (3.1s)
+  ✓  24 [chromium] › tests/e2e/planner-idempotency.spec.ts:4:5 › concurrent planner confirmations are idempotent and scoped to one reviewed plan (1.2s)
+  ✘  25 [chromium] › tests/e2e/planner-recovery.spec.ts:5:5 › a lost confirmation response can be retried after reloading without creating another project (11.3s)
+(node:35455) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  26 [chromium] › tests/e2e/planner-recovery.spec.ts:57:5 › a definite validation rejection allows the draft to be edited and resubmitted (2.2s)
+  ✓  27 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route / has no horizontal overflow (6.8s)
+  ✓  28 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /login has no horizontal overflow (6.0s)
+  ✓  29 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /signup has no horizontal overflow (5.9s)
+  ✓  30 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /privacy has no horizontal overflow (5.8s)
+  ✓  31 [chromium] › tests/e2e/responsive.spec.ts:37:9 › responsive layout sweep › public route /terms has no horizontal overflow (5.8s)
+  ✓  32 [chromium] › tests/e2e/responsive.spec.ts:58:7 › responsive layout sweep › workspace routes have no horizontal overflow (34.3s)
+  ✓  33 [chromium] › tests/e2e/workspace.spec.ts:26:7 › public and protected routes › rejects an external backslash redirect before and after sign-in (1.1s)
+  ✓  34 [chromium] › tests/e2e/workspace.spec.ts:39:7 › public and protected routes › redirects unauthenticated visitors and returns 401 from mutations (368ms)
+  ✓  35 [chromium] › tests/e2e/workspace.spec.ts:57:7 › core workspace flow › command center connects next work, project progress and milestones (1.4s)
+  ✓  36 [chromium] › tests/e2e/workspace.spec.ts:84:7 › core workspace flow › creates and edits a project, task, milestone, board state, and removes it (9.0s)
+  ✓  37 [chromium] › tests/e2e/workspace.spec.ts:199:7 › authorization › another user cannot read or mutate demo data (1.1s)
+  ✓  38 [chromium] › tests/e2e/workspace.spec.ts:227:7 › authorization › mutations from another origin are rejected (930ms)
+  ✓  39 [chromium] › tests/e2e/workspace.spec.ts:239:7 › planner › renders the planner and persists only a confirmed plan (1.3s)
+  ✓  40 [chromium] › tests/e2e/workspace.spec.ts:317:7 › navigation shell › opens the command palette and navigates to the planner (1.5s)
+  ✓  41 [chromium] › tests/e2e/workspace.spec.ts:332:7 › motion and drag › moves a task by dragging and persists the status (2.2s)
+  ✓  42 [chromium] › tests/e2e/workspace.spec.ts:386:7 › motion and drag › removes hover lift under reduced motion and keeps top navigation usable (2.7s)
+  ✓  43 [chromium] › tests/e2e/workspace.spec.ts:415:7 › account and responsive layout › signs up a new account, shows an empty workspace, and signs out (1.6s)
+  ✓  44 [chromium] › tests/e2e/workspace.spec.ts:435:7 › account and responsive layout › deletes the account, its data, and lands back on login with a notice (2.5s)
+  ✓  45 [chromium] › tests/e2e/workspace.spec.ts:487:7 › account and responsive layout › keeps the workspace usable at a mobile viewport (2.6s)
+  -  46 [chromium] › tests/e2e/production-smoke.spec.ts:90:5 › new disposable account can sign up and be removed when auto-confirm is enabled
+  -  47 [chromium] › tests/e2e/production-smoke.spec.ts:149:5 › confirmed disposable account signs in and out
+  -  48 [chromium] › tests/e2e/production-smoke.spec.ts:159:5 › project and task persist across sessions and are cleaned up
+  -  49 [chromium] › tests/e2e/production-smoke.spec.ts:231:5 › separately approved disposable account can be deleted
+
+
+  1) [chromium] › tests/e2e/planner-recovery.spec.ts:5:5 › a lost confirmation response can be retried after reloading without creating another project
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator: getByRole('button', { name: 'Generate draft' })
+    Expected: disabled
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('button', { name: 'Generate draft' }) with timeout 10000ms
+      - waiting for getByRole('button', { name: 'Generate draft' })
+
+
+      27 |     await page.goto("/app/planner");
+      28 |     await expect(page.getByText("Submitted draft · save status unknown")).toBeVisible();
+    > 29 |     await expect(page.getByRole("button", { name: "Generate draft" })).toBeDisabled();
+         |                                                                        ^
+      30 |     await expect(page.getByRole("button", { name: "Generate draft" })).toHaveAttribute("title", "Resolve or discard the submitted draft first.");
+      31 |     await page.route("**/api/planner/confirm", async (route) => {
+      32 |       const response = await route.fetch();
+        at /Users/saranshpandey/.t3/projects/monolith/monolith-app/tests/e2e/planner-recovery.spec.ts:29:72
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-v1-integrated-now/planner-recovery-a-lost-co-6469f-ut-creating-another-project-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../../tmp/monolith-v1-integrated-now/planner-recovery-a-lost-co-6469f-ut-creating-another-project-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../../tmp/monolith-v1-integrated-now/planner-recovery-a-lost-co-6469f-ut-creating-another-project-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../../tmp/monolith-v1-integrated-now/planner-recovery-a-lost-co-6469f-ut-creating-another-project-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/planner-recovery.spec.ts:5:5 › a lost confirmation response can be retried after reloading without creating another project
+  4 skipped
+  44 passed (3.2m)

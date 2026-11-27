@@ -1,6 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const TEST_ORIGIN = new URL(process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000").origin;
+const TEST_ORIGIN = new URL(
+  process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+).origin;
 
 const DEMO_PROJECT_ID = "33333333-3333-4333-8333-333333333331";
 
@@ -21,7 +23,9 @@ async function signIn(
 }
 
 test.describe("public and protected routes", () => {
-  test("rejects an external backslash redirect before and after sign-in", async ({ page }) => {
+  test("rejects an external backslash redirect before and after sign-in", async ({
+    page,
+  }) => {
     const unsafeLogin = "/login?next=%2F%5Cattacker.example";
     await page.goto(unsafeLogin);
     await page.getByLabel("Email").fill("demo@monolith.local");
@@ -37,7 +41,9 @@ test.describe("public and protected routes", () => {
   }) => {
     await page.goto("/app");
     await expect(page).toHaveURL(/\/login\?next=/);
-    await expect(page.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Welcome back" }),
+    ).toBeVisible();
 
     const response = await page.request.post("/api/projects", {
       data: { name: "Unauthenticated" },
@@ -48,15 +54,31 @@ test.describe("public and protected routes", () => {
 });
 
 test.describe("core workspace flow", () => {
-  test("command center connects next work, project progress and milestones", async ({ page }) => {
+  test("command center connects next work, project progress and milestones", async ({
+    page,
+  }) => {
     await signIn(page);
-    await expect(page.getByRole("heading", { name: "Project in focus" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Next action" })).toBeVisible();
-    await expect(page.getByRole("progressbar", { name: "Portfolio relaunch execution progress" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Execution timeline" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Project landscape" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Project in focus" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Next action" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("progressbar", {
+        name: "Portfolio relaunch execution progress",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Execution timeline" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Project landscape" }),
+    ).toBeVisible();
     await page.getByRole("link", { name: "Open project", exact: true }).click();
-    await expect(page).toHaveURL(new RegExp(`/app/projects/${DEMO_PROJECT_ID}$`));
+    await expect(page).toHaveURL(
+      new RegExp(`/app/projects/${DEMO_PROJECT_ID}$`),
+    );
   });
 
   test("creates and edits a project, task, milestone, board state, and removes it", async ({
@@ -70,14 +92,20 @@ test.describe("core workspace flow", () => {
     const milestoneName = unique("E2E milestone");
 
     await signIn(page);
-    await expect(page.getByRole("heading", { name: "Execution timeline" })).toBeVisible();
-    await expect(page.getByText("Latest task changes, not a complete history")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Execution timeline" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Latest task changes, not a complete history"),
+    ).toBeVisible();
     await page.goto("/app/projects");
 
     await page.getByRole("button", { name: "New project" }).click();
     const projectDialog = page.getByRole("dialog");
     await projectDialog.getByLabel("Name").fill(projectName);
-    await projectDialog.getByLabel("Description").fill("Created by Playwright.");
+    await projectDialog
+      .getByLabel("Description")
+      .fill("Created by Playwright.");
     await projectDialog.getByRole("button", { name: "Create project" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
     await page.getByRole("link", { name: projectName }).click();
@@ -85,7 +113,9 @@ test.describe("core workspace flow", () => {
     const projectUrl = page.url();
     const projectId = projectUrl.split("/").pop() ?? "";
 
-    await expect(page.getByRole("heading", { name: projectName })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: projectName }),
+    ).toBeVisible();
 
     await page.getByRole("button", { name: "Add task" }).first().click();
     const taskDialog = page.getByRole("dialog");
@@ -93,7 +123,9 @@ test.describe("core workspace flow", () => {
     await taskDialog.getByLabel("Priority").selectOption("high");
     await taskDialog.getByRole("button", { name: "Add task" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
-    await expect(page.locator("#main").getByText(taskName).first()).toBeVisible();
+    await expect(
+      page.locator("#main").getByText(taskName).first(),
+    ).toBeVisible();
 
     const detailStatus = page.locator(
       `select[aria-label="Status for ${taskName}"]:visible`,
@@ -101,14 +133,18 @@ test.describe("core workspace flow", () => {
     await detailStatus.selectOption("in_progress");
     await expect(page.getByText("Moved to In progress.")).toBeVisible();
     await page.reload();
-    await expect(page.locator("#main").getByText(taskName).first()).toBeVisible();
+    await expect(
+      page.locator("#main").getByText(taskName).first(),
+    ).toBeVisible();
     await expect(detailStatus).toHaveValue("in_progress");
 
     await page.getByRole("button", { name: "Add milestone" }).click();
     const milestoneDialog = page.getByRole("dialog");
     await milestoneDialog.getByLabel("Title").fill(milestoneName);
     await milestoneDialog.getByLabel("Target date").fill("2027-02-01");
-    await milestoneDialog.getByRole("button", { name: "Add milestone" }).click();
+    await milestoneDialog
+      .getByRole("button", { name: "Add milestone" })
+      .click();
     await expect(page.getByRole("dialog")).toBeHidden();
     await expect(page.locator("#main").getByText(milestoneName)).toBeVisible();
 
@@ -144,7 +180,9 @@ test.describe("core workspace flow", () => {
 
     await page.getByRole("button", { name: "Delete project" }).click();
     const deleteDialog = page.getByRole("alertdialog");
-    await deleteDialog.getByRole("button", { name: "Delete permanently" }).click();
+    await deleteDialog
+      .getByRole("button", { name: "Delete permanently" })
+      .click();
     await page.waitForURL("**/app/projects");
     await expect(page.getByRole("link", { name: projectName })).toHaveCount(0);
 
@@ -168,10 +206,13 @@ test.describe("authorization", () => {
     await page.goto(`/app/projects/${DEMO_PROJECT_ID}`);
     await expect(page.getByText("Project not found")).toBeVisible();
 
-    const update = await page.request.patch(`/api/projects/${DEMO_PROJECT_ID}`, {
-      data: { name: "hijacked" },
-      headers: { Origin: TEST_ORIGIN },
-    });
+    const update = await page.request.patch(
+      `/api/projects/${DEMO_PROJECT_ID}`,
+      {
+        data: { name: "hijacked" },
+        headers: { Origin: TEST_ORIGIN },
+      },
+    );
     expect(update.status()).toBe(404);
 
     const insert = await page.request.post("/api/tasks", {
@@ -256,9 +297,13 @@ test.describe("planner", () => {
     expect(body.projectId).toBeTruthy();
 
     await page.goto(`/app/projects/${body.projectId}`);
-    await expect(page.getByRole("heading", { name: projectName })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: projectName }),
+    ).toBeVisible();
     await expect(page.locator("#main").getByText(milestoneName)).toBeVisible();
-    await expect(page.locator("#main").getByText(taskName).first()).toBeVisible();
+    await expect(
+      page.locator("#main").getByText(taskName).first(),
+    ).toBeVisible();
 
     const cleanup = await page.request.delete(
       `/api/projects/${body.projectId}`,
@@ -282,7 +327,6 @@ test.describe("navigation shell", () => {
     await expect(page.getByRole("heading", { name: "Planner" })).toBeVisible();
   });
 });
-
 
 test.describe("motion and drag", () => {
   test("moves a task by dragging and persists the status", async ({ page }) => {
@@ -339,7 +383,7 @@ test.describe("motion and drag", () => {
     await expect(page.getByText("Moved to Todo.")).toBeVisible();
   });
 
-  test("removes hover lift under reduced motion and survives rapid toggles", async ({
+  test("removes hover lift under reduced motion and keeps top navigation usable", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -352,12 +396,17 @@ test.describe("motion and drag", () => {
     await page.waitForTimeout(300);
     await expect(liftWrapper).toHaveCSS("transform", "none");
 
-    const trigger = page
-      .locator("header")
-      .getByRole("button", { name: "Toggle Sidebar" });
-    await trigger.click();
-    await trigger.click();
-    await trigger.click();
+    const navigation = page.getByRole("navigation", { name: "Workspace" });
+    await navigation.getByRole("link", { name: "Board", exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: "Board", exact: true }),
+    ).toBeVisible();
+    await navigation
+      .getByRole("link", { name: "Command Center", exact: true })
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "Command Center", exact: true }),
+    ).toBeVisible();
     await expect(page.locator("main")).toBeVisible();
   });
 });
@@ -371,7 +420,9 @@ test.describe("account and responsive layout", () => {
     await page.goto("/signup");
     await page.getByLabel("Name").fill("E2E New User");
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password", { exact: true }).fill("test-password-123");
+    await page
+      .getByLabel("Password", { exact: true })
+      .fill("test-password-123");
     await page.getByRole("button", { name: "Create account" }).click();
     await page.waitForURL("**/app");
     await expect(page.getByText("No projects yet")).toBeVisible();
@@ -390,7 +441,9 @@ test.describe("account and responsive layout", () => {
     await page.goto("/signup");
     await page.getByLabel("Name").fill("E2E Deleting User");
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password", { exact: true }).fill("test-password-123");
+    await page
+      .getByLabel("Password", { exact: true })
+      .fill("test-password-123");
     await page.getByRole("button", { name: "Create account" }).click();
     await page.waitForURL("**/app");
     await page.getByRole("button", { name: "New project" }).first().click();
@@ -416,30 +469,38 @@ test.describe("account and responsive layout", () => {
     await expect(dialog.getByText(email, { exact: false })).toBeVisible();
     await dialog.getByRole("button", { name: "Delete forever" }).click();
     await page.waitForURL("**/login?deleted=1");
-    await expect(page.getByText("Your account and all of its data have been deleted.")).toBeVisible();
+    await expect(
+      page.getByText("Your account and all of its data have been deleted."),
+    ).toBeVisible();
 
     // The credentials no longer work.
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password", { exact: true }).fill("test-password-123");
+    await page
+      .getByLabel("Password", { exact: true })
+      .fill("test-password-123");
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page.getByText("Email or password is incorrect.")).toBeVisible();
+    await expect(
+      page.getByText("Email or password is incorrect."),
+    ).toBeVisible();
   });
 
   test("keeps the workspace usable at a mobile viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await signIn(page);
 
-    await expect(
-      page.getByRole("button", { name: "Toggle Sidebar" }),
-    ).toBeVisible();
-    await page.getByRole("button", { name: "Toggle Sidebar" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: "Command Center" }),
-    ).toBeVisible();
-    await page.keyboard.press("Escape");
+    const navigation = page.getByRole("navigation", { name: "Workspace" });
+    await expect(navigation).toBeVisible();
+    await navigation.getByRole("link", { name: "Planner", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Planner", exact: true })).toBeVisible();
+    await navigation.getByRole("link", { name: "Archived", exact: true }).click();
+    await expect(navigation.getByRole("link", { name: "Archived", exact: true })).toHaveAttribute("aria-current", "page");
 
-    for (const path of ["/app", "/app/projects", "/app/planner", "/app/board"]) {
+    for (const path of [
+      "/app",
+      "/app/projects",
+      "/app/planner",
+      "/app/board",
+    ]) {
       await page.goto(path);
       await expect(page.locator("main")).toBeVisible();
       const overflow = await page.evaluate(
